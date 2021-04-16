@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+if [ $# -ne 5 ] ; then
+	echo Usage: incdte year month day hour inc_hour
+	echo returns new year month day hour
+	exit 8
+fi
+dir=`echo $0 | sed 's?/[^/]*$??g'`
+currdir=`pwd`
+cd $dir
+ETC_DIR=`pwd`
+cd $currdir
+
+iyv=$1
+imv=$2
+idv=$3
+ihv=$4
+inc=$5
+#
+if [ linux = cray -o linux = t90 -o linux = t3e ] ; then
+  assign -R
+fi
+echo $1 $2 $3 $4 $5 >incdte.i$$
+#
+NO_STOP_MESSAGE=true
+export NO_STOP_MESSAGE
+#
+$ETC_DIR/incdte.x <incdte.i$$ >incdte.o$$
+if [ $? -ne 0 ] ; then
+    echo "`date` $0: Execution failed." >>ERROR.out
+    exit 8
+fi
+read iyv imv idv ihv <incdte.o$$
+if [ $iyv -lt 10 ] ; then
+	iyv=0$iyv
+fi
+if [ $imv -lt 10 ] ; then
+	imv=0$imv
+fi
+if [ $idv -lt 10 ] ; then
+	idv=0$idv
+fi
+if [ $ihv -lt 10 ] ; then
+	ihv=0$ihv
+fi
+echo $iyv $imv $idv $ihv 
+rm incdte.i$$ incdte.o$$

@@ -1,0 +1,33 @@
+--- namelist.input_3hr	2021-03-04 23:05:52.630813000 -0500
++++ namelist.input	2021-03-05 22:39:19.490200000 -0500
+@@ -3,9 +3,9 @@
+ run_hours                = 3,
+ run_minutes              = 0,
+ run_seconds              = 0,
+-start_year               = 1997,
+-start_month              = 10,
+-start_day                = 01,
++start_year               = 2011,
++start_month		=  01,01,01,
++start_day		=  00,00,00,
+ start_hour               = 00,
+ start_minute             = 00,
+ start_second             = 00,
+@@ -67,7 +67,7 @@
+ max_dom                  = 1,
+ e_we                     = 540,
+ e_sn                     = 320,
+-e_vert                   = 50,
++e_vert                   = 36,
+ p_top_requested          = 5000,
+ num_metgrid_levels       = 33,
+ num_metgrid_soil_levels  = 4,
+@@ -96,7 +96,7 @@
+ bldt                     = 0, 0,
+ cu_physics               = 1, 1,
+ cudt                     = 5, 5,
+-shcu_physics             = 3, 3,
++shcu_physics             = 0, 3,
+ isfflx                   = 1,
+ ifsnow                   = 1,
+ icloud                   = 1,

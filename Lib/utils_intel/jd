@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# Computes julian day from given YYYY MM DD
+#
+if [ $# -ne 3 ] ; then
+	echo Usage: $0 YYYY MM DD 
+	echo "`date` $0: Wrong usage." >>ERROR.out
+	exit 8
+fi
+#
+YYYY=$1
+MM=$2
+DD=$3
+#
+MM=`expr $MM + 0`
+DD=`expr $DD + 0`
+#
+if [ $MM -eq 1 ] ; then
+	JD=$DD
+	echo $JD
+else
+	n=`expr $YYYY \/ 4`
+	n=`expr $n \* 4`
+	if [ $n -eq $YYYY ] ; then
+		leap=yes
+	else
+		leap=no
+		if [ $MM -eq 2 -a $DD -ge 29 ] ; then
+			echo No Feb. 29 in year $YYYY
+			echo "`date` $0: No Feb. 29 in year $YYYY." >>ERROR.out
+			exit 8
+		fi
+	fi
+	d1=31
+	d2=28
+	if [ $leap = yes ] ; then
+		d2=29
+	fi
+	d3=31
+	d4=30
+	d5=31
+	d6=30
+	d7=31
+	d8=31
+	d9=30
+	d10=31
+	d11=30
+	d12=31
+	d=\$d$MM
+	d=`eval echo $d`
+	if [ $DD -gt $d ] ; then
+		echo Wrong dates
+		echo "`date` $0: Wrong dates." >>ERROR.out
+		exit 8
+	fi
+	MMM=`expr $MM - 1`
+	m=1
+	JD=0
+	while [ $m -le $MMM ] ; do
+		d=\$d$m
+		d=`eval echo $d`
+		JD=`expr $JD + $d`
+		m=`expr $m + 1`
+	done
+	JD=`expr $JD + $DD`
+	echo $JD
+fi
+

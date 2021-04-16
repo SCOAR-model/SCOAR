@@ -1,0 +1,36 @@
+#! /bin/sh
+#
+if [ $# -ne 8 ] ; then
+	echo Usage inchour years months days hours yearn monthn dayn hourn
+	echo returns hour between two dates specified
+	exit 8
+fi
+dir=`echo $0 | sed 's?/[^/]*$??g'`
+currdir=`pwd`
+cd $dir
+ETC_DIR=`pwd`
+cd $currdir
+
+iys=$1
+ims=$2
+ids=$3
+ihs=$4
+iye=$5
+ime=$6
+ide=$7
+ihe=$8
+#
+if [ linux = cray -o linux = t90 -o linux = t3e ] ; then
+  assign -R
+fi
+echo $1 $2 $3 $4 $5 $6 $7 $8 >inchr.i$$
+#
+NO_STOP_MESSAGE=true
+export NO_STOP_MESSAGE
+#
+$ETC_DIR/inchour.x <inchr.i$$
+if [ $? -ne 0 ] ; then
+    echo "`date` $0: Execution failed." >>ERROR.out
+    exit 8
+fi
+rm inchr.i$$

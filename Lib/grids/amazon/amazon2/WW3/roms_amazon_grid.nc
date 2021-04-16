@@ -1,0 +1,1 @@
+/vortexfs1/share/seolab/SCOAR2_share/scoar_ww3/Model/WW3/amazon/amazon2/WW3-6.07.1/model/DATA/amazon//roms_amazon_grid.nc

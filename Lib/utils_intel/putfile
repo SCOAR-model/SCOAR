@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+#  copy/ftp/sftp one file to a speficied directory
+#
+#   $1 .. input  file name with full directory (COMPAS)
+#   $2 .. output file name with full directory (LOCAL MACHINE)
+#   $3 .. ftp protocol.  cp for local copy
+#   $4 .. ip address if ftp or sftp.   blank for $3=cp
+#       
+i_fname=$1
+o_fname=$2
+protocol=$3 
+ipaddress=$4
+#       
+separator=' '
+if [ $protocol = hsi ] ; then
+        separator=' : '
+fi      
+#               
+i_dir=`echo $i_fname | sed 's?/[^/]*$??g'`
+i_nam=`echo $i_fname | sed 's?.*/??g'`
+o_dir=`echo $o_fname | sed 's?/[^/]*$??g'`
+o_nam=`echo $o_fname | sed 's?.*/??g'`
+#
+rm $o_fname 2>/dev/null
+#
+if [ $protocol = ftp -o $protocol = sftp ] ; then
+	cat >ftp.dat$$ <<EOF
+	lcd $i_dir
+	cd $o_dir
+	put $i_nam$separator$o_nam
+EOF
+	/home/workspace81/dputrasa/Couple_WrfRoms/Lib/utils/ftpscr ftp.dat$$ ftp.out $ipaddress $protocol  || exit 8
+	mv ftp.dat$$ ftp.dat.last
+	if [ ! -s $i_fname ] ; then
+		echo "ftp put of $o_fname to $i_fname failed."
+		exit 8
+	fi
+elif [ $protocol = hsi ] ; then
+        cat >ftp.dat$$ <<EOF
+        lcd $o_dir
+        cd $i_dir
+        put $i_nam$separator$o_nam
+EOF
+        /home/workspace81/dputrasa/Couple_WrfRoms/Lib/utils/ftpscr ftp.dat$$ ftp.out $ipaddress $protocol  || exit 8
+        mv ftp.dat$$ ftp.dat.last
+        if [ ! -s $i_fname ] ; then
+                echo "ftp put of $o_fname to $i_fname failed."
+                exit 8
+        fi
+elif [ $protocol = cp ] ; then
+        if [ ! -s $o_fname ] ; then
+                echo "$o_fname does not exist"
+                exit 8
+        fi
+        cp $o_fname $i_fname || exit 8
+elif [ $protocol = ln ] ; then
+        if [ ! -s $o_fname ] ; then
+                echo "$o_fname does not exist"
+                exit 8
+        fi
+        ln -fs $o_fname $i_fname || exit 8
+fi
