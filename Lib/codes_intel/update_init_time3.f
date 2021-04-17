@@ -1,7 +1,7 @@
       include 'netcdf.inc'
 
       integer status, ncid, varid
-      real init_time, nhour2, nhour, nday, cf
+      real init_time, num_hour, cf
       character*10 time_name
 
 ! 2. open time_variable name
@@ -10,25 +10,17 @@
 
 ! 3. get the julian date (in seconds)
        open(13,file='fort.13',form='formatted')
-       read(13,*) nday 
-
-! 3. get the julian date (in seconds)
-       open(14,file='fort.14',form='formatted')
-       read(14,*) nhour
+       read(13,*) num_hour 
 
 ! 3. get the julian date (in seconds)
        open(15,file='fort.15',form='formatted')
        read(15,*) cf
 
 ! write the julian date for ocean_time
-! nday is the number of days since the TIME_REF.
+! num_hour is the total number of hours at current time since TIME_REF
 
 ! calculate time
-        nhour2 = mod(nhour,24.0)/24.0
-        if (nhour2 .eq. 0) then ! hour=24 == next day
-        nday=nday+1
-        endif
-        init_time= (real(nday-1) + nhour2 - cf/24 )*86400
+        init_time= (num_hour - cf)*60*60! s
         print *, "init_time= ", init_time
 
 ! 1. open existing forc.nc file

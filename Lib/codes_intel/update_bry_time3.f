@@ -1,7 +1,7 @@
       include 'netcdf.inc'
 
       integer status, ncid, varid
-      real bry_time, nhour2, nhour, nday 
+      real bry_time, num_hour
       character*10 time_name
 
 ! 2. open time_variable name
@@ -10,21 +10,11 @@
 
 ! 3. get the julian date
        open(13,file='fort.13',form='formatted')
-       read(13,*) nday
+       read(13,*) num_hour
 
-! 4. get the current nhour
-       open(14,file='fort.14',form='formatted')
-       read(14,*) nhour
+! num_hour is the total number of hours at current time since TIME_REF
 
-! nday is the number of days since the TIME_REF.
-! 3. insert nday
-        nhour2 = mod(nhour,24.0)/24.0
-! ocean time
-        if (nhour2 .eq. 0)  then
-! hour=24 == next day
-        nday=nday+1
-        endif
-        bry_time = (nday -1  + nhour2)
+        bry_time = (num_hour - cf ) / 24
         print *, "bry_time= ", bry_time
 
 ! 1. open existing bry.nc file

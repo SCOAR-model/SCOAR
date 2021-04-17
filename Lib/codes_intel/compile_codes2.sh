@@ -1,7 +1,7 @@
 #!/bin/sh
 INCLUDEDIR=/vortexfs1/apps/impistack-1.0/include
 LIBDIR=/vortexfs1/apps/impistack-1.0/lib
-Couple_Lib_exec_coupler_Dir=/vortexfs1/home/hseo/SCOAR2/Lib/exec/Coupler_intel
+Couple_Lib_exec_coupler_Dir=../exec/Coupler_intel/
 
 echo "calculate_WRF_flux_bulk_longout.f"
 ifort calculate_WRF_flux_bulk_longout.f -o calculate_WRF_flux_bulk_longout.x
