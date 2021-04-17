@@ -25,7 +25,7 @@ sed -i -e '/^restart /d'                $namelist_input_file  -e "22 i restart  
 sed -i -e '/io_form_restart/d'          $namelist_input_file  -e "25 i io_form_restart          =  $io_form_restart," $namelist_input_file
 sed -i -e '/write_hist_at_0h_rst/d'     $namelist_input_file  -e "33 i write_hist_at_0h_rst     =  $write_hist_at_0h_rst," $namelist_input_file
 
-if [ $parameter_run_WW3 = on ]; then
+if [ $parameter_run_WW3 = yes ]; then
 	sed -i -e '/isftcflx/d' 	$namelist_input_file  -e "91 i isftcflx 	=  35," $namelist_input_file
 else
 	sed -i -e '/isftcflx/d' 	$namelist_input_file  -e "91 i isftcflx 	=  0," $namelist_input_file
