@@ -293,7 +293,9 @@ cd $Couple_Data_ROMS_Dir || exit 8
 # prepare ROMS run (init, bry, clm files)
 echo "*********   prepare-ROMS **************"
 echo "preparing ROMS Runs.. $gridname"
-        $Couple_Run_Dir/prepareROMS.sh $ROMS_BCFile $JD $NHour $YYYYin:$MMin:$DDin $NLOOP || exit 8
+        #$Couple_Run_Dir/prepareROMS.sh $ROMS_BCFile $JD $NHour $YYYYin:$MMin:$DDin $NLOOP || exit 8
+# 2020/04/16 add HHin
+        $Couple_Run_Dir/prepareROMS.sh $ROMS_BCFile $JD $NHour $YYYYin:$MMin:$DDin:$HHin $NLOOP || exit 8
 echo "*********   prepare-ROMS **************"
 
 
@@ -456,39 +458,40 @@ echo "end runWW3"
 # *********
 #Out, netcdf: need to link for WW32WRF
 mkdir -p $WW3_Outnc_Dir/$YYYYin
-        #mv ./ww3.$YYYYi$MMi\.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
-        mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
-        ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
+	#mv ./ww3.$YYYYi$MMi\.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
+	mv ./ww3.$YYYYin$MMin$DDinT$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
+	ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
 
 #Rst: binary: Need to link
 mkdir -p $WW3_Rst_Dir/$YYYYin
-        mv ./restart001.ww3 $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour
-        ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
+	mv ./restart001.ww3 $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour
+	ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
 #Frc: binary: No need to link
 mkdir -p $WW3_Frc_Dir/$YYYYin/wind
 mkdir -p $WW3_Frc_Dir/$YYYYin/current
-        mv ./wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Frc_Dir/$YYYYin/wind/
-        mv ./current.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Frc_Dir/$YYYYin/current/
-        rm $WW3_Exe_Dir/wind.ww3 2>/dev/null
-        rm $WW3_Exe_Dir/current.ww3 2>/dev/null
+	mv ./wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Frc_Dir/$YYYYin/wind/
+	mv ./current.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Frc_Dir/$YYYYin/current/
+	rm $WW3_Exe_Dir/wind.ww3 2>/dev/null
+	rm $WW3_Exe_Dir/current.ww3 2>/dev/null
 #Log file
 mkdir -p $WW3_Log_Dir/prnc_wind/$YYYYin
 mkdir -p $WW3_Log_Dir/prnc_current/$YYYYin
 mkdir -p $WW3_Log_Dir/shel/$YYYYin
 mkdir -p $WW3_Log_Dir/ounf/$YYYYin
-        mv ./log_prnc_wind_$$ $WW3_Log_Dir/prnc_wind/$YYYYin/log_prnc_wind_$YYYYin$MMin$DDin$HHin\_Hour$NHour
-        mv ./log_prnc_current_$$ $WW3_Log_Dir/prnc_current/$YYYYin/log_prnc_current_$YYYYin$MMin$DDin$HHin\_Hour$NHour
-        mv ./log_shel_$$ $WW3_Log_Dir/shel/$YYYYin/log_shel_$YYYYin$MMin$DDin$HHin\_Hour$NHour
-        mv ./log_ounf_$$ $WW3_Log_Dir/ounf/$YYYYin/log_ounf_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+	mv ./log_prnc_wind_$$ $WW3_Log_Dir/prnc_wind/$YYYYin/log_prnc_wind_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+	mv ./log_prnc_current_$$ $WW3_Log_Dir/prnc_current/$YYYYin/log_prnc_current_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+	mv ./log_shel_$$ $WW3_Log_Dir/shel/$YYYYin/log_shel_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+	mv ./log_ounf_$$ $WW3_Log_Dir/ounf/$YYYYin/log_ounf_$YYYYin$MMin$DDin$HHin\_Hour$NHour
 # clean up
         rm $WW3_Rst_Dir/restart.ww3.??????????\_Hour$NHourm2 2>/dev/null
         rm $WW3_Outnc_Dir/ww3.??????????\_Hour$NHourm2\.nc
 #  WW3 netcdf file; 
-        if [ $NLOOP -eq 1 ]; then
-        mv ./ww3.$YYYYi$MMi$DDi\T$HHi\Z\.nc $WW3_Outnc_Dir/$YYYYi/ww3.$YYYYi$MMi$DDi$HHi\_Hour$NHourm\.nc
-        else
-        rm ./ww3.$YYYYi$MMi$DDi\T$HHi\Z\.nc 2>/dev/null
-        fi
+	if [ $NLOOP -eq 1 ]; then 
+        mv ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc $WW3_Outnc_Dir/$YYYYi/ww3.$YYYYi$MMi$DDi$HHi\_Hour$NHourm\.nc
+	else
+        rm ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc 2>/dev/null
+	fi
+        mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
 
 cd -
 else #parameter_run_WW3
