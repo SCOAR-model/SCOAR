@@ -9,11 +9,11 @@ NDay=$3
 elif [ $CF -lt 24 ]; then
 NHour=$3
 fi
-#YYYYi=$4
 # updated 2018/4/23
-YYYYi=`echo $4 | cut -d':' -f1`
-MMi=`echo $4 | cut -d':' -f2`
-DDi=`echo $4 | cut -d':' -f3`
+YYYYin=`echo $4 | cut -d':' -f1`
+MMin=`echo $4 | cut -d':' -f2`
+DDin=`echo $4 | cut -d':' -f3`
+HHin=`echo $4 | cut -d':' -f4`
 NLOOP=$5
 
 rm $Couple_Data_ROMS_Dir/ocean_bry.nc 2>/dev/null
@@ -31,53 +31,51 @@ echo "ROMS_BCFile = $ROMS_BCFile"
 	fi
    	echo "time index ==> $tindx ***"
    	tindxm=`expr $tindx - 1`
-        bryfile=$ROMS_BCFile_Name\_$YYYYi$tindx.nc
-        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+        bryfile=$ROMS_BCFile_Name\_$YYYYin$tindx.nc
+        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
  elif [ $ROMS_BCFile = SODA -a $ROMS_BCFile_Freq = 1day ]; then
         echo $ROMS_BCFile
         tindx=$JD
         echo "time index ==> $tindx ***"
-        bryfile=$ROMS_BCFile_Name\_$YYYYi\_$tindx.nc
-        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+        bryfile=$ROMS_BCFile_Name\_$YYYYin\_$tindx.nc
+        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 # addition 2018/4/23
  elif [ $ROMS_BCFile = SODA342 -a $ROMS_BCFile_Freq = 1day ]; then
         echo $ROMS_BCFile
 #       tindx=$JD
 #       echo "time index ==> $tindx ***"
-        echo "$YYYYi $MMi $DDi"
-        bryfile=$ROMS_BCFile_Name\_$YYYYi$MMi$DDi.nc
-        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+        echo "$YYYYin $MMin $DDin"
+        bryfile=$ROMS_BCFile_Name\_$YYYYin$MMin$DDin.nc
+        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 # modified on 2019/06/21
  elif [ $ROMS_BCFile = HYCOM ]; then
         echo $ROMS_BCFile
-        bryfile=$ROMS_BCFile_Name\_$YYYYi$MMi$DDi.nc
-        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+        bryfile=$ROMS_BCFile_Name\_$YYYYin$MMin$DDin.nc
+        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 # addition 2021/1/22 Cesar
  elif [ $ROMS_BCFile = mercator -a $ROMS_BCFile_Freq = 1day ]; then
         echo $ROMS_BCFile
-        echo "$YYYYi $MMi $DDi"
-        bryfile=$ROMS_BCFile_Name\_$YYYYi$MMi$DDi\.nc
-        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+        echo "$YYYYin $MMin $DDin"
+        bryfile=$ROMS_BCFile_Name\_$YYYYin\_$MMin\_$DDin\.nc
+        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 ## AR2 clim OBC run
 # elif [ $ROMS_BCFile = mercator_daily_clim -a $ROMS_BCFile_Freq = 1day ]; then
 #        echo $ROMS_BCFile
-#        echo "$YYYYi $MMi $DDi"
-#        bryfile=$ROMS_BCFile_Name\_$YYYYi\_$MMi\_$DDi\.nc
-#        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
+#        echo "$YYYYin $MMin $DDin"
+#        bryfile=$ROMS_BCFile_Name\_$YYYYin\_$MMin\_$DDin\.nc
+#        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 ## AR2 CLIM + 1997/1998 Observed S OBC
 # elif [ $ROMS_BCFile = mercator_modified_obc -a $ROMS_BCFile_Freq = 1day ]; then
 #        echo $ROMS_BCFile
-#        echo "$YYYYi $MMi $DDi"
-#        bryfile=$ROMS_BCFile_Name\_$YYYYi\_$MMi\_$DDi\.nc
-#        ifile_bry=$ROMS_BCFile_Dir/$YYYYi/$bryfile
-
-
+#        echo "$YYYYin $MMin $DDin"
+#        bryfile=$ROMS_BCFile_Name\_$YYYYin\_$MMin\_$DDin\.nc
+#        ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
  elif [ $ROMS_BCFile = ECCO_10day_clim ]; then
         echo $ROMS_BCFile
@@ -185,7 +183,7 @@ if [ $ROMS_Rst = yes ]; then
 	# remove existing rst file
 	rm $Couple_Data_ROMS_Dir/ocean_rst.nc 2>/dev/null
 
-	#ln -fs $ROMS_Rst_Dir/$YYYYi/rst_Hour$NHourm.nc  $Couple_Data_ROMS_Dir/ocean_ini.nc 
+	#ln -fs $ROMS_Rst_Dir/$YYYYin/rst_Hour$NHourm.nc  $Couple_Data_ROMS_Dir/ocean_ini.nc 
 	ln -fs $ROMS_Rst_Dir/rst_Hour$NHourm.nc  $Couple_Data_ROMS_Dir/ocean_ini.nc 
 	 $Couple_Run_Dir/edit_ocean_in.sh || exit 8
 
@@ -208,28 +206,28 @@ fi # NLOOP
 
 rm fort.?? 2>/dev/null
 
+######
 # bug fix; 2021/04/15 
 # jd and ocean_time only varies between 0 and 365. This causes the problem in multi-year runs
 # where ocean_time is defined wrt TIME_REF in ocean.in
 # thanks to Cesar
 
-# fix:  
-#1. introduce YYYY_ref, MM_ref, and DD_ref; the year,month,day information from TIME_REF, and calcualte nday which is the total number of days at the current coupling time step since the YYYY_ref, MM_ref, and DD_ref.  
-#2. This nday is used instead of jd as fort.13 for update_init_time3.x, update_bry_time3.x, and update_frc_time3.x. update_init_time3.f, update_bry_time3.f, and update_frc_time3.f are also modified (jd was replaced to nday).
+# calculate JD
 
-YYYY_ref=$(grep -m 1 'TIME_REF' $namelist_input_file | grep -Eo '[0-9]{8}' | cut -b 1-4)
-MM_ref=$(grep -m 1 'TIME_REF' $namelist_input_file | grep -Eo '[0-9]{8}'| cut -b 5-6)
-DD_ref=$(grep -m 1 'TIME_REF' $namelist_input_file | grep -Eo '[0-9]{8}'| cut -b 7-8)
-$Couple_Lib_utils_Dir/inchour $YYYY_ref $MM_ref $DD_ref 0 $YYYYi $MMi $DDi $HHi > inchour$$ || exit 9
+ocean_input_file=$Couple_Data_ROMS_Dir/ocean.in
+YYYY_ref=$(grep -m 1 'TIME_REF' $Couple_Data_ROMS_Dir/ocean.in | grep -Eo '[0-9]{8}' | cut -b 1-4)
+MM_ref=$(grep -m 1 'TIME_REF' $Couple_Data_ROMS_Dir/ocean.in | grep -Eo '[0-9]{8}'| cut -b 5-6)
+DD_ref=$(grep -m 1 'TIME_REF' $Couple_Data_ROMS_Dir/ocean.in | grep -Eo '[0-9]{8}'| cut -b 7-8)
+
+$Couple_Lib_utils_Dir/inchour $YYYY_ref $MM_ref $DD_ref 0 $YYYYin $MMin $DDin $HHin > inchour$$ || exit 9
 read num_hour < inchour$$ ; rm inchour$$
-nday=`expr $num_hour \/ 24 `
 
 # initial time is set to begnning of the fcst
 # frc is set to the end of the fcst 
 # bry is daily
 # 1. inifile
-echo $nday > fort.13
-echo $NHour > fort.14
+echo $num_hour> fort.13
+#echo $NHour > fort.14
 echo $CF > fort.15
 echo ocean_time  > fort.12
 ln -fsv $Couple_Data_ROMS_Dir/ocean_ini.nc fort.21 || exit 8
@@ -237,8 +235,8 @@ $Couple_Lib_exec_coupler_Dir/update_init_time3.x || exit 8
 rm fort.?? 2>/dev/null
 
 # 2. bryfile: daily
-echo $nday > fort.13
-echo $NHour > fort.14
+echo $num_hour> fort.13
+#echo $NHour > fort.14
 ln -fs $Couple_Data_ROMS_Dir/ocean_bry.nc fort.21
 for time_name in zeta_time v2d_time v3d_time salt_time temp_time
   do
@@ -248,9 +246,9 @@ done
 rm fort.?? 2>/dev/null
 
 # #3. forc
-echo $nday > fort.13
-echo $NHour > fort.14
-forcfile=$ROMS_Forc_Dir/$YYYYi/forc_Hour$NHour.nc
+echo $num_hour> fort.13
+#echo $NHour > fort.14
+forcfile=$ROMS_Forc_Dir/$YYYYin/forc_Hour$NHour.nc
 ln -fs $forcfile fort.21
 
         if [ $CPL_PHYS = WRF_PHYS ]; then
