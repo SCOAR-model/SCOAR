@@ -1,0 +1,63 @@
+###################### PREPROCESS ROMS/WW3 FOR SCOAR ################################
+
+This requirs to already have generated the WRF grid (e.g. geo_em_d01.nc)  
+
+
+####################### FIRST STEP
+
+Copy the folder with subfolders: EXPNAME
+Rename the different folders following the name of your experience
+
+e.g.    expname = atomic
+       expname2 = atomic1
+
+##############
+
+####################### SECOND STEP
+
+update the crocotools_param
+
+############
+
+######################## FOURTH STEP
+
+
+update the header of the main script main.sh
+
+You can decide to generate or not the WW3 grid files (if yes, it requires to have the ROMS grid) 
+
+This script will run all the matlab scripts needed to genereate grids and templates for SCOAR
+Double check if you have all the matblab toolbox and all at the same location ( check the addpath(**))
+ 
+run ./main.sh
+
+
+(you can turn on/off the matlab display by adding/removing options -nodisplay -nodesktop)
+(roms_expname2_nolake always need display because you need to edit the mask..)
+
+
+############
+
+
+######################### LAST STEP 
+
+
+Outcomes grids are in grid/ROMS/ and grid/WRF/
+Copy them to your SCOAR folder Lib/grids
+
+Outcomes netcdf files are in template/*.nc  
+Copy them to your SCOAR folder Lib/template
+
+
+###############
+
+
+########################## CREATE ROMS BOUNDARY FORCING FILE USING MERCATOR DATA
+
+update the hearder in the create_bdy_ini_files_roms_merc.sh and run it
+
+Outcomes netcdf files are in mercator_bry_expname2/bdy and mercator_bry_expname2/ini
+Copy them to your SCOAR folder Data/domains/expname/expname2/ROMS_Input
+
+ 
+
