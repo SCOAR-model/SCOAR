@@ -24,7 +24,7 @@ sed -i -e  "$l2 i         DOMAIN%STOP         = '$YYYYin$MMin$DDin $HHin\0000'" 
 
 l3=$(grep -n 'DATE%FIELD%START' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
 sed -i "$l3 d" $edit_file
-sed -i -e  "$l3 i         DATE%FIELD%START     = '$YYYYi$MMi$DDi $HHi\0000" $edit_file
+sed -i -e  "$l3 i         DATE%FIELD%START     = '$YYYYi$MMi$DDi $HHi\0000'" $edit_file
 
 l4=$(grep -n 'DATE%FIELD%STRIDE' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
 sed -i "$l4 d" $edit_file
