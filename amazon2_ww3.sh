@@ -39,9 +39,24 @@ export parameter_WRF2ROMS=yes
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
 
-# if WW3 is on, make sure isftcflx = 35 in physics of namelist.input 
 export parameter_run_WW3=yes
-export parameter_WW32WRF=yes
+        if [ $parameter_run_WW3 = yes ]; then
+# if WW3 is on, isftcflx option have to defined in physics of namelist.input 
+# two options are available for now (May 2021)
+#
+# COARE_wave_option=1  :  isftcflx is set to 351 and this uses the wave-age only formulation of COARE3.5 in WRF surface layer scheme
+# COARE_wave_option=2  :  isftcflx is set to 352 and this uses the wave-age and wave height formulation of COARE3.5 in WRF surface layer scheme
+# (default should be option 2 when using wave)
+        export COARE_wave_option=2
+# if sending ocean surface current to WW3
+        export wave_current=yes
+        export parameter_WW32WRF=yes
+        else
+# if sending ocean surface current to WW3
+        export COARE_wave_option=
+        export wave_current=no
+        export parameter_WW32WRF=no
+fi
 
 export WRF_ROMS_SAME_GRID=yes
 export SSS_CORRECTION=no
