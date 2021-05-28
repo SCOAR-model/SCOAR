@@ -448,7 +448,7 @@ date
 echo "end runWW3"
 
 #2. Convert outputs to netcdf
-	$WW3_Exe_Dir/edit_ww3_ounf.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_shel.nml $CF
+	$WW3_Exe_Dir/edit_ww3_ounf.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_ounf.nml $CF
 	$WW3_Exe_Dir/ww3_ounf >& log_ounf_$$
 
 # organize
