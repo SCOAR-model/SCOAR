@@ -60,7 +60,9 @@ echo "ROMS_BCFile = $ROMS_BCFile"
  elif [ $ROMS_BCFile = mercator -a $ROMS_BCFile_Freq = 1day ]; then
         echo $ROMS_BCFile
         echo "$YYYYin $MMin $DDin"
-        bryfile=$ROMS_BCFile_Name\_$YYYYin\_$MMin\_$DDin\.nc
+        #bryfile=$ROMS_BCFile_Name\_$YYYYin\_$MMin\_$DDin\.nc
+	# cesar's roms preprocessing tool gives this format: 05/28/2021
+        bryfile=$ROMS_BCFile_Name\_$YYYYin$MMin$DDin\.nc
         ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
 
 ## AR2 clim OBC run
