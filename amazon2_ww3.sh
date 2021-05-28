@@ -420,15 +420,17 @@ rm -f $Couple_Run_Dir/*.sh 2>/dev/null
 # Copy prepareROMS.sh
  if [ $ROMS_Rst = yes ]; then
  cp $Couple_Shell_Dir_common/prepareROMS_Rst.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
- cp $Couple_Shell_Dir_common/edit_ocean_in.sh $Couple_Run_Dir/edit_ocean_in.sh || exit 8
+ cp $Couple_Shell_Dir_common/edit_ROMS_ocean_in.sh $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
  else  # this should be removed in the future.. and call prepareROMS_Rst.sh prepareROMS.sh
  cp $Couple_Shell_Dir_common/prepareROMS.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
  fi
 
 # Copy ROMS2WRF (and associated shell scripts)
  cp $Couple_Shell_Dir/ROMS2WRF.sh $Couple_Run_Dir/ROMS2WRF.sh || exit 8
- 	cp $Couple_Shell_Dir_common/edit_sst_wrfinput.sh $Couple_Run_Dir || exit 8
- 	cp $Couple_Shell_Dir_common/changenamelistinput.sh $Couple_Run_Dir || exit 8
+# this is to modify SST wrflowinp_d01 at intial time ; but let's not do this.
+# 	cp $Couple_Shell_Dir_common/edit_sst_wrfinput.sh $Couple_Run_Dir || exit 8
+##
+        cp $Couple_Shell_Dir_common/edit_WRF_namelist.sh $Couple_Run_Dir || exit 8
 
 ##### 2. files for model run #####
 #COPY NECESSARY FILES TO $Couple_Data_Dir
