@@ -199,7 +199,8 @@ if [ $do_WW3_grid = 'yes' ]; then
 
         echo "Process WW3 grid files ... "
         cd grid/
-	full_roms_grid_path="${main_folder}/${path_roms_nolake_case}"
+	#full_roms_grid_path="${main_folder}/${path_roms_nolake_case}"
+	full_roms_grid_path="${path_roms_nolake_case}"
 	ww3_xcoord_file="${main_folder}/grid/WW3/${expname2}_xcoord.dat"
 	ww3_ycoord_file="${main_folder}/grid/WW3/${expname2}_ycoord.dat"
 	ww3_bath_file="${main_folder}/grid/WW3/${expname2}_bathy.bot"
