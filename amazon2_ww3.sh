@@ -53,7 +53,7 @@ export parameter_run_WW3=yes
         export parameter_WW32WRF=yes
         else
 # if sending ocean surface current to WW3
-        export COARE_wave_option=
+        export COARE_wave_option=0 # nominal
         export wave_current=no
         export parameter_WW32WRF=no
 fi
