@@ -250,13 +250,6 @@ fi
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
 
-        if [ $WRF_TS = yes ]; then
-        # WRF TIME_SERIES Option
-        # https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.3/users_guide_chap5.html
-        echo "Keep the time-series to to added until the end of the run"
-        #mv $Model_WRF_Dir/whoi18n.d01.TS $WRF_TS_Dir/d01/whoi18n.d01.TS_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
-        fi
-
 	# remove WRF_RST files (They are too big) keep the last four files
         p1=`expr $CF \* $WRFRST_SAVE_NUMBER \* -1 `
         $Couple_Lib_utils_Dir/incdte $YYYYin $MMin $DDin $HHin $p1 > dteout$$ || exit 8
