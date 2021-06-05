@@ -56,7 +56,7 @@ export parameter_run_WW3=yes
         export COARE_wave_option=0 # nominal
         export wave_current=no
         export parameter_WW32WRF=no
-fi
+	fi
 
 export WRF_ROMS_SAME_GRID=yes
 export SSS_CORRECTION=no
@@ -82,6 +82,8 @@ export WRF_OUTPUT_FREQUENCY=$CF
 # output frequency in wrfout this has to match with ocean.in
 export ROMS_OUTPUT_FREQUENCY=1
 export WRF_PRS=yes
+# WRF time-series option added 2021/06/04
+export WRF_TS=yes
 export WRF_AFWA=no
 export WRF_FDDA=no
 
@@ -291,8 +293,7 @@ export YYYYS MMS DDS HHS YYYYE MME DDE HHE
 export Couple_Home_Dir=/vortexfs1/share/seolab/SCOAR2_share/scoar_ww3
 
 #Shell Directory
-#export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell
-export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell_20210303
+export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell
 export Couple_Shell_Dir=$Couple_Shell_Dir_common/$gridname2/$gridname
 
 #Couple Lib Directories
@@ -392,9 +393,12 @@ export WRF_RST_Dir=$Couple_Data_WRF_Dir/WRF_RST
        if [ $WRF_AFWA = yes ]; then
        export WRF_AFWA_Dir=$Couple_Data_WRF_Dir/WRF_AFWA
        fi
+       if [ $WRF_TS = yes ]; then
+       export WRF_TS_Dir=$Couple_Data_WRF_Dir/WRF_TS
+       fi
 export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
 
-   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir
+   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done

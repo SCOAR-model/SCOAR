@@ -1,0 +1,59 @@
+--- amazon2_ww3.sh	2021-06-04 22:23:07.714023637 -0400
++++ amazon2_ww3_20210520.sh	2021-06-04 22:14:25.988745530 -0400
+@@ -40,7 +40,6 @@
+ export parameter_RunROMS=yes
+ 
+ export parameter_run_WW3=yes
+-        if [ $parameter_run_WW3 = yes ]; then
+ # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
+ # two options are available for now (May 2021)
+ #
+@@ -50,13 +49,11 @@
+         export COARE_wave_option=2
+ # if sending ocean surface current to WW3
+         export wave_current=yes
+-        export parameter_WW32WRF=yes
+-        else
++
+ # if sending ocean surface current to WW3
+-        export COARE_wave_option=0 # nominal
+-        export wave_current=no
+-        export parameter_WW32WRF=no
+-	fi
++export wave_current=yes
++
++export parameter_WW32WRF=yes
+ 
+ export WRF_ROMS_SAME_GRID=yes
+ export SSS_CORRECTION=no
+@@ -81,8 +78,8 @@
+ export WRF_OUTPUT_FREQUENCY=$CF
+ # output frequency in wrfout this has to match with ocean.in
+ export ROMS_OUTPUT_FREQUENCY=1
+-# WRF time-series option added 2021/06/04
+ export WRF_PRS=yes
++# WRF time-series option added 2021/06/04
+ export WRF_TS=yes
+ export WRF_AFWA=no
+ export WRF_FDDA=no
+@@ -439,17 +436,15 @@
+ # Copy prepareROMS.sh
+  if [ $ROMS_Rst = yes ]; then
+  cp $Couple_Shell_Dir_common/prepareROMS_Rst.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
+- cp $Couple_Shell_Dir_common/edit_ROMS_ocean_in.sh $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
++ cp $Couple_Shell_Dir_common/edit_ocean_in.sh $Couple_Run_Dir/edit_ocean_in.sh || exit 8
+  else  # this should be removed in the future.. and call prepareROMS_Rst.sh prepareROMS.sh
+  cp $Couple_Shell_Dir_common/prepareROMS.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
+  fi
+ 
+ # Copy ROMS2WRF (and associated shell scripts)
+  cp $Couple_Shell_Dir/ROMS2WRF.sh $Couple_Run_Dir/ROMS2WRF.sh || exit 8
+-# this is to modify SST wrflowinp_d01 at intial time ; but let's not do this.
+-# 	cp $Couple_Shell_Dir_common/edit_sst_wrfinput.sh $Couple_Run_Dir || exit 8
+-##
+-        cp $Couple_Shell_Dir_common/edit_WRF_namelist.sh $Couple_Run_Dir || exit 8
++ 	cp $Couple_Shell_Dir_common/edit_sst_wrfinput.sh $Couple_Run_Dir || exit 8
++ 	cp $Couple_Shell_Dir_common/changenamelistinput.sh $Couple_Run_Dir || exit 8
+ 
+ ##### 2. files for model run #####
+ #COPY NECESSARY FILES TO $Couple_Data_Dir

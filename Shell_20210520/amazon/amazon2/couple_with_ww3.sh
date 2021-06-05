@@ -192,6 +192,9 @@ fi
         if [ $iofields_filename = yes ]; then
         cp $Couple_Lib_exec_WRF_Dir/my_file_d0?.txt $Model_WRF_Dir || exit 8
         fi
+        if [ $WRF_TS = yes ]; then
+        cp $Couple_Lib_exec_WRF_Dir/tslist $Model_WRF_Dir || exit 8
+        fi
 
 	else
 	WRF_RESTART=.true.
@@ -246,6 +249,13 @@ fi
 		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
+
+        if [ $WRF_TS = yes ]; then
+        # WRF TIME_SERIES Option
+        # https://www2.mmm.ucar.edu/wrf/users/docs/user_guide_v4/v4.3/users_guide_chap5.html
+        echo "Keep the time-series to to added until the end of the run"
+        #mv $Model_WRF_Dir/whoi18n.d01.TS $WRF_TS_Dir/d01/whoi18n.d01.TS_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+        fi
 
 	# remove WRF_RST files (They are too big) keep the last four files
         p1=`expr $CF \* $WRFRST_SAVE_NUMBER \* -1 `
@@ -534,6 +544,12 @@ rm $Couple_Data/fort.* 2>/dev/null
 rm $Couple_Data_ROMS_Dir/ocean_bry.nc 2>/dev/null
 rm $Couple_Data_ROMS_Dir/ocean_frc.nc 2>/dev/null
 # Keep the ocean_ini.nc!
+
+if [ $WRF_TS = yes ]; then
+# *.d01.TS  *.d01.UU  *.d01.VV *.d01.WW *.d01.PH *.d01.TH *.d01.QV *.d01.PR
+mv $Model_WRF_Dir/*.d01.?? $WRF_TS_Dir || exit 8
+fi
+
 done
 # DONE
 
