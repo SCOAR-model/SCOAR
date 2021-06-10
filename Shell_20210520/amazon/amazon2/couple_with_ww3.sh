@@ -163,6 +163,10 @@ fi
                 mkdir -p $WRF_AFWA_Dir/d01
                 mkdir -p $WRF_AFWA_Dir/d02
         fi
+        if [ $WRF_TS = yes ]; then
+                mkdir -p $WRF_TS_Dir/d01
+                mkdir -p $WRF_TS_Dir/d02
+        fi
                 wrfrst_subdir_write=$YYYYin-$MMin-$DDin\_$HHin
                 wrfrst_subdir_read=$YYYYi-$MMi-$DDi\_$HHi
 		mkdir -p $WRF_RST_Dir/$wrfrst_subdir_write/d01
@@ -249,6 +253,31 @@ fi
 		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
+
+        if [ $WRF_TS = yes ]; then
+        # Find out the number of stations (locations)
+        ls $Model_WRF_Dir/*.d01.TS  | wc -l > out$$
+        read num_station < out$$; rm out$$
+        echo $num_station
+        # for each location
+        ns=1
+        while [ $ns -le $num_station ]; do
+                # for each field
+                for FLD in UU VV WW TH QV PR PH
+                do
+                ls $Model_WRF_Dir/*.d01.$FLD | awk '{print $1}' | awk "NR==$ns{print$1}"  | sed -n 's/^\(.*\/\)*\(.*\)/\2/p' > out$$
+                read TS_FNAME < out$$ ; rm out$$
+                echo "*** $TS_FNAME ***"
+                if [ ! -s $Model_WRF_Dir/$TS_FNAME ]; then
+                echo "the file doesn not exist: $Model_WRF_Dir/$TS_FNAME"
+                exit 8
+                fi
+                mkdir -p $WRF_TS_Dir/d01/$FLD
+                cp $Model_WRF_Dir/$TS_FNAME  $WRF_TS_Dir/d01/$FLD/$TS_FNAME\_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                done #FLD
+        ns=`expr $ns + 1`
+        done
+        fi #WRF_TS
 
 	# remove WRF_RST files (They are too big) keep the last four files
         p1=`expr $CF \* $WRFRST_SAVE_NUMBER \* -1 `
