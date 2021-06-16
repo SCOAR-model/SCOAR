@@ -38,6 +38,8 @@ nw('lrf_time') =length(smst);
 nw('lhf_time') = length(smst);
 nw('shf_time') =length(smst);
 
+nw('wave_time') =length(smst);
+
 %
 %  Create variables and attributes
 %
@@ -54,6 +56,13 @@ nw{'shf_time'}.long_name = 'surface heat flux time';
 nw{'shf_time'}.units = ncchar('days');
 nw{'shf_time'}.units = 'days';
 nw{'shf_time'}.cycle_length =smsc ;
+
+nw{'wave_time'} = ncdouble('wave_time');
+nw{'wave_time'}.long_name = ncchar('wave time');
+nw{'wave_time'}.long_name = 'wave time';
+nw{'wave_time'}.units = ncchar('days');
+nw{'wave_time'}.units = 'days';
+nw{'wave_time'}.cycle_length =smsc ;
 
 nw{'swf_time'} = ncdouble('swf_time');
 nw{'swf_time'}.long_name = ncchar('surface freshwater flux time');
@@ -250,6 +259,12 @@ nw{'sensible'} = ncdouble('shf_time', 'eta_rho', 'xi_rho'); %% 115200 elements.
 nw{'sensible'}.long_name = ncchar('net sensible heat flux');
 nw{'sensible'}.units = ncchar('Watts meter-2');
 nw{'sensible'}.field = ncchar('sensible heat flux, scalar, series');
+
+% wave dissipation: WW3 to ROMS
+nw{'Wave_dissip'} = ncdouble('wave_time', 'eta_rho', 'xi_rho'); %% 115200 elements.
+nw{'Wave_dissip'}.long_name = ncchar('wave dissipation');
+nw{'Wave_dissip'}.units = ncchar('Watts meter-2');
+nw{'Wave_dissip'}.field = ncchar('Wave_dissip, scalar, series');
 
 
 result = endef(nw);
