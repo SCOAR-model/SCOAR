@@ -247,7 +247,7 @@
 !
 ! -------------------------------------------------------------------- !
 &OUTPUT_TYPE_NML
-  TYPE%FIELD%LIST     = 'DPT HS T0M1 DIR SPR WND CUR FWS FP LM SPR'
+  TYPE%FIELD%LIST     = 'DPT HS T0M1 DIR SPR WND CUR FWS FP LM FOC'
 !  TYPE%FIELD%LIST     = 'HS DIR SPR WND ICE CUR LEV'
 /
 
