@@ -14,12 +14,12 @@ function SetForcZero(grd,forcfile);
 	 timeind=1:length (in{'sms_time'}(:));
     end
     
-      timevar={'sms_time' 'shf_time' 'swf_time' 'sss_time' 'sst_time' 'srf_time' 'wind_time' 'pair_time' 'qair_time' 'tair_time' 'rain_time' 'cloud_time' 'lrf_time' 'lhf_time' 'shf_time'};
+      timevar={'sms_time' 'shf_time' 'swf_time' 'sss_time' 'sst_time' 'srf_time' 'wind_time' 'pair_time' 'qair_time' 'tair_time' 'rain_time' 'cloud_time' 'lrf_time' 'lhf_time' 'shf_time' 'wave_time'};
     
   for i=1:length(timevar)
     in{timevar{i}}(:) = 0;
   end
-     vars={'sustr' 'svstr' 'shflux' 'swflux' 'SST' 'SSS' 'dQdSST' 'swrad' 'Uwind' 'Vwind' 'Uwind_rel' 'Vwind_rel' 'Pair' 'Qair' 'Tair' 'rain' 'cloud' 'lwrad' 'latent' 'sensible','lwrad_down'};
+     vars={'sustr' 'svstr' 'shflux' 'swflux' 'SST' 'SSS' 'dQdSST' 'swrad' 'Uwind' 'Vwind' 'Uwind_rel' 'Vwind_rel' 'Pair' 'Qair' 'Tair' 'rain' 'cloud' 'lwrad' 'latent' 'sensible','lwrad_down' 'Wave_dissip'};
   
    for i=1:length(vars)
       disp(vars{i});
