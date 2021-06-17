@@ -266,6 +266,13 @@ nw{'Wave_dissip'}.long_name = ncchar('wave dissipation');
 nw{'Wave_dissip'}.units = ncchar('Watts meter-2');
 nw{'Wave_dissip'}.field = ncchar('Wave_dissip, scalar, series');
 
+% wave dissipation: WW3 to ROMS
+nw{'Hwave'} = ncdouble('wave_time', 'eta_rho', 'xi_rho'); %% 115200 elements.
+nw{'Hwave'}.long_name = ncchar('wind-induced significant wave height');
+nw{'Hwave'}.units = ncchar('meter');
+nw{'Hwave'}.field = ncchar('Hwave, scalar, series');
+
+
 
 result = endef(nw);
 

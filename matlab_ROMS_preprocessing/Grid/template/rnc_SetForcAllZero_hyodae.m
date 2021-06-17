@@ -19,7 +19,7 @@ function SetForcZero(grd,forcfile);
   for i=1:length(timevar)
     in{timevar{i}}(:) = 0;
   end
-     vars={'sustr' 'svstr' 'shflux' 'swflux' 'SST' 'SSS' 'dQdSST' 'swrad' 'Uwind' 'Vwind' 'Uwind_rel' 'Vwind_rel' 'Pair' 'Qair' 'Tair' 'rain' 'cloud' 'lwrad' 'latent' 'sensible','lwrad_down' 'Wave_dissip'};
+     vars={'sustr' 'svstr' 'shflux' 'swflux' 'SST' 'SSS' 'dQdSST' 'swrad' 'Uwind' 'Vwind' 'Uwind_rel' 'Vwind_rel' 'Pair' 'Qair' 'Tair' 'rain' 'cloud' 'lwrad' 'latent' 'sensible','lwrad_down' 'Wave_dissip' 'Hwave'};
   
    for i=1:length(vars)
       disp(vars{i});
