@@ -13,6 +13,11 @@ echo "$fname.f"
 ifort -c -I$INCLUDEDIR $fname.f
 ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
 
+fname=ww3_fp_wrflowinp
+echo "$fname.f" 
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
 cp *.x $Couple_Lib_exec_coupler_Dir || exit 8
 
 rm -f *.x 2>/dev/null

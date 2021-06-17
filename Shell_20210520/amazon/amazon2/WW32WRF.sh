@@ -66,8 +66,10 @@ while [ $ii -le $HOWMANY ]; do
 	if [ $NLOOP -gt 1 -o $WW3_spinup = yes ]; then
 	# significant wave height hs
 	$Couple_Lib_exec_coupler_Dir/ww3_hs_wrflowinp.x || exit 8
-	# wave period t0m1
-	$Couple_Lib_exec_coupler_Dir/ww3_t0m1_wrflowinp.x || exit 8
+                ## mean wave period: t0m1
+                #$Couple_Lib_exec_coupler_Dir/ww3_t0m1_wrflowinp.x || exit 8
+        # dominant_wave_frequency: fp : 20210616
+        $Couple_Lib_exec_coupler_Dir/ww3_fp_wrflowinp.x || exit 8
 	fi
 
         ii=`expr $ii + 1`
