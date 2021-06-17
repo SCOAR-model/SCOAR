@@ -46,12 +46,12 @@ forcfile=$ROMS_Forc_Dir/$YYYYs/forc_Hour$NHour\.nc
 
 #1. FOC (WW3) --> Wave_dissip (ROMS)
 ncrcat -O -v foc $WW3_In tempo.nc
-ncrename -h -O -v foc,Wave_dissip
+ncrename -h -O -v foc,Wave_dissip tempo.nc
 ncks -A tempo.nc $forcfile
 
 ##2. HS (WW3) --> Hwave (ROMS)
 ncrcat -O -v hs $WW3_In tempo.nc
-ncrename -h -O -v hs,Hwave
+ncrename -h -O -v hs,Hwave tempo.nc
 ncks -A tempo.nc $forcfile
 
 ##3. LM (WW3) --> Lwave (ROMS) : wind-induced mean wave lnegth
