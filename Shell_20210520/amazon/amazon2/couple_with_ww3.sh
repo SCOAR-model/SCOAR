@@ -341,6 +341,13 @@ echo "ocean sfc is motionless."
 fi
 fi
 
+# WW32ROMS
+if [ $parameter_WW32ROMS = yes ]; then
+#read FOC (+HS, LM etc.) and write to ROMS forcing file
+echo "WW32ROMS: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin"
+        $Couple_Run_Dir/WW32ROMS.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
+fi
+
 echo "Run ROMS (NDay=$NDay NHour=$NHour NLOOP=$NLOOP: $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin)"
 echo "****************  Run ROMS ****************"
 	$Couple_Data_ROMS_Dir/$ROMS_Launch_Filename > $ROMS_Runlog_Dir/ROMS_Hour$NHour\.log || exit 8
