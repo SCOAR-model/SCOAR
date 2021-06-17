@@ -45,12 +45,12 @@ else
 forcfile=$ROMS_Forc_Dir/$YYYYs/forc_Hour$NHour\.nc
 
 #1. FOC (WW3) --> Wave_dissip (ROMS)
-ncrcat -O -v FOC $WW3_In tempo.nc
+ncrcat -O -v foc $WW3_In tempo.nc
 ncrename -h -O -v foc,Wave_dissip
 ncks -A tempo.nc $forcfile
 
 ##2. HS (WW3) --> Hwave (ROMS)
-ncrcat -O -v HS $WW3_In tempo.nc
+ncrcat -O -v hs $WW3_In tempo.nc
 ncrename -h -O -v hs,Hwave
 ncks -A tempo.nc $forcfile
 
