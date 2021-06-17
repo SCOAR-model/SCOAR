@@ -267,6 +267,17 @@ for time_name in srf_time wind_time pair_time qair_time tair_time rain_time lrf_
     echo $time_name > fort.12
 $Couple_Lib_exec_coupler_Dir/update_forc_time3.x || exit 8
 done
-fi
+	fi
+
+# if ROMS_wave is defined: update wave_time.
+        if [ $ROMS_wave = yes ]; then
+for time_name in wave_time
+  do
+    echo $time_name > fort.12
+$Couple_Lib_exec_coupler_Dir/update_forc_time3.x || exit 8
+done
+        fi
+
 rm fort.?? 2>/dev/null
+
 
