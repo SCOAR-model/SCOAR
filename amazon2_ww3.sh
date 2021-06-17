@@ -131,7 +131,7 @@ export ROMS_Qck=yes
 export Use_SST_In=Qck
 
 export MPI=yes
-export vROMS=38
+export vROMS=202103
 export vWRF=422
 
 #Naming the WRF and ROMS model (resolution & region)
