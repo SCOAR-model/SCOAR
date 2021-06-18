@@ -42,27 +42,22 @@ if [ $NLOOP -eq 1 -a $WW3_spinup = no ]; then
 echo "No WW3_In file exists yet. Skip adding FOC to ROMS forcing file as NLOOP=1 and WW3_spinup=no"
 echo "this will use zeor values in wave fields"
 else
-forcfile=$ROMS_Forc_Dir/$YYYYs/forc_Hour$NHour\.nc
+
+forcfile=$ROMS_Forc_Dir/$YYYYi/forc_Hour$NHour\.nc
 
 #1. FOC (WW3) --> Wave_dissip (ROMS)
 ncrcat -O -v foc $WW3_In tempo.nc
 ncrename -h -O -v foc,Wave_dissip tempo.nc
+ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
+ncap2 -O -s 'Wave_dissip=double(Wave_dissip)' tempo.nc tempo.nc
 ncks -A tempo.nc $forcfile
+rm tempo.nc
 
 ##2. HS (WW3) --> Hwave (ROMS)
 ncrcat -O -v hs $WW3_In tempo.nc
 ncrename -h -O -v hs,Hwave tempo.nc
+ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
+ncap2 -O -s 'Hwave=double(Hwave)' tempo.nc tempo.nc
 ncks -A tempo.nc $forcfile
-
-##3. LM (WW3) --> Lwave (ROMS) : wind-induced mean wave lnegth
-#ncrcat -O  -v LM $WW3_In lm.nc
-#ncrename -h -O -v lm,Lwave
-#ncks -A foc.nc $forcfile
-
-
-#2052  ncrcat -v foc ww3.2019010103_Hour3.nc imsi.nc
-#ncrename -h -O -v foc,Wave_dissip imsi.nc
-#ncv imsi.nc
-#ncks -A imsi.nc ROMS_ForcingGeneral-miso6.nc
-#ncv ROMS_ForcingGeneral-miso6.nc
+rm tempo.nc
 fi
