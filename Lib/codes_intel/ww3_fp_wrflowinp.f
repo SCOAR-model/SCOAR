@@ -3,13 +3,15 @@
       integer status, ncid, nd
       real*8,dimension(:,:,:,:), allocatable :: vWW3
       integer, dimension(:,:,:), allocatable :: land
-      integer varid, varid2, nt2
+      integer varid, varid2, nt2, pi
       integer start(3) ,count(3), stride(3)
       integer start2(3) ,count2(3), stride2(3)
       
 !     data start / 1, 1, nd, nt / 
       data stride / 1, 1, 1 /
       data stride2 / 1, 1, 1 /
+
+        pi=3.1416
 
 ! fort.11: roms grid info
 ! fort.12: roms file
@@ -65,6 +67,12 @@
       open(16,file='fort.16',form='formatted')
       read(16,*) land
 !	print *, land
+
+! peak frequenct (fp) --> peak period (Tp)
+       do 201 j=1,ny
+        do 201 i=1,nx
+          vWW3(i,j,1,1) = (2*pi)/vWW3(i,j,1,1)
+  201    continue
 
 ! set land values to 0
 ! land=0 ocean=1
