@@ -71,7 +71,7 @@
 ! peak frequenct (fp) --> peak period (Tp)
        do 201 j=1,ny
         do 201 i=1,nx
-          vWW3(i,j,1,1) = (2*pi)/vWW3(i,j,1,1)
+          vWW3(i,j,1,1) = 1./vWW3(i,j,1,1)
   201    continue
 
 ! set land values to 0
