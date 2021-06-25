@@ -482,6 +482,11 @@ cp $Couple_Shell_Dir_common/edit_ww3_ounf.sh $WW3_Exe_Dir/edit_ww3_ounf.sh || ex
 # Copy WW32WRF 
 cp $Couple_Shell_Dir/WW32WRF.sh $Couple_Run_Dir/WW32WRF.sh || exit 8
 
+# Copy WW32ROMS
+if [ $parameter_WW32ROMS = yes ]; then
+cp $Couple_Shell_Dir/WW32ROMS.sh $Couple_Run_Dir/WW32ROMS.sh || exit 8
+fi
+
 # WW3 executables
 ln -fs $Couple_Lib_exec_WW3_Dir/exec/$WW3_exe_Filename $WW3_Exe_Dir || exit 8
 ln -fs $Couple_Lib_grids_WW3_Dir/*ww3 $WW3_Exe_Dir || exit 8

@@ -57,7 +57,7 @@ echo "********************************"
 
 	# averages; -d Time $start,$end,$stride 
 	# for raincv and rainncv; it is average rain rate (mm/wrf_dt e.g., mm/90s)
-        $NCO/ncra -F -O -v LH,HFX,GSW,GLW,SST,UST,U10,V10,RAINCV,RAINNCV,OLR,T2,Q2,PSFC,PBLH,QFX,TH2 -d Time,1,$te,1 $WRF_Output2_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00   $WRF_Output_Dir/WRF_Hour$NHour.nc || exit 8
+        $NCO/ncra -F -O -v ZNT,CD,CDA,LH,HFX,GSW,GLW,SST,UST,U10,V10,RAINCV,RAINNCV,OLR,T2,Q2,PSFC,PBLH,QFX,TH2 -d Time,1,$te,1 $WRF_Output2_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00   $WRF_Output_Dir/WRF_Hour$NHour.nc || exit 8
 
 #Read vars only 3D (time,lat,lon)
 if [ 1 -eq 1 ]; then

@@ -43,7 +43,7 @@ echo "********************************"
 	te=1
 
 	# averages; -d Time $start,$end,$stride
-        $NCO/ncra -F -O -v SST,OLR,U10,V10,SWDOWN,GLW,T2,Q2,PSFC,ALBEDO,UST,HFX,LH,PBLH,QFX,TH2,RAINCV,RAINNCV -d Time,1,$te,1 $WRF_Output2_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00 $WRF_Output_Dir/WRF_Hour$NHour\.nc || exit 8
+        $NCO/ncra -F -O -v ZNT,CD,CDA,SST,OLR,U10,V10,SWDOWN,GLW,T2,Q2,PSFC,ALBEDO,UST,HFX,LH,PBLH,QFX,TH2,RAINCV,RAINNCV -d Time,1,$te,1 $WRF_Output2_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00 $WRF_Output_Dir/WRF_Hour$NHour\.nc || exit 8
 
 #Read vars only 3D (time,lat,lon)
 for VAR in U10 V10 SWDOWN GLW T2 Q2 PSFC ALBEDO RAINCV RAINNCV #RAINSH ## GSW
