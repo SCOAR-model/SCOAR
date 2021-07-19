@@ -280,4 +280,6 @@ done
 
 rm fort.?? 2>/dev/null
 
+#link
+ln -fs $forcfile $ROMS_Forc_Dir/forc_Hour$NHour\.nc
 
