@@ -59,6 +59,7 @@ export parameter_run_WW3=yes
 	fi
 
 export WRF_ROMS_SAME_GRID=yes
+# option revised 2021-07-23
 export SSS_CORRECTION=no
         # SSS files should reside under ROMS_Input_mercator
         SSS_path=\$Couple_Misc_Data_Dir/ROMS_Input/\$ROMS_BCFile/sss
