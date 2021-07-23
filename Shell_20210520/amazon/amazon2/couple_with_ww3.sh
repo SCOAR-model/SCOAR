@@ -2,6 +2,9 @@
 set -ax
 cd $Couple_Run_Dir || exit 8
 
+# write the optinos used 
+write_options.sh >  $Couple_Run_Dir/options
+
 YYYYS=$YYYYS
 MMS=$MMS
 DDS=$DDS

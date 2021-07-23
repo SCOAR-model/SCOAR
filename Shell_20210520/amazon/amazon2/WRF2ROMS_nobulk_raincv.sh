@@ -168,37 +168,31 @@ done
 #
 
 if [ $SSS_CORRECTION = yes ]; then
-	# ******************
-	# SCORRECTION!!!!! (Shang-Ping) # write to DAILY forc.nc
-	echo "APPLYING SSS CORRECTION SCORRECTION OR SRELXATION"
-	rm -f fort.* 2>/dev/null
-	# determine current timestep
-	  tindx=`expr $JD \/ 10 + 1`
-	   echo "time index ==> $tindx ***"
-#	 this is a file to read from
-	SSSfile=$Roms_misc_Dir/ecco_sstsss/$YYYYi/roms-gom3-ecco-sstsss_$YYYYi\_$tindx.nc
-	if [ $Ocean_effect = yes ]; then
-	SSSfile=$Roms_misc_Dir/ecco_sstsss/$trick_year/roms-gom3-ecco-sstsss_$trick_year\_$tindx.nc
-	fi
-    	echo "file to read", $SSSfile
-	if [ ! -s $SSSfile ]; then
-	echo "missing SSS file for SSS Correction"
-	exit 8
-	else
-    
-	# this is a file to read into
-    	echo "file to update", $forcfile
+# 1. make sure to define  either of these:
+        #define SCORRECTION        
+        #undef SRELAXATION        
+# 2. Need pre-processed one SSS file, containing all SSS fields from observations, 
+#       @ each couplign step, SSS from this file will be read and written to forc.
+echo "APPLYING SCORRECTION OR SRELXATION"
+        rm -f fort.* 2>/dev/null
+        # determine current timestep
+          tindx=`expr $JD \/ 10 + 1`
+           echo "time index ==> $tindx ***"
+#        this is a file to read from
+        cmd="SSSfile=$SSS_path/$YYYYi/sss_$YYYYi$MMi$DDi\.nc"
+        eval $cmd
+        echo $SSSfile
 
-	#inputs
-	ln -fs $Couple_Lib_grids_ROMS_Dir/$Nameit_ROMS-nxnyr.dat fort.11
-	echo SSS > fort.14
-	echo 1 > fort.15
-	ln -fs $SSSfile fort.19 || exit 8
-	# output 
-	ln -fs $forcfile fort.18 || exit 8
-	$Couple_Lib_exec_coupler_Dir/read3DfromNC.x || exit 8
-	fi
-	echo "APPLYING SCORRECTION DONE"
+        echo "file to read", $SSSfile
+        if [ ! -s $SSSfile ]; then
+        echo "missing SSS file for SSS Correction: exiting..."
+        exit 8
+        else
+
+        # write SSS to forcing file
+        $NCO/ncks -A -v SSS $SSSfile $forcfile
+        echo "file to update", $forcfile
+        fi
 fi #SSS_CORRECTION
 
 # ******************

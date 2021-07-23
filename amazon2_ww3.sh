@@ -60,6 +60,8 @@ export parameter_run_WW3=yes
 
 export WRF_ROMS_SAME_GRID=yes
 export SSS_CORRECTION=no
+        # SSS files should reside under ROMS_Input_mercator
+        SSS_path=\$Couple_Misc_Data_Dir/ROMS_Input/\$ROMS_BCFile/sss
 
 # ROMS: new option: restart from ocean_rst.nc
 export ROMS_Rst=yes
