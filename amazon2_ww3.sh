@@ -38,8 +38,8 @@ export parameter_WRF2ROMS=yes
 	# this should be no in case of the coupled run
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
-
 export parameter_run_WW3=yes
+
         if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
 # two options are available for now (May 2021)
@@ -56,7 +56,15 @@ export parameter_run_WW3=yes
         export COARE_wave_option=0 # nominal
         export wave_current=no
         export parameter_WW32WRF=no
-	fi
+fi
+
+# ROMS_wave: use wave dissipiation in ROMS GLS scheme;
+        export ROMS_wave=yes
+if [ $ROMS_wave = yes ]; then
+        export parameter_WW32ROMS=yes
+else
+        export parameter_WW32ROMS=no
+fi
 
 export WRF_ROMS_SAME_GRID=yes
 # option revised 2021-07-23
