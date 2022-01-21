@@ -56,7 +56,7 @@ rm tempo.nc
 ##2. HS (WW3) --> Hwave (ROMS)
 ncrcat -O -v hs $WW3_In tempo.nc
 ncrename -h -O -v hs,Hwave tempo.nc
-ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
+ncatted -a ,Hwave,d,, -a ,global,d,, tempo.nc
 ncap2 -O -s 'Hwave=double(Hwave)' tempo.nc tempo.nc
 ncks -A tempo.nc $forcfile
 rm tempo.nc
