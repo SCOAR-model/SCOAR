@@ -2,6 +2,7 @@
 set -ax
 #### BEGINNING: USER DEFINITIONS ####
 expname2='miso6'
+# absolte path
 wrf_geo_grid='/nara/data/hseo/miso/miso6/roms_preprocessing/Grid/geo_em.d01.nc'
 
 do_roms='no'

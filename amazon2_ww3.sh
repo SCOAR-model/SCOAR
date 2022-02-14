@@ -39,30 +39,34 @@ export parameter_WRF2ROMS=yes
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
 export parameter_run_WW3=yes
+# ROMS_wave: use wave dissipiation in ROMS GLS scheme;
+        export ROMS_wave=yes
+
+# in order to have WW3 coupling but use WSDF in WRF
+# 1. parameter_run_WW3=yes
+# 2. COARE_wave_option=0 : #WSDF
+# 3. parameter_WW32WRF=no
 
         if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
 # two options are available for now (May 2021)
 #
+# COARE_wave_option=0  :  isftcflx is set to 0 and this uses the windspeed  only formulation of COARE3.5 in WRF surface layer scheme
 # COARE_wave_option=1  :  isftcflx is set to 351 and this uses the wave-age only formulation of COARE3.5 in WRF surface layer scheme
 # COARE_wave_option=2  :  isftcflx is set to 352 and this uses the wave-age and wave height formulation of COARE3.5 in WRF surface layer scheme
 # (default should be option 2 when using wave)
-        export COARE_wave_option=2
+        export COARE_wave_option=2 # or 0 or 1
 # if sending ocean surface current to WW3
         export wave_current=yes
-        export parameter_WW32WRF=yes
+        export parameter_WW32WRF=yes 
+		if [ $ROMS_wave = yes ]; then
+       		export parameter_WW32ROMS=yes
+		fi
         else
 # if sending ocean surface current to WW3
         export COARE_wave_option=0 # nominal
         export wave_current=no
         export parameter_WW32WRF=no
-fi
-
-# ROMS_wave: use wave dissipiation in ROMS GLS scheme;
-        export ROMS_wave=yes
-if [ $ROMS_wave = yes ]; then
-        export parameter_WW32ROMS=yes
-else
         export parameter_WW32ROMS=no
 fi
 
