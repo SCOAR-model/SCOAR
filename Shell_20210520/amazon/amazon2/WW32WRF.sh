@@ -66,10 +66,24 @@ while [ $ii -le $HOWMANY ]; do
 	if [ $NLOOP -gt 1 -o $WW3_spinup = yes ]; then
 	# significant wave height hs
 	$Couple_Lib_exec_coupler_Dir/ww3_hs_wrflowinp.x || exit 8
-                ## mean wave period: t0m1
-                #$Couple_Lib_exec_coupler_Dir/ww3_t0m1_wrflowinp.x || exit 8
-        # dominant_wave_frequency: fp : 20210616
-        $Couple_Lib_exec_coupler_Dir/ww3_fp_wrflowinp.x || exit 8
+                if [ $wave_mean_period = yes ];then
+                        if [ $wave_mean_variable = 1 ];then 
+			# use t0m1
+                        $Couple_Lib_exec_coupler_Dir/ww3_t0m1_wrflowinp.x || exit 8
+                        else
+			#use t02
+                        $Couple_Lib_exec_coupler_Dir/ww3_t02_wrflowinp.x || exit 8
+                        fi
+                else	
+        		# dominant_wave_frequency: fp : 20210616
+			#use Tp (1/fp)
+        		$Couple_Lib_exec_coupler_Dir/ww3_fp_wrflowinp.x || exit 8
+                fi
+                if [ $wind_wave_alignement = yes ];then
+                # use angle wind wave
+                $Couple_Lib_exec_coupler_Dir/ww3_dp_wrflowinp.x || exit 8
+                fi
+
 	fi
 
         ii=`expr $ii + 1`

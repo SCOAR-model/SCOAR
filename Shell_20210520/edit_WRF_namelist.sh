@@ -1,1 +1,1 @@
-edit_WRF_namelist_may_2021.sh
+edit_WRF_namelist_march_2022.sh
