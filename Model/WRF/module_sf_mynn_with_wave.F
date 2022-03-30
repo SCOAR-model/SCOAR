@@ -110,7 +110,7 @@ CONTAINS
               ZNT,UST,PBLH,MAVAIL,ZOL,MOL,REGIME,PSIM,PSIH, &
               XLAND,HFX,QFX,LH,TSK,FLHC,FLQC,QGH,QSFC,RMOL, &
               U10,V10,TH2,T2,Q2,SNOWH,                      &
-              HS_WAVE,TP_WAVE,                              &!CS_WAVE
+              HS_WAVE,TP_WAVE,THETA_WW,                     &!CS_WAVE
               GZ1OZ0,WSPD,BR,ISFFLX,DX,                     &
               SVP1,SVP2,SVP3,SVPT0,EP1,EP2,                 &
               KARMAN,itimestep,ch,th3d,pi3d,qc3d,rho3d,qcg, &
@@ -249,6 +249,7 @@ CONTAINS
                                                               QCG, &
                                                            PSFCPA ,&
                                                   HS_WAVE,TP_WAVE, &!CS_WAVE
+                                                         THETA_WW, &!CS_WAVE
                                                             SNOWH
 
 
@@ -343,7 +344,7 @@ CONTAINS
                 XLAND(ims,j),HFX(ims,j),QFX(ims,j),TSK(ims,j),     &
                 U10(ims,j),V10(ims,j),TH2(ims,j),T2(ims,j),        &
                 Q2(ims,j),FLHC(ims,j),FLQC(ims,j),SNOWH(ims,j),    &
-                QGH(ims,j), HS_WAVE(ims,j),TP_WAVE(ims,j),         &!CS_WAVE
+                QGH(ims,j), HS_WAVE(ims,j),TP_WAVE(ims,j),THETA_WW(ims,j),   &!CS_WAVE
                 QSFC(ims,j),LH(ims,j),                             &
                 GZ1OZ0(ims,j),WSPD(ims,j),BR(ims,j),ISFFLX,DX,     &
                 SVP1,SVP2,SVP3,SVPT0,EP1,EP2,KARMAN,               &
@@ -373,7 +374,7 @@ CONTAINS
                      PBLH,RMOL,ZNT,UST,MAVAIL,ZOL,MOL,REGIME,      &
                      PSIM,PSIH,XLAND,HFX,QFX,TSK,                  &
                      U10,V10,TH2,T2,Q2,FLHC,FLQC,SNOWH,QGH,        &
-                     HS_WAVE,TP_WAVE,                              &!CS_WAVE
+                     HS_WAVE,TP_WAVE,THETA_WW,                     &!CS_WAVE
                      QSFC,LH,GZ1OZ0,WSPD,BR,ISFFLX,DX,             &
                      SVP1,SVP2,SVP3,SVPT0,EP1,EP2,                 &
                      KARMAN,ch,qc1d,qcg,                           &
@@ -421,6 +422,7 @@ CONTAINS
                                                            PSFCPA, &
                                                               QCG, &
                                                   HS_WAVE,TP_WAVE, &!CS_WAVE
+                                                         THETA_WW, &!CS_WAVE
                                                             SNOWH
 
       REAL,     DIMENSION( its:ite ), INTENT(IN)   ::     U1D,V1D, &
@@ -654,6 +656,12 @@ CONTAINS
                 CALL edson_etal_2013_wave2(ZNT(i),UST(i),visc,HS_WAVE(I),TP_WAVE(I))
           ELSEIF ( ISFTCFLX .EQ. 351 ) THEN
                 CALL edson_etal_2013_wave1(ZNT(i),UST(i),visc,TP_WAVE(I))
+          ELSEIF ( ISFTCFLX .EQ. 353 ) THEN
+                CALL edson_etal_2013_wave3(ZNT(i),UST(i),visc,HS_WAVE(I),TP_WAVE(I),THETA_WW(I))
+          ELSEIF ( ISFTCFLX .EQ. 354 ) THEN
+                CALL edson_etal_2013_wave4(ZNT(i),UST(i),visc,HS_WAVE(I),TP_WAVE(I))
+          ELSEIF ( ISFTCFLX .EQ. 355 ) THEN
+                CALL edson_etal_2013_wave5(ZNT(i),UST(i),visc,HS_WAVE(I),TP_WAVE(I),THETA_WW(I))
                 
           ENDIF
        ELSE
@@ -708,6 +716,12 @@ CONTAINS
           ELSEIF ( ISFTCFLX .EQ. 352 ) THEN
                 CALL fairall_etal_2014(z_t(i),z_q(i),restar,UST(i),visc,rstoch1D(i),spp_pbl)
           ELSEIF ( ISFTCFLX .EQ. 351 ) THEN
+                CALL fairall_etal_2014(z_t(i),z_q(i),restar,UST(i),visc,rstoch1D(i),spp_pbl)
+          ELSEIF ( ISFTCFLX .EQ. 353 ) THEN
+                CALL fairall_etal_2014(z_t(i),z_q(i),restar,UST(i),visc,rstoch1D(i),spp_pbl)
+          ELSEIF ( ISFTCFLX .EQ. 354 ) THEN
+                CALL fairall_etal_2014(z_t(i),z_q(i),restar,UST(i),visc,rstoch1D(i),spp_pbl)
+          ELSEIF ( ISFTCFLX .EQ. 355 ) THEN
                 CALL fairall_etal_2014(z_t(i),z_q(i),restar,UST(i),visc,rstoch1D(i),spp_pbl)
           ENDIF
        ELSE
@@ -1385,8 +1399,8 @@ END SUBROUTINE SFCLAY1D_mynn
        CZC    = MAX(CZC, 0.0)
 
        Z_0 = CZC*ustar*ustar/G + (0.11*visc/MAX(ustar,0.07))
-       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
-       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+!       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
 
        return
 
@@ -1417,8 +1431,8 @@ END SUBROUTINE SFCLAY1D_mynn
        !surface roughness length
        Z_0 = CZC*ustar*ustar/G + (0.11*visc/MAX(ustar,0.07))
 
-       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
-       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+!       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
 
        return
 
@@ -1450,13 +1464,126 @@ END SUBROUTINE SFCLAY1D_mynn
        Z_0=hs*Ad*(ustar/cp)**Bd + (0.11*visc/MAX(ustar,0.07))
 
        Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
-       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
 
        return
 
    END SUBROUTINE edson_etal_2013_wave2
 !--------------------------------------------------------------------
 
+   SUBROUTINE edson_etal_2013_wave3(Z_0,ustar,visc,hs,tp,theta)
+
+     !Implementation of the COARE3.5 formulation using wage-age and sea state
+     ! form [Edson et al. 2013]
+     ! z0 = z0_rough + z0_smooth
+     ! z0_rough is now dependant of wave age and significant wave height
+     ! whereas z0_smooth stay the same and is a viscosity term
+     ! now includinf the angle difference between wind and wave
+     !Cesar Sauvage 08/2021
+
+       IMPLICIT NONE
+       REAL, INTENT(IN)  :: ustar, visc
+       REAL, INTENT(IN)  :: hs, tp ! significant wave height and wave period
+       REAL, INTENT(IN)  :: theta ! angle diff between wind and wave (0 - pi)
+       REAL, INTENT(OUT) :: Z_0
+       REAL, PARAMETER   :: G=9.81
+       REAL, PARAMETER   :: PI=3.1415927, Ad=0.091,Bd=2.0 !! 
+       REAL              :: cp ! phase speed of wave
+       REAL              :: Ad_new, Bd_new ! coef
+
+
+       !wave phase speed
+       cp=G*tp/(2*PI)
+
+       !new coef
+       Ad_new=Ad*COS(0.45*theta)
+       Bd_new=Bd*COS(-0.32*theta)
+       
+
+       !surface roughness length
+       Z_0=hs*Ad_new*(ustar/cp)**Bd_new + (0.11*visc/MAX(ustar,0.07))
+
+       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+
+       return
+
+   END SUBROUTINE edson_etal_2013_wave3
+
+!--------------------------------------------------------------------
+   SUBROUTINE edson_etal_2013_wave4(Z_0,ustar,visc,hs,tp)
+
+     !Implementation of the COARE3.5 formulation using wage-age and sea state
+     ! form [Edson et al. 2013]
+     ! z0 = z0_rough + z0_smooth
+     ! z0_rough is now dependant of wave age and significant wave height
+     ! whereas z0_smooth stay the same and is a viscosity term
+     !Cesar Sauvage 04/2021
+
+       IMPLICIT NONE
+       REAL, INTENT(IN)  :: ustar, visc
+       REAL, INTENT(IN)  :: hs, tp ! significant wave height and wave period
+       REAL, INTENT(OUT) :: Z_0
+       REAL, PARAMETER   :: G=9.81
+       REAL, PARAMETER   :: PI=3.1415927, Ad_t0=0.39,Bd_t0=2.6 !! 
+       REAL              :: cp ! phase speed of wave
+
+
+       !wave phase speed
+       cp=G*tp/(2*PI)
+
+       !surface roughness length
+       Z_0=hs*Ad_t0*(ustar/cp)**Bd_t0 + (0.11*visc/MAX(ustar,0.07))
+
+       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+
+       return
+
+   END SUBROUTINE edson_etal_2013_wave4
+!--------------------------------------------------------------------
+
+   SUBROUTINE edson_etal_2013_wave5(Z_0,ustar,visc,hs,tp,theta)
+
+     !Implementation of the COARE3.5 formulation using wage-age and sea state
+     ! form [Edson et al. 2013]
+     ! z0 = z0_rough + z0_smooth
+     ! z0_rough is now dependant of wave age and significant wave height
+     ! whereas z0_smooth stay the same and is a viscosity term
+     ! now including the angle difference between wind and wave
+     ! using Porchetta et al coefficients
+     !Cesar Sauvage 02/2022
+
+       IMPLICIT NONE
+       REAL, INTENT(IN)  :: ustar, visc
+       REAL, INTENT(IN)  :: hs, tp ! significant wave height and wave period
+       REAL, INTENT(IN)  :: theta ! angle diff between wind and wave in radian (0 - pi)
+       REAL, INTENT(OUT) :: Z_0
+       REAL, PARAMETER   :: G=9.81
+       REAL, PARAMETER   :: PI=3.1415927, Ad_porch=20,Bd_porch=3.8 !! 
+       REAL              :: cp ! phase speed of wave
+       REAL              :: Ad_new, Bd_new ! coef
+
+
+       !wave phase speed
+       cp=G*tp/(2*PI)
+
+       !new coef
+       Ad_new=Ad_porch*COS(0.45*theta)
+       Bd_new=Bd_porch*COS(-0.32*theta)
+       
+
+       !surface roughness length
+       Z_0=hs*Ad_new*(ustar/cp)**Bd_new + (0.11*visc/MAX(ustar,0.07))
+
+       Z_0 = MAX( Z_0, 1.27e-7)  !These max/mins were suggested by
+!       Z_0 = MIN( Z_0, 2.85e-3)  !Davis et al. (2008)
+
+       return
+
+   END SUBROUTINE edson_etal_2013_wave5
+
+!--------------------------------------------------------------------
 
    SUBROUTINE garratt_1992(Zt,Zq,Z_0,Ren,landsea)
 
