@@ -162,6 +162,10 @@ fi
                 mkdir -p $WRF_PRS_Dir/d01
                 mkdir -p $WRF_PRS_Dir/d02
 	fi
+        if [ $WRF_ZLEV = yes ]; then
+                mkdir -p $WRF_ZLEV_Dir/d01
+                mkdir -p $WRF_ZLEV_Dir/d02
+        fi
   	if [ $WRF_AFWA = yes ]; then
                 mkdir -p $WRF_AFWA_Dir/d01
                 mkdir -p $WRF_AFWA_Dir/d02
@@ -246,6 +250,16 @@ fi
               fi
 	fi
 
+        if [ $WRF_ZLEV = yes ]; then
+        mv $Model_WRF_Dir/wrfzlev_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_ZLEV_Dir/d01 || exit 8
+              if [ $NLOOP  -eq 1 ]; then
+              # first time, move the initial WRFZLEV as well
+              mv $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_ZLEV_Dir/d01 || exit 8
+              else
+              rm $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+              fi
+        fi
+
 	if [ $WRF_AFWA = yes ]; then 
 	# AFWA writes only beginning of fcst...
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01 || exit 8
@@ -254,6 +268,7 @@ fi
 		mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output2_Dir/ || exit 8
 		mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00_???? $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
 		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
+		mv $Model_WRF_Dir/wrfzlev_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_ZLEV_Dir/d02 || exit 8
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
 
