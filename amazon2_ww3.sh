@@ -47,6 +47,19 @@ export parameter_run_WW3=yes
 # 2. COARE_wave_option=0 : #WSDF
 # 3. parameter_WW32WRF=no
 
+
+export wave_mean_period=no
+if [ $wave_mean_period = yes ];then
+##      1 => export t0m1 (centroid period)
+##      2 => export t02 ('zero crossing'-like period (COARE coef most likely tuned for this one) )
+        export wave_mean_variable=2
+fi
+
+# if yes use COARE3.5 including new coefficient and cosinus of the angle wind-wave
+export wind_wave_alignement=no
+#only in case of use of alignement wind-waves
+export porchetta_coef=no
+
         if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
 # two options are available for now (May 2021)
@@ -54,6 +67,10 @@ export parameter_run_WW3=yes
 # COARE_wave_option=0  :  isftcflx is set to 0 and this uses the windspeed  only formulation of COARE3.5 in WRF surface layer scheme
 # COARE_wave_option=1  :  isftcflx is set to 351 and this uses the wave-age only formulation of COARE3.5 in WRF surface layer scheme
 # COARE_wave_option=2  :  isftcflx is set to 352 and this uses the wave-age and wave height formulation of COARE3.5 in WRF surface layer scheme
+# COARE_wave_option=3  :  isftcflx is set to 353, same as 352 but adding dependency to the alignment wind - waves
+# COARE_wave_option=4  :  isftcflx is set to 354, same as 352 but using the wave mean period to compute the wave age
+# COARE_wave_option=5  :  isftcflx is set to 355, same as 353 but using the formula from Porchetta et al.
+
 # (default should be option 2 when using wave)
         export COARE_wave_option=2 # or 0 or 1
 # if sending ocean surface current to WW3
@@ -62,6 +79,15 @@ export parameter_run_WW3=yes
 		if [ $ROMS_wave = yes ]; then
        		export parameter_WW32ROMS=yes
 		fi
+		if [ $wind_wave_alignement = yes ];then
+                	export COARE_wave_option=3 # 
+			if [ $porchetta_coef = yes ];then
+                        export COARE_wave_option=5 #
+                	fi
+        	elif [ $wave_mean_period = yes ];then
+                	export COARE_wave_option=4 # 
+        	fi
+
         else
 # if sending ocean surface current to WW3
         export COARE_wave_option=0 # nominal
@@ -97,6 +123,7 @@ export WRF_OUTPUT_FREQUENCY=$CF
 # output frequency in wrfout this has to match with ocean.in
 export ROMS_OUTPUT_FREQUENCY=1
 export WRF_PRS=yes
+export WRF_ZLEV=yes
 # WRF time-series option added 2021/06/04
 export WRF_TS=yes
 export WRF_AFWA=no
@@ -330,7 +357,6 @@ export Couple_Lib_Dir=$Couple_Home_Dir/Lib
 export Couple_Model_Dir=/vortexfs1/home/hseo/SCOAR2/Model
 
 	#WRF
-        #export Couple_WRF_Dir=/vortexfs1/share/seolab/hseo/Model/WRF/$gridname2/$gridname/WRF-4.2.2/
         export Couple_WRF_Dir=/vortexfs1/share/seolab/hseo/Model/WRF/$gridname2/$gridname/WRF-4.2.2_with_WW3/
 		echo "Make sure you have the correct WRF working directory."
 			export Model_WRF_Dir=$Couple_WRF_Dir/test/em_real_$RUN_ID
@@ -404,6 +430,9 @@ export WRF_Output2_Dir=$Couple_Data_WRF_Dir/WRF_Out2
 export WRF_RST_Dir=$Couple_Data_WRF_Dir/WRF_RST
        if [ $WRF_PRS = yes ]; then
        export WRF_PRS_Dir=$Couple_Data_WRF_Dir/WRF_PRS
+       fi
+       if [ $WRF_ZLEV = yes ]; then
+       export WRF_ZLEV_Dir=$Couple_Data_WRF_Dir/WRF_ZLEV
        fi
        if [ $WRF_AFWA = yes ]; then
        export WRF_AFWA_Dir=$Couple_Data_WRF_Dir/WRF_AFWA
