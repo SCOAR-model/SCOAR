@@ -1,0 +1,209 @@
+[?1h=
+                                        < M A T L A B (R) >
+                              Copyright 1984-2019 The MathWorks, Inc.
+                         R2019b Update 4 (9.7.0.1296695) 64-bit (glnxa64)
+                                         January 20, 2020
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+getting roms grid, hycom grid, and overlapping indices
+getting roms grid dimensions ...
+/nara/data/hseo/miso/miso6/roms_preprocessing/Grid/roms_miso6_nolake/roms-miso6-grid_nolake.nc
+getting MERCATOR grid data from /vortexfs1/share/seolab/Data/MERCATOR/BoB/2019/global-analysis-forecast-phy-001-030_20190111.nc
+getting roms grid dimensions ...
+xl:
+   77.6047
+
+xr:
+   99.0893
+
+yb:
+    3.2748
+
+yt:
+   22.5850
+
+optimizing grid dimensions ...
+ig0:
+   212
+
+ig1:
+   471
+
+jg0:
+   160
+
+jg1:
+   393
+
+going to create clm file
+/vortexfs1/share/seolab/Data/MERCATOR/BoB/2019/global-analysis-forecast-phy-001-030_20190111.nc
+getting the number of time records ...
+      712598
+
+      605100
+
+
+ans =
+
+    '16560914T00:00:00'
+
+   2.5212e+04
+
+
+ans =
+
+    '00690109T12:00:00'
+
+tg2
+   2.5212e+04
+
+
+ans =
+
+    '00690109T12:00:00'
+
+###
+
+ans =
+
+    '00690109T12:00:00'
+
+creating netcdf file coawst_clm.nc
+ ## Defining Global Attributes...
+ ## Defining Dimensions...
+ ## Defining Variables, and Attributes...
+     1   234
+
+   212
+
+   471
+
+   160
+
+   393
+
+Interpolating u for 09-Jan-0069 12:00:00
+   260   234    50
+
+doing griddata u for MERCATOR level 1
+doing griddata u for MERCATOR level 2
+doing griddata u for MERCATOR level 3
+doing griddata u for MERCATOR level 4
+doing griddata u for MERCATOR level 5
+doing griddata u for MERCATOR level 6
+doing griddata u for MERCATOR level 7
+doing griddata u for MERCATOR level 8
+doing griddata u for MERCATOR level 9
+doing griddata u for MERCATOR level 10
+doing griddata u for MERCATOR level 11
+doing griddata u for MERCATOR level 12
+doing griddata u for MERCATOR level 13
+doing griddata u for MERCATOR level 14
+doing griddata u for MERCATOR level 15
+doing griddata u for MERCATOR level 16
+doing griddata u for MERCATOR level 17
+doing griddata u for MERCATOR level 18
+doing griddata u for MERCATOR level 19
+doing griddata u for MERCATOR level 20
+doing griddata u for MERCATOR level 21
+doing griddata u for MERCATOR level 22
+doing griddata u for MERCATOR level 23
+doing griddata u for MERCATOR level 24
+doing griddata u for MERCATOR level 25
+doing griddata u for MERCATOR level 26
+doing griddata u for MERCATOR level 27
+doing griddata u for MERCATOR level 28
+doing griddata u for MERCATOR level 29
+doing griddata u for MERCATOR level 30
+doing griddata u for MERCATOR level 31
+doing griddata u for MERCATOR level 32
+doing griddata u for MERCATOR level 33
+doing griddata u for MERCATOR level 34
+doing griddata u for MERCATOR level 35
+doing griddata u for MERCATOR level 36
+doing griddata u for MERCATOR level 37
+doing griddata u for MERCATOR level 38
+doing griddata u for MERCATOR level 39
+doing griddata u for MERCATOR level 40
+doing griddata u for MERCATOR level 41
+doing griddata u for MERCATOR level 42
+doing griddata u for MERCATOR level 43
+doing griddata u for MERCATOR level 44
+doing griddata u for MERCATOR level 45
+doing griddata u for MERCATOR level 46
+doing griddata u for MERCATOR level 47
+doing griddata u for MERCATOR level 48
+doing griddata u for MERCATOR level 49
+doing griddata u for MERCATOR level 50
+    50   234   217
+
+[Warning:  reversing zlev to arrange as deep to shallow] 
+[> In roms_from_stdlev_mw (line 103)
+  In updatclim_coawst_mercator (line 115)
+  In roms_master_climatology_coawst_mercator (line 99)
+  In run (line 91)] 
+Input is assumed to be on the ROMS horizontal rho grid
+ but is being averaged to the u-points grid 
+Interpolating to ROMS s-coordinates
+  Doing i = 20 of 233
+  Doing i = 40 of 233
+  Doing i = 60 of 233
+  Doing i = 80 of 233
+  Doing i = 100 of 233
+  Doing i = 120 of 233
+  Doing i = 140 of 233
+  Doing i = 160 of 233
+  Doing i = 180 of 233
+  Doing i = 200 of 233
+  Doing i = 220 of 233
+Interpolating v for 09-Jan-0069 12:00:00
+doing griddata v for MERCATOR level 1
+doing griddata v for MERCATOR level 2
+doing griddata v for MERCATOR level 3
+doing griddata v for MERCATOR level 4
+doing griddata v for MERCATOR level 5
+doing griddata v for MERCATOR level 6
+doing griddata v for MERCATOR level 7
+doing griddata v for MERCATOR level 8
+doing griddata v for MERCATOR level 9
+doing griddata v for MERCATOR level 10
+doing griddata v for MERCATOR level 11
+doing griddata v for MERCATOR level 12
+doing griddata v for MERCATOR level 13
+doing griddata v for MERCATOR level 14
+doing griddata v for MERCATOR level 15
+doing griddata v for MERCATOR level 16
+doing griddata v for MERCATOR level 17
+doing griddata v for MERCATOR level 18
+doing griddata v for MERCATOR level 19
+doing griddata v for MERCATOR level 20
+doing griddata v for MERCATOR level 21
+doing griddata v for MERCATOR level 22
+doing griddata v for MERCATOR level 23
+doing griddata v for MERCATOR level 24
+doing griddata v for MERCATOR level 25
+doing griddata v for MERCATOR level 26
+doing griddata v for MERCATOR level 27
+doing griddata v for MERCATOR level 28
+doing griddata v for MERCATOR level 29
+doing griddata v for MERCATOR level 30
+doing griddata v for MERCATOR level 31
+doing griddata v for MERCATOR level 32
+doing griddata v for MERCATOR level 33
+doing griddata v for MERCATOR level 34
+doing griddata v for MERCATOR level 35
+doing griddata v for MERCATOR level 36
+doing griddata v for MERCATOR level 37
+doing griddata v for MERCATOR level 38
+doing griddata v for MERCATOR level 39
+doing griddata v for MERCATOR level 40
+doing griddata v for MERCATOR level 41
+doing griddata v for MERCATOR level 42
+doing griddata v for MERCATOR level 43
+doing griddata v for MERCATOR level 44
+doing griddata v for MERCATOR level 45
+doing griddata v for MERCATOR level 46
+doing griddata v for MERCATOR level 47
