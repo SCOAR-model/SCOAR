@@ -1,6 +1,6 @@
 #!/bin/sh
-INCLUDEDIR=/vortexfs1/apps/impistack-1.0/include
-LIBDIR=/vortexfs1/apps/impistack-1.0/lib
+INCLUDEDIR=/discover/nobackup/projects/nu-wrf/lib/sles12/ekman/intel-intelmpi/netcdf4/include
+LIBDIR=/discover/nobackup/projects/nu-wrf/lib/sles12/ekman/intel-intelmpi/netcdf4/lib
 Couple_Lib_exec_coupler_Dir=../exec/Coupler_intel/
 
 fname=ww3_hs_wrflowinp
@@ -15,6 +15,21 @@ ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
 
 fname=ww3_fp_wrflowinp
 echo "$fname.f" 
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
+fname=ww3_dp_wrflowinp
+echo "$fname.f"
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
+fname=ww3_t02_wrflowinp
+echo "$fname.f"
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
+fname=ww3_ust_wrflowinp
+echo "$fname.f"
 ifort -c -I$INCLUDEDIR $fname.f
 ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
 
