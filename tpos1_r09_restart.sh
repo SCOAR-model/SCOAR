@@ -370,12 +370,7 @@ export Couple_Data_Dir=$Couple_Run_Dir/Data
  export Couple_Data_WW3_Dir=$Couple_Data_Dir/WW3
  export Couple_Data_tempo_files_Dir=$Couple_Data_Dir/tempo_files
 
-# ROMS2WRF LOG files
- export Couple_Log_Dir=$Couple_Data_Dir/LOG
- export Couple_Log_ROMS2WRF_Dir=$Couple_Log_Dir/ROMS2WRF
- export Couple_Log_WRF2ROMS_Dir=$Couple_Log_Dir/WRF2ROMS
-
-   for DIR in $Couple_Run_Dir $Couple_Data_Dir $Couple_Data_WRF_Dir $Couple_Data_ROMS_Dir $Couple_Data_tempo_files_Dir $Couple_Log_Dir $Couple_Log_ROMS2WRF_Dir $Couple_Log_WRF2ROMS_Dir
+   for DIR in $Couple_Run_Dir $Couple_Data_Dir $Couple_Data_WRF_Dir $Couple_Data_ROMS_Dir $Couple_Data_tempo_files_Dir 
     do 
     mkdir -p $DIR 2>/dev/null
    done
