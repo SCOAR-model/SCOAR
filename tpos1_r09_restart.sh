@@ -294,6 +294,8 @@ export needinterp=no
 # obsolete
 export tiling=no
 
+mkdir -p $Couple_Home_Dir/accounting
+
 #####--------------------- END OF USER DEFINITION -----------------------#####
 echo "CF is $CF"
 if [ $CPL_PHYS = WRF_PHYS ]; then
