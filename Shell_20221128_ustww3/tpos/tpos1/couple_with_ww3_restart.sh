@@ -318,24 +318,23 @@ time_start1=$(date "+%s")
 
 # wrfzlev
         if [ $WRF_ZLEV = yes ]; then
-	mkdir -p $WRF_ZLEV_Dir/d01/$YYYYin
+        mkdir -p $WRF_ZLEV_Dir/d01/$YYYYin
         mv $Model_WRF_Dir/wrfzlev_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_ZLEV_Dir/d01/$YYYYin || exit 8
-		if [ $WRF_Domain -eq 2 ]; then
-                        mkdir -p $WRF_PRS_Dir/d02/$YYYYin
-                        mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
+                if [ $WRF_Domain -eq 2 ]; then
+                        mkdir -p $WRF_ZLEV_Dir/d02/$YYYYin
+                        mv $Model_WRF_Dir/wrfzlev_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_ZLEV_Dir/d02/$YYYYin || exit 8
                 fi
-
               if [ $NLOOP  -eq 1 ]; then
               # first time, move the initial file as well
               mv $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_ZLEV_Dir/d01/$YYYYin || exit 8
-                        if [ $WRF_Domain -eq 2 ]; then
-                                mv $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
-                        fi
+                if [ $WRF_Domain -eq 2 ]; then
+                        mv $Model_WRF_Dir/wrfzlev_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_ZLEV_Dir/d02/$YYYYin || exit 8
+                fi
               else
               rm $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
-                        if [ $WRF_Domain -eq 2 ]; then
-                        rm $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
-                        fi
+                if [ $WRF_Domain -eq 2 ]; then
+                        rm $Model_WRF_Dir/wrfzlev_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                fi
               fi
         fi
 
@@ -354,13 +353,8 @@ time_start1=$(date "+%s")
 		fi
 # wrfts
 	if [ $WRF_TS = yes ]; then
-	# Find out the number of stations (locations)
-	ls $Model_WRF_Dir/*.d01.TS  | wc -l > out$$
-	read num_station < out$$; rm out$$
-	echo $num_station
-	# for each location
 	ns=1
-	while [ $ns -le $num_station ]; do
+        while [ $ns -le $WRF_TS_num_station ]; do
 		# for each field
         	for FLD in UU VV WW TH QV PR PH
         	do
@@ -536,8 +530,9 @@ rm  $WW3_Exe_Dir/ww3_prnc.nml 2>/dev/null
 
 if [ 1 -eq 1 ]; then
 # edit wind nml
-	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output_Dir/$YYYYin/wrfout_d01_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11 || exit 8
-	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output_Dir/$YYYYin/wrfout_d01_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12 || exit 8
+        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYi/wrfout_d0$Coupling_Domain\_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11
+        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYin/wrfout_d0$Coupling_Domain\_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12
+
 	ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
 	ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
 	ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11

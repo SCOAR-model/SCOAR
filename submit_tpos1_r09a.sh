@@ -9,6 +9,7 @@
 
 #export Couple_Run_Dir=$PROJECT/hseo4/Git/wrf-ww3-ustar-working/SCOAR2/Run/$gridname2/$gridname/$RUN_ID
 export Couple_Run_Dir=$PROJECT/hseo4/Git/wrf-ww3-ustar-working/SCOAR2/Run/tpos/tpos1/r09/
+mkdir -p $PROJECT/hseo4/Git/SCOAR/accounting
 if [ -s $Couple_Run_Dir ]; then
 read LastNHour < $Couple_Run_Dir/restart_info
 fi

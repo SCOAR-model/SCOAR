@@ -98,6 +98,8 @@ export WRF_PRS=yes
 export WRF_ZLEV=yes
 # WRF time-series option added 2021/06/04
 export WRF_TS=no
+        # specify the number of stations in tslist
+        export WRF_TS_num_station = 4
 export WRF_AFWA=no
 export WRF_FDDA=no
 
