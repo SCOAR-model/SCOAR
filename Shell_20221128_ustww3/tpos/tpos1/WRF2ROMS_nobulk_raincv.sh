@@ -59,7 +59,7 @@ echo "********************************"
 #date
 #	# averages; -d Time $start,$end,$stride 
 #	# for raincv and rainncv; it is average rain rate (mm/wrf_dt e.g., mm/90s)
-#        $NCO/ncra -F -O -v ZNT,CD,CDA,LH,HFX,GSW,GLW,SST,UST,U10,V10,RAINCV,RAINNCV,OLR,T2,Q2,PSFC,PBLH,QFX,TH2 -d Time,1,$te,1 $WRF_Output2_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00   $WRF_Output_Dir/WRF_Hour$NHour.nc || exit 8
+#        $NCO/ncra -F -O -v ZNT,CD,CDA,LH,HFX,GSW,GLW,SST,UST,U10,V10,RAINCV,RAINNCV,OLR,T2,Q2,PSFC,PBLH,QFX,TH2 -d Time,1,$te,1 $WRF_Output_Dir/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00   $WRF_Output_Dir/WRF_Hour$NHour.nc || exit 8
 #date
 #echo WRF_Hour end
 #
@@ -71,7 +71,7 @@ for VAR in LH HFX GSW GLW SST UST U10 V10 RAINCV RAINNCV
     echo $VAR > fort.12
     echo 1 > fort.13
 #    	ln -fs $WRF_Output_Dir/WRF_Hour$NHour.nc fort.21
-                ln -fs $WRF_Output2_Dir/$YYYYs/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00 fort.21
+                ln -fs $WRF_Output_Dir/d0$Coupling_Domain/$YYYYs/wrfout_d0$WRF_Domain\_$YYYYs-$MMs-$DDs\_$HHs\_00\_00 fort.21
     $Couple_Lib_exec_coupler_Dir/read_ncvar.x || exit 8
     mv fort.51 $Couple_Data_tempo_files_Dir/$VAR.workin.dat || exit 8
 done
@@ -161,14 +161,14 @@ fi #WRF_ROMS_SAME_GRID
 echo "updating forcing file..."
 rm -f fort.* 2>/dev/null
 
-mkdir -p $ROMS_Forc_Dir/$YYYYin  || exit 8
-        forcfile=$ROMS_Forc_Dir/$YYYYin/forc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
-cp $Couple_Lib_template_Dir/ROMS_ForcingGeneral-$gridname.nc $forcfile || exit 8
+mkdir -p $ROMS_Frc_Dir/$YYYYin  || exit 8
+        frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+cp $Couple_Lib_template_Dir/ROMS_ForcingGeneral-$gridname.nc $frcfile || exit 8
 
 for VAR in sustr svstr shflux swrad swflux 
  do
    rm -f fort.* 2>/dev/null
-   ln -fs $forcfile fort.21
+   ln -fs $frcfile fort.21
 	if [ $VAR = sustr ]; then
 	ln -fs $Couple_Lib_grids_ROMS_Dir/$Nameit_ROMS-nxnyu.dat fort.11
 	elif [ $VAR = svstr ]; then
@@ -222,8 +222,8 @@ echo "APPLYING SCORRECTION OR SRELXATION"
 	else
     
 	# write SSS to forcing file
-	$NCO/ncks -A -v SSS $SSSfile $forcfile
-    	echo "file to update", $forcfile
+	$NCO/ncks -A -v SSS $SSSfile $frcfile
+    	echo "file to update", $frcfile
 	fi
 fi #SSS_CORRECTION
 

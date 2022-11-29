@@ -183,6 +183,8 @@ fi
 
 # ***************************************
 ## 2. WRF Run yes/no
+                mkdir -p $WRF_Output_Dir/d01
+                mkdir -p $WRF_Output_Dir/d02
 	if [ $WRF_PRS = yes ]; then
                 mkdir -p $WRF_PRS_Dir/d01
                 mkdir -p $WRF_PRS_Dir/d02
@@ -249,7 +251,8 @@ time_start1=$(date "+%s")
 	else
 		io_form_restart=2
 	fi
-	$Couple_Run_Dir/edit_WRF_namelist.sh $YYYYi:$MMi:$DDi:$HHi $WRF_RESTART $write_hist_at_0h_rst $io_form_restart
+#CS modification to add the end date which is needed for the nestted case
+	$Couple_Run_Dir/edit_WRF_namelist.sh $YYYYi:$MMi:$DDi:$HHi $WRF_RESTART $write_hist_at_0h_rst $io_form_restart $YYYYin:$MMin:$DDin:$HHin
 
 time_end1=$(date "+%s")
 echo "WRF prep = $((time_end1-time_start1))s" >> $Couple_Run_Dir/code_time
@@ -266,50 +269,90 @@ echo "WRF run = $((time_end1-time_start1))s" >> $Couple_Run_Dir/code_time
 time_start1=$(date "+%s")
 
 #	organize the outputs
-	mkdir -p $WRF_Output2_Dir/$YYYYin
-	mv $Model_WRF_Dir/wrfout_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output2_Dir/$YYYYin || exit 8
-	        if [ $NLOOP  -eq 1 ]; then
-                # first time, move the initial WRFOUT as well
-        	mv $Model_WRF_Dir/wrfout_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_Output2_Dir/$YYYYin || exit 8
+# wrfout
+	mkdir -p $WRF_Output_Dir/d01/$YYYYin
+	mv $Model_WRF_Dir/wrfout_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output_Dir/d01/$YYYYin || exit 8
+ 		if [ $WRF_Domain -eq 2 ]; then
+                        mkdir -p $WRF_Output_Dir/d02/$YYYYin
+                        mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output_Dir/d02/$YYYYin || exit 8
                 fi
 
+	        if [ $NLOOP  -eq 1 ]; then
+                # first time, move the initial WRFOUT as well
+        	mv $Model_WRF_Dir/wrfout_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_Output_Dir/d01/$YYYYin || exit 8
+		        if [ $WRF_Domain -eq 2 ]; then
+                        mv $Model_WRF_Dir/wrfout_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_Output_Dir/d02/$YYYYin || exit 8
+                        fi
+                fi
+
+# wrfrst
 	mkdir -p $WRF_RST_Dir/$wrfrst_subdir_write/d01
 	mv $Model_WRF_Dir/wrfrst_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d01 || exit 8
+		if [ $WRF_Domain -eq 2 ]; then
+                mkdir -p $WRF_RST_Dir/$wrfrst_subdir_write/d02
+                mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
+                fi
 
+# wrfprs
 	if [ $WRF_PRS = yes ]; then
 	mkdir -p $WRF_PRS_Dir/d01/$YYYYin
 	mv $Model_WRF_Dir/wrfprs_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d01/$YYYYin || exit 8
+		if [ $WRF_Domain -eq 2 ]; then
+                        mkdir -p $WRF_PRS_Dir/d02/$YYYYin
+                        mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
+                fi
+
 	      if [ $NLOOP  -eq 1 ]; then
               # first time, move the initial WRFPRS as well
 	      mv $Model_WRF_Dir/wrfprs_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_PRS_Dir/d01/$YYYYin || exit 8
+			 if [ $WRF_Domain -eq 2 ]; then
+                         mv $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
+                         fi
               else
       	      rm $Model_WRF_Dir/wrfprs_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                        if [ $WRF_Domain -eq 2 ]; then
+                        rm $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                        fi
               fi
 	fi
 
+# wrfzlev
         if [ $WRF_ZLEV = yes ]; then
 	mkdir -p $WRF_ZLEV_Dir/d01/$YYYYin
         mv $Model_WRF_Dir/wrfzlev_d01_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_ZLEV_Dir/d01/$YYYYin || exit 8
+		if [ $WRF_Domain -eq 2 ]; then
+                        mkdir -p $WRF_PRS_Dir/d02/$YYYYin
+                        mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
+                fi
+
               if [ $NLOOP  -eq 1 ]; then
               # first time, move the initial file as well
               mv $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_ZLEV_Dir/d01/$YYYYin || exit 8
+                        if [ $WRF_Domain -eq 2 ]; then
+                                mv $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_PRS_Dir/d02/$YYYYin || exit 8
+                        fi
               else
               rm $Model_WRF_Dir/wrfzlev_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                        if [ $WRF_Domain -eq 2 ]; then
+                        rm $Model_WRF_Dir/wrfprs_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                        fi
               fi
         fi
 
+# wrfafwa
 	if [ $WRF_AFWA = yes ]; then 
 	mkdir -p $Model_WRF_Dir/d01/$YYYYin
 	# AFWA writes only beginning of fcst...
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
 	fi
 		if [ $WRF_Domain -eq 2 ]; then
-		mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output2_Dir/ || exit 8
-		mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
-		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
+# delete these first three: they are done above.
+#		mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output_Dir/ || exit 8
+#		mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
+#		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
-
+# wrfts
 	if [ $WRF_TS = yes ]; then
 	# Find out the number of stations (locations)
 	ls $Model_WRF_Dir/*.d01.TS  | wc -l > out$$
@@ -331,6 +374,22 @@ time_start1=$(date "+%s")
 		mkdir -p $WRF_TS_Dir/d01/$FLD/$YYYYin
         	cp $Model_WRF_Dir/$TS_FNAME  $WRF_TS_Dir/d01/$FLD/$YYYYin/$TS_FNAME\_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
         	done #FLD
+
+                if [ $WRF_Domain -eq 2 ]; then
+                # for each field: d02
+                for FLD in UU VV WW TH QV PR PH
+                do
+                ls $Model_WRF_Dir/*.d02.$FLD | awk '{print $1}' | awk "NR==$ns{print$1}"  | sed -n 's/^\(.*\/\)*\(.*\)/\2/p' > out$$
+                read TS_FNAME < out$$ ; rm out$$
+                echo "*** $TS_FNAME ***"
+                if [ ! -s $Model_WRF_Dir/$TS_FNAME ]; then
+                echo "the file doesn not exist: $Model_WRF_Dir/$TS_FNAME"
+                exit 8
+                fi
+                mkdir -p $WRF_TS_Dir/d02/$FLD/$YYYYin
+                cp $Model_WRF_Dir/$TS_FNAME  $WRF_TS_Dir/d02/$FLD/$YYYYin/$TS_FNAME\_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 || exit 8
+                done #FLD
+                fi
 	ns=`expr $ns + 1`
 	done
         fi #WRF_TS
@@ -382,9 +441,9 @@ fi
 if [ $parameter_RunROMS = yes ]; then
 
 # link forc_Day to ocean_frc
-mkdir -p  $ROMS_Forc_Dir/$YYYYin  || exit 8
+mkdir -p  $ROMS_Frc_Dir/$YYYYin  || exit 8
         rm $Couple_Data_ROMS_Dir/ocean_frc.nc >/dev/null
-        ln -fs $ROMS_Forc_Dir/$YYYYin/forc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $Couple_Data_ROMS_Dir/ocean_frc.nc || exit 8
+        ln -fs $ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $Couple_Data_ROMS_Dir/ocean_frc.nc || exit 8
 
 cd $Couple_Data_ROMS_Dir || exit 8
 
@@ -477,8 +536,8 @@ rm  $WW3_Exe_Dir/ww3_prnc.nml 2>/dev/null
 
 if [ 1 -eq 1 ]; then
 # edit wind nml
-	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output2_Dir/$YYYYin/wrfout_d01_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11 || exit 8
-	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output2_Dir/$YYYYin/wrfout_d01_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12 || exit 8
+	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output_Dir/$YYYYin/wrfout_d01_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11 || exit 8
+	ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME $WRF_Output_Dir/$YYYYin/wrfout_d01_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12 || exit 8
 	ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
 	ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
 	ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11

@@ -232,17 +232,17 @@ $Couple_Lib_exec_coupler_Dir/update_bry_time3.x || exit 8
 done
 rm fort.?? 2>/dev/null
 
-# #3. forc
+# #3. frc
 echo $JD > fort.13
 echo $NHour > fort.14
-forcfile=$ROMS_Forc_Dir/$YYYYin/forc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
-ln -fs $forcfile fort.21
+frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+ln -fs $frcfile fort.21
 
         if [ $CPL_PHYS = WRF_PHYS ]; then
 for time_name in shf_time swf_time sms_time srf_time
   do
     echo $time_name > fort.12
-$Couple_Lib_exec_coupler_Dir/update_forc_time3.x || exit 8
+$Couple_Lib_exec_coupler_Dir/update_frc_time3.x || exit 8
 done
 	fi
 
@@ -250,7 +250,7 @@ done
 for time_name in srf_time wind_time pair_time qair_time tair_time rain_time lrf_time
   do
     echo $time_name > fort.12
-$Couple_Lib_exec_coupler_Dir/update_forc_time3.x || exit 8
+$Couple_Lib_exec_coupler_Dir/update_frc_time3.x || exit 8
 done
 fi
 rm fort.?? 2>/dev/null

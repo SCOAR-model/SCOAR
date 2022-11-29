@@ -40,14 +40,14 @@ if [ $NLOOP -eq 1 -a $WW3_spinup = no ]; then
 echo "No WW3_In file exists yet. Skip adding FOC to ROMS forcing file as NLOOP=1 and WW3_spinup=no"
 echo "this will use zero values in wave fields"
 else
-forcfile=$ROMS_Forc_Dir/$YYYYin/forc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
 
 #1. FOC (WW3) --> Wave_dissip (ROMS)
 ncrcat -O -v foc $WW3_In tempo.nc
 ncrename -h -O -v foc,Wave_dissip tempo.nc
 ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
 ncap2 -O -s 'Wave_dissip=double(Wave_dissip)' tempo.nc tempo.nc 
-ncks -A tempo.nc $forcfile
+ncks -A tempo.nc $frcfile
 rm tempo.nc
 
 ##2. HS (WW3) --> Hwave (ROMS)
@@ -55,7 +55,7 @@ ncrcat -O -v hs $WW3_In tempo.nc
 ncrename -h -O -v hs,Hwave tempo.nc
 ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
 ncap2 -O -s 'Hwave=double(Hwave)' tempo.nc tempo.nc
-ncks -A tempo.nc $forcfile
+ncks -A tempo.nc $frcfile
 rm tempo.nc
 
 fi

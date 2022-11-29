@@ -28,10 +28,10 @@ rm fort.12 2>/dev/null
 done
 rm fort.?? 2>/dev/null
 
-# #3. forc
+# #3. frc
 echo $JD > fort.13
 echo $NHour > fort.14
-ln -fs $forcfile fort.21
+ln -fs $frcfile fort.21
 #for time_name in srf_time wind_time pair_time qair_time tair_time rain_time lrf_time
 for var_time in srf_time wind_time pair_time qair_time tair_time rain_time lrf_time shf_time swf_time sms_time srf_time
   do

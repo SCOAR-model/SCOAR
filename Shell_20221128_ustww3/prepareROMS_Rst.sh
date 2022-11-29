@@ -255,8 +255,8 @@ rm fort.?? 2>/dev/null
 # #3. forc
 echo $num_hour> fort.13
 #echo $NHour > fort.14
-forcfile=$ROMS_Forc_Dir/$YYYYin/forc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
-ln -fs $forcfile fort.21
+frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+ln -fs $frcfile fort.21
 
         if [ $CPL_PHYS = WRF_PHYS ]; then
 for time_name in shf_time swf_time sms_time srf_time

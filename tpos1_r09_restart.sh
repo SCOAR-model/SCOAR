@@ -28,7 +28,7 @@ export LastNHour=$3
 export parameter_ROMS2WRF=yes
 export parameter_RunWRF=yes
 export parameter_WRF2ROMS=yes
-	# addition for WRF ONLY run but process WRF_Out from WRF_Out2
+	# addition for WRF ONLY run but process WRF_Out from WRF_Out
 	# this should be no in case of the coupled run
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
@@ -47,8 +47,7 @@ export parameter_run_WW3=yes
 # isftcflx=353 : 352 + theta 
 # isftcflx=354 : 352 but with mean period
 # isftcflx=355 : Porchetta
-# isftcflx=3500 : Obtain the friction velocity from WW3 (UST_WW) and compute the total air-side stress (adding the viscous stress)
-#			Turbulent heat fluxes are computed from the ust_ww # option added Oct 24, 2022 
+# isftcflx=3500 : Obtain the total friction velocity from WW3 to compute momentum and fluxes.  # 11/28/2022
 	export isftcflx=3500
 
 # if sending ocean surface current to WW3
@@ -401,10 +400,10 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
-export ROMS_Forc_Dir=$Couple_Data_ROMS_Dir/Forc
+export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
-   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Forc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
+   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
@@ -412,7 +411,6 @@ export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 #WRF OUTPUT Directores
 export WRF_Runlog_Dir=$Couple_Data_WRF_Dir/WRF_Log
 export WRF_Output_Dir=$Couple_Data_WRF_Dir/WRF_Out
-export WRF_Output2_Dir=$Couple_Data_WRF_Dir/WRF_Out2
 export WRF_RST_Dir=$Couple_Data_WRF_Dir/WRF_RST
 export WRF_process_Dir=$Couple_Data_WRF_Dir/process
        if [ $WRF_PRS = yes ]; then
@@ -430,7 +428,7 @@ export WRF_process_Dir=$Couple_Data_WRF_Dir/process
 
 export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
 
-   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV
+   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV
     do
     mkdir -p $DIR 2>/dev/null
    done

@@ -4,6 +4,11 @@ MMi=`echo $1 | cut -d':' -f2`
 DDi=`echo $1 | cut -d':' -f3`
 HHi=`echo $1 | cut -d':' -f4`
 
+YYYYin=`echo $5 | cut -d':' -f1`
+MMin=`echo $5 | cut -d':' -f2`
+DDin=`echo $5 | cut -d':' -f3`
+HHin=`echo $5 | cut -d':' -f4`
+
 WRF_RESTART=$2
 write_hist_at_0h_rst=$3
 io_form_restart=$4
@@ -83,4 +88,21 @@ if [ $parameter_run_WW3 = yes ]; then
 else #COARE3.5 wind only dependant, isftcflx=0
         sed -i -e "$l8 i isftcflx                 =  0," $namelist_input_file
 fi
+
+
+l9=$(grep -n 'end_year' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l9 d" $namelist_input_file
+sed -i -e  "$l9 i end_year             =  $YYYYin,$YYYYin," $namelist_input_file
+
+l10=$(grep -n 'end_month' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l10 d" $namelist_input_file
+sed -i -e  "$l10 i end_month              =  $MMin,$MMin," $namelist_input_file
+
+l11=$(grep -n 'end_day' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l11 d" $namelist_input_file
+sed -i -e  "$l11 i end_day                =  $DDin,$DDin," $namelist_input_file
+
+l12=$(grep -n 'end_hour' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l12 d" $namelist_input_file
+sed -i -e  "$l12 i end_hour               =  $HHin,$HHin," $namelist_input_file
 
