@@ -72,7 +72,7 @@ fi
 export WRF_ROMS_SAME_GRID=yes
 export SSS_CORRECTION=no
 	# SSS files should reside under ROMS_Input_mercator
-	SSS_path=\$Couple_Misc_Data_Dir/ROMS_Input/\$ROMS_BCFile/sss
+	SSS_path=
 
 # ROMS: new option: restart from ocean_rst.nc
 export ROMS_Rst=yes
@@ -120,7 +120,6 @@ export WRFRST_MULTI=yes
 export SST_FREQUENCY=$CF
 echo "check both WRF_OUTPUT_FREQUENCY SST_FREQUENCY in namelist.input file ...."
 
-# WRF input files after real.exe ; located in $Couple_Misc_Data_Dir
 export WRF_Domain=1 # WRF # of domains
 export Coupling_Domain=1 # Domains where ROMS and WRF are coupled: 1 if d01, 2 if d02
 export wrfinput_file_d01=wrfinput_d01
@@ -223,11 +222,6 @@ export ROMS_BCFile=mercator
 export ROMS_BCFile_Freq=1day  
         export ROMS_BCFile_Dir=\$Couple_Misc_Data_Dir/ROMS_Input/$ROMS_BCFile/$ROMS_BCFile_Freq
         export ROMS_BCFile_Name=mercator.bry_1dy
-#export ROMS_BCFile=SODA342
-#export ROMS_BCFile_Freq=1day
- #       export ROMS_BCFile_Dir=\$Couple_Misc_Data_Dir/ROMS_Input/$ROMS_BCFile/$ROMS_BCFile_Freq
-#        export ROMS_BCFile_Name=soda3.bry_1dy
-
 
 # WRF/ROMS Initial condition for coupled somulation
 # 1. start from reanaylsis data (for both WRF and ROMS) or spinup (for ROMS)
@@ -403,11 +397,10 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	mkdir -p $ROMS_Smooth_Diff_Dir
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
-export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
 export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
-   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
+   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Dia_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
