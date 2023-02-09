@@ -497,7 +497,7 @@ if [ $Tide = yes ]; then
         ln -fs $tide_data $Couple_Data_ROMS_Dir/ocean_tide.nc || exit 8
 fi
 
-grep 'Number of vertical levels' $Couple_Data_ROMS_Dir/$ROMS_Input_Filename | awk '{ print $3 }' > nd$$
+grep 'Number of vertical levels' $Couple_Data_ROMS_Dir/ocean.in | awk '{ print $3 }' > nd$$
 read nd < nd$$ ; rm nd$$
 export nd=$nd
 echo "ROMS number of vertical levels, nd= ",$nd
