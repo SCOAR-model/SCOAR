@@ -136,10 +136,9 @@ ln -fsv $Couple_Data_ROMS_Dir/ocean_ini.nc fort.15 || exit 8
 # for 4d variable
 # number of depth needed for preparing the initial conditon for ROMS 
 # read nd directly from ocean.in :October 27, 2022
-grep 'Number of vertical levels' $Couple_Data_ROMS_Dir/$ROMS_Input_Filename | awk '{ print $3 }' > nd$$
-read nd < nd$$ ; rm nd$$
+# nd is already read and defined in main.sh
+echo "number of ROMS depth level = $nd"
 echo $nd > fort.16
-#echo "number of ROMS depth level = $nd"
 
 echo "inserting 4d variables into ini.nc"
 for var in temp salt u v
