@@ -101,6 +101,10 @@ while [ $ii -le $HOWMANY ]; do
         $Couple_Lib_exec_coupler_Dir/ww3_hs_wrflowinp.x || exit 8
         $Couple_Lib_exec_coupler_Dir/ww3_ust_wrflowinp.x || exit 8
 
+        elif [ $isftcflx -eq 0 -a $WRF_Rerun = yes ]; then
+	echo "WRF rerun in case of using WSDF"
+
+
 	else
 	echo "isftcflx missing"
 	exit 8
