@@ -5,6 +5,10 @@ expname2='miso6'
 # absolte path
 wrf_geo_grid='/nara/data/hseo/miso/miso6/roms_preprocessing/Grid/geo_em.d01.nc'
 
+# toolbox and roms topofile
+main_path_matlab_toolbox='/vortexfs1/share/seolab/SCOAR2_share/matlab_ROMS_preprocessing/SCOAR2_Prep/matlab_toolbox'
+topopath="${main_path_matlab_toolbox}/Roms_tools/Topo/etopo2.nc"
+
 do_roms='no'
 do_roms_nolake='no'
 do_gen_grid='yes'
@@ -12,10 +16,6 @@ do_template='no'
 #roms grid is needed to process WW3 grid files
 do_WW3_grid='no'
 #### END: USER DEFINITIONS ####
-
-# toolbox and roms topofile
-main_path_matlab_toolbox='/vortexfs1/share/seolab/SCOAR2_share/matlab_ROMS_preprocessing/SCOAR2_Prep/matlab_toolbox'
-topopath="${main_path_matlab_toolbox}/Roms_tools/Topo/etopo2.nc"
 
 #grid info case
 case_roms_nolake="roms-${expname2}-nolake"
