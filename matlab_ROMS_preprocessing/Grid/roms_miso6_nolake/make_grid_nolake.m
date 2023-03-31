@@ -40,10 +40,8 @@ MASK=ncr{'LANDMASK'}(:,:)';
 close(ncr);
 [I,J]=size(XLON);
 
-lonr=XLON(:,1);
-latr=XLAT(1,:);
-
-[Lonr,Latr]=meshgrid(lonr,latr);
+Lonr = XLON';
+Latr = XLAT';
 [Lonu,Lonv,Lonp]=rho2uvp(Lonr); 
 [Latu,Latv,Latp]=rho2uvp(Latr);
 %
