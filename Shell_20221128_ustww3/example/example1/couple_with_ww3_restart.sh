@@ -23,13 +23,17 @@ NUMDAY=`expr $FHOUR \/ 24 `
 echo "Number of Days From Starting Date To Ending Date: $NUMDAY"
 
 elif [ $RESTART = yes ]; then
- 	RestartNDay=`expr $LastNHour \/ 24`
- 	RestartNHour=$LastNHour
- 	RestartNHour2=`expr $LastNHour - $CF`
-	# RESTARTING DATE
-  	$Couple_Lib_utils_Dir/incdte $YYYYS $MMS $DDS $HHS $RestartNHour2> incdte$$ || exit 8
-  	read YYYYSr MMSr DDSr HHSr < incdte$$ ; rm incdte$$
-  	echo $YYYYSr $MMSr $DDSr $HHSr
+	if [ $((LastNHour % 24)) != 0 ]; then
+      RestartNDay=$((LastNHour / 24 + 1))
+	else
+	  RestartNDay=$((LastNHour / 24))
+	fi
+RestartNHour=$LastNHour
+RestartNHour2=`expr $LastNHour - $CF`
+# RESTARTING DATE
+$Couple_Lib_utils_Dir/incdte $YYYYS $MMS $DDS $HHS $RestartNHour2> incdte$$ || exit 8
+read YYYYSr MMSr DDSr HHSr < incdte$$ ; rm incdte$$
+echo $YYYYSr $MMSr $DDSr $HHSr
 
  NDay=$RestartNDay
  NHour=$RestartNHour
@@ -56,19 +60,13 @@ echo "Total EndDay = $EndDAY"
 $Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
 
 # Starting Loop
-	NLOOP=1
-	if [ $RESTART = yes ]; then
-		NLOOP=`expr $LastNHour \/ $CF`
-	fi
-
-     while [ $NDay -le $EndDAY ] ; do
-NDayp=`expr $NDay + 1`
-NDaym=`expr $NDay - 1`
-if [ $NDaym -le 0 ]; then
-   NDaym=$NDay
+NLOOP=1
+if [ $RESTART = yes ]; then
+	NLOOP=`expr $LastNHour \/ $CF`
 fi
-NHourp=`expr $NHour + $CF`
-NHourm=`expr $NHour - $CF`
+
+while [ $NHour -le $EndHOUR ] ; do
+NHourm=$(($NHour - $CF))
 
 $Couple_Lib_utils_Dir/incdte $YYYYi $MMi $DDi $HHi $CF > dteout$$ || exit 8
 #n : 1 $CF later than
@@ -343,14 +341,10 @@ time_start1=$(date "+%s")
 	mkdir -p $Model_WRF_Dir/d01/$YYYYin
 	# AFWA writes only beginning of fcst...
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
-	fi
 		if [ $WRF_Domain -eq 2 ]; then
-# delete these first three: they are done above.
-#		mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output_Dir/ || exit 8
-#		mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
-#		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
+	fi
 # wrfts
 	if [ $WRF_TS = yes ]; then
 	ns=1
