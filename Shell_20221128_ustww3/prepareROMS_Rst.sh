@@ -20,6 +20,8 @@ rm $Couple_Data_ROMS_Dir/ocean_bry.nc 2>/dev/null
 
 echo "ROMS_BCFile = $ROMS_BCFile"
 
+ROMS_BCtimes='zeta_time v2d_time v3d_time salt_time temp_time'
+
  if [ $ROMS_BCFile = SODA -a $ROMS_BCFile_Freq = 1mon ]; then
  	echo $ROMS_BCFile
   	tindx=`expr $JD \/ 30 + 1`
@@ -64,6 +66,20 @@ echo "ROMS_BCFile = $ROMS_BCFile"
 	# cesar's roms preprocessing tool gives this format: 05/28/2021
         bryfile=$ROMS_BCFile_Name\_$YYYYin$MMin$DDin\.nc
         ifile_bry=$ROMS_BCFile_Dir/$YYYYin/$bryfile
+
+# CR 2023-07-14: addition - Christoph's Python pre-processing of GLORYS12v1 data
+# The Python pre-processing routines can generate boundary files with multiple
+# dates. So we extract the fields for the relavant date and write it into a
+# temporary boundary file that follows the SCOAR standard.
+ elif [ $ROMS_BCFile = glorys12v1 ]; then
+        echo $ROMS_BCFile
+        bryfile=$ROMS_BCFile_Name\_$YYYYin.nc
+        mkdir -p $ROMS_BCFile_Dir/$ROMS_BCFile_Freq
+        ncks -O -d bry_time,"$YYYYin-$MMin-$DDin 12:00:00" $ROMS_BCFile_Dir/$bryfile \
+            $ROMS_BCFile_Dir/$ROMS_BCFile_Freq/$ROMS_BCFile_Name\_$YYYYin$MMin$DDin\.nc
+        ifile_bry=$ROMS_BCFile_Dir/$ROMS_BCFile_Freq/$ROMS_BCFile_Name\_$YYYYin$MMin$DDin\.nc
+        # note that all variables share the same time dimension `bry_time`
+        ROMS_BCtimes=bry_time
 
 ## AR2 clim OBC run
 # elif [ $ROMS_BCFile = mercator_daily_clim -a $ROMS_BCFile_Freq = 1day ]; then
@@ -116,7 +132,8 @@ if [ $restart_from_coupled_spinup = yes ]; then
         # remove existing rst file
         rm $Couple_Data_ROMS_Dir/ocean_rst.nc 2>/dev/null
         ln -fs $ROMS_ICFile $Couple_Data_ROMS_Dir/ocean_ini.nc
-         $Couple_Run_Dir/change_ocean_in.sh || exit 8
+# CR 2023-08-14 $Couple_Run_Dir/change_ocean_in.sh || exit 8
+        $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
 else # if restarting from Avg or His file
 
     	if [ ! -s $ROMS_ICFile ]; then
@@ -243,8 +260,9 @@ rm fort.?? 2>/dev/null
 # 2. bryfile: daily
 echo $num_hour> fort.13
 #echo $NHour > fort.14
+echo $CF > fort.15
 ln -fs $Couple_Data_ROMS_Dir/ocean_bry.nc fort.21
-for time_name in zeta_time v2d_time v3d_time salt_time temp_time
+for time_name in $ROMS_BCtimes #zeta_time v2d_time v3d_time salt_time temp_time
   do
     echo $time_name > fort.12
 $Couple_Lib_exec_coupler_Dir/update_bry_time3.x || exit 8
@@ -254,6 +272,7 @@ rm fort.?? 2>/dev/null
 # #3. forc
 echo $num_hour> fort.13
 #echo $NHour > fort.14
+echo $CF > fort.15
 frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
 ln -fs $frcfile fort.21
 
