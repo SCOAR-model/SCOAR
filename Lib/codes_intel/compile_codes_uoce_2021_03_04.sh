@@ -1,6 +1,6 @@
 #!/bin/sh
-INCLUDEDIR=/vortexfs1/apps/impistack-1.0/include
-LIBDIR=/vortexfs1/apps/impistack-1.0/lib
+INCLUDEDIR=$(nf-config --prefix)/include
+LIBDIR=$(nf-config --prefix)/lib
 Couple_Lib_exec_coupler_Dir=../exec/Coupler_intel/
 
 fname=sst_wrflowinp_nolake_initial
@@ -24,6 +24,16 @@ ifort -c -I$INCLUDEDIR $fname.f
 ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
 
 fname=voce_wrflowinp_nolake_use_qck
+echo "$fname.f" 
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
+fname=uvoce_wrflowinp_nolake_initial
+echo "$fname.f" 
+ifort -c -I$INCLUDEDIR $fname.f
+ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf
+
+fname=uvoce_wrflowinp_nolake_use_qck
 echo "$fname.f" 
 ifort -c -I$INCLUDEDIR $fname.f
 ifort -o $fname.x $fname.o -L$LIBDIR -lnetcdff -lnetcdf

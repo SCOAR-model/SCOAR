@@ -151,53 +151,63 @@ echo $nd > fort.13
 ln -fs $SST_Out fort.14 || exit 8
 
 if [ $NOLAKE = yes ]; then
-# eventually, there should be a code that autumatically detect lakes and overwritw sst from wrflowinp on these pts.
-# instead of make nolake mask manually
-####### read this for landmask
-#####ln -fs  $Model_WRF_Dir/wrfinput_d01 fort.16
-# read landmask with nolake; (new)
-# update sst only over the land.
-# over lake use the existing values in wrf_lowinp
+    # eventually, there should be a code that autumatically detect lakes and overwritw sst from wrflowinp on these pts.
+    # instead of make nolake mask manually
+    ####### read this for landmask
+    #####ln -fs  $Model_WRF_Dir/wrfinput_d01 fort.16
+    # read landmask with nolake; (new)
+    # update sst only over the land.
+    # over lake use the existing values in wrf_lowinp
 	echo "use nolake grid for updating SST. i.e lake values are not updated by ROMS"
 	ln -fs $Couple_Lib_grids_ROMS_Dir/roms-$gridname-nolake-maskr.dat fort.16
 fi
-	if [ $SST_FREQUENCY -gt $CF ]; then
+
+if [ $SST_FREQUENCY -gt $CF ]; then
 	echo" SST_FREQUENCY > CF: not meaninful. exiting"
 	exit 8
-	else # SST_FREQUENCT -lt CF
-	HOWMANY=`expr $CF \/ $SST_FREQUENCY + 1`
-	# calculate the time-stpes (nt2) of wrflowinp to update SST to.
-        ii=1; while [ $ii -le $HOWMANY ]; do
-        nt2=`expr  \( $CF \/ $SST_FREQUENCY \) \* \( $NLOOP \- 1 \) + $ii`
-        #nt2=`expr  $CF \* \( $NLOOP \- 1 \) + $ii`
-#nt2 is the time stamp of the wflowinp at which ROMS SST will be entered..
-#make sure this is a correct value
-	echo "nt2=$nt2"
-        echo $nt2 > fort.15 || exit 8
+else # SST_FREQUENCT -lt CF
+    HOWMANY=`expr $CF \/ $SST_FREQUENCY + 1`
+    # calculate the time-stpes (nt2) of wrflowinp to update SST to.
+    ii=1; while [ $ii -le $HOWMANY ]; do
+    nt2=`expr  \( $CF \/ $SST_FREQUENCY \) \* \( $NLOOP \- 1 \) + $ii`
+    #nt2=`expr  $CF \* \( $NLOOP \- 1 \) + $ii`
+    #nt2 is the time stamp of the wflowinp at which ROMS SST will be entered..
+    #make sure this is a correct value
+    echo "nt2=$nt2"
+    echo $nt2 > fort.15 || exit 8
 
 if [ $NOLAKE = yes ]; then
-	if [ $NLOOP -eq 1 ]; then
-	#  for initial SST update, since it is usually ROMS IC, don't use use_qck. 
+    # we need the ROMS and WRF grid angles to rotate the current vectors
+	# fort.11: ROMS grid dimensions - assigned above
+	# fort.12: $SST_In = ROMS IC or output file - assigned above
+	# fort.13: $nd = number of vertical levels in ROMS - assigned above
+	# fort.14: $SST_Out = wrflowinp file - assigned above
+	# fort.15: $nt2 = time stamp of wrflowinp where ROMS data will be entered
+	# fort.16: ROMS land mask
+	# fort.32: WRF grid file for COSALPHA and SINALPHA
+    ln -fs $Couple_Lib_grids_WRF_Dir/geo_em.d0$Coupling_Domain.nc fort.32 || exit 8
+	# fort.34: ROMS grid file for angle
+    ln -fs $Couple_Lib_grids_ROMS_Dir/$ROMS_Grid_Filename fort.34 || exit 8
+    if [ $NLOOP -eq 1 ]; then
+        # for initial SST update, since it is usually ROMS IC, don't use use_qck.
 		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_initial.x || exit 8
-        	if [ $UaUo = yes ]; then
-        		echo UaUo is yes: uoce/voce in wrflowinp will be updated
-# need to convert u/v from u/v-grid of the ROMS ICfile to rho grid ...
-		$Couple_Lib_exec_coupler_Dir/uoce_wrflowinp_nolake_initial.x || exit 8
-         	$Couple_Lib_exec_coupler_Dir/voce_wrflowinp_nolake_initial.x || exit 8
-		else
-			echo "no UaUo"
-		fi
-	else
-	# after the initial, use qck as SST are read from ocean qck file
-		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_use_qck.x || exit 8
 		if [ $UaUo = yes ]; then
-			echo UaUo is yes: uoce/voce in wrflowinp will be updated
-		$Couple_Lib_exec_coupler_Dir/uoce_wrflowinp_nolake_use_qck.x || exit 8
-        	$Couple_Lib_exec_coupler_Dir/voce_wrflowinp_nolake_use_qck.x || exit 8
-		else 	
-			echo "no UaUo"
-		fi
-	fi
+		    echo UaUo is yes: uoce/voce in wrflowinp will be updated
+			# need to convert u/v from u/v-grid of the ROMS ICfile to rho grid ...
+            $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_initial.x || exit 8
+        else
+            echo "no UaUo"
+        fi
+    else
+        # after the initial, use qck as SST are read from ocean qck file
+        $Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_use_qck.x || exit 8
+		if [ $UaUo = yes ]; then
+            echo UaUo is yes: uoce/voce in wrflowinp will be updated
+            $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_use_qck.x || exit 8
+        else 	
+            echo "no UaUo"
+        fi
+    fi
 else
 	if [ $NLOOP -eq 1 ]; then
         $Couple_Lib_exec_coupler_Dir/sst_wrflowinp.x || exit 8
@@ -205,9 +215,9 @@ else
         $Couple_Lib_exec_coupler_Dir/sst_wrflowinp_use_qck.x || exit 8
 	fi
 fi
-        ii=`expr $ii + 1`
-        done
+    ii=`expr $ii + 1`
+    done # while [ $ii -le $HOWMANY ]
 	fi #[ $SST_FREQUENCY -gt $CF ]; then
 fi # SmoothSST
-   rm -f fort.?? 2>/dev/null
+rm -f fort.?? 2>/dev/null
 
