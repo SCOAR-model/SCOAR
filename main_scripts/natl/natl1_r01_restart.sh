@@ -418,7 +418,7 @@ export WRF_process_Dir=$Couple_Data_WRF_Dir/process
 
 export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
 
-   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV
+   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
