@@ -16,8 +16,8 @@ MME=`echo $1 | cut -d':' -f2`
 DDE=`echo $1 | cut -d':' -f3`
 HHE=`echo $1 | cut -d':' -f4`
 
-export gridname=nep1
-export gridname2=nep
+export gridname=example1
+export gridname2=example
 
 # restart option;
 # these parameters are specified in the job submission script
@@ -201,20 +201,20 @@ fi
 export River=yes
 if [ $River = yes ]; then
   echo "make sure to set river parameters in ocean.in"
-  export river_data=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/rivers/rivers_nep_190001-201812.nc
+  export river_data=
 fi
 # Tides for ROMS
 export Tide=yes
 if [ $Tide = yes ]; then
   echo "Tide is yes; need tide file and ocean.in file"
-  export tide_data=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/tides/tides_nep.nc
+  export tide_data=
 fi
 
 # ROMS BC files SODA_1day or SODA_mon
 export ROMS_BCFile=glorys12v1
 export ROMS_BCFile_Freq=1day  
-export ROMS_BCFile_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/bdy
-export ROMS_BCFile_Name=glorys12v1_nep_bdy
+export ROMS_BCFile_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/example/example1/ROMS_Input/bdy
+export ROMS_BCFile_Name=glorys12v1_example_bdy
 
 # WRF/ROMS Initial condition for coupled somulation
 # 1. start from reanaylsis data (for both WRF and ROMS) or spinup (for ROMS)
@@ -225,10 +225,10 @@ export restart_from_coupled_spinup=no
         #2. ICFile is set to the ROMS coupled spinup run
 if [ $restart_from_coupled_spinup = yes ]; then
   # this is where wrfrst files are located
-  export WRF_RST_coupled_spinup=/vortexfs1/share/seolab/crenkl/models/SCOAR/Run/nep/nep1/r01/Data/WRF/WRF_RST/2014-12-01_00
-  export ROMS_ICFile=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/ini/rst_2014-12-01_00_Hour720_mhw.nc
+  export WRF_RST_coupled_spinup=
+  export ROMS_ICFile=
 else
-  export ROMS_ICFile=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/ini/nep_R027_rst_scoar_ini_20141101.nc
+  export ROMS_ICFile=
 fi
 
 # WW3 Initial File : from WW3 Spinup
