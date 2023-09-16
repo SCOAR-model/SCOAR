@@ -1,24 +1,26 @@
 #!/bin/sh
 set -ax
 export RUN_ID=r01
-export NCO=/usr/local/other/nco/5.0.1/bin
+export NCO=/vortexfs1/apps/nco-4.7.4/bin
 
 # starting time : YYYYS MMS DDS HHS
-export YYYYS=2015
+export YYYYS=2014
 export MMS=11
 export DDS=01
 export HHS=00
 
 # ending time : YYYYE MME DDE HHE
+# note that the ending time is specified in the job submission script
 YYYYE=`echo $1 | cut -d':' -f1`
 MME=`echo $1 | cut -d':' -f2`
 DDE=`echo $1 | cut -d':' -f3`
 HHE=`echo $1 | cut -d':' -f4`
 
-export gridname=natl1
-export gridname2=natl
+export gridname=nep1
+export gridname2=nep
 
-# restart option; 
+# restart option;
+# these parameters are specified in the job submission script
 export RESTART=$2
 export LastNHour=$3
 
@@ -67,7 +69,7 @@ export SSS_CORRECTION=no
 	# SSS files should reside under ROMS_Input_mercator
 	SSS_path=\$Couple_Misc_Data_Dir/ROMS_Input/\$ROMS_BCFile/sss
 
-# ROMS: new option: restart from ocean_rst.nc
+# ROMS: new option: restart from ocean_rst.nc (for NLOOP > 1)
 export ROMS_Rst=yes
 
 # are there small lakes in WRF land pts?
@@ -77,18 +79,18 @@ export NOLAKE=yes #in ROMS2WRF.sh lakes in ROMS grids have been already filled o
 
 #Number of CPUs used
 # THIS NEED TO BE MATCHED IN THE SGL script and ocean.in file
-export wrfNCPU=288
-export romsNCPU=288
+export wrfNCPU=144
+export romsNCPU=144
 export ww3NCPU=144
 
 # coupling frequency, MPI, version of ROMS
-export CF=3
+export CF=1
 # output frequency in wrfout this has to match with namelist.input
 export WRF_OUTPUT_FREQUENCY=$CF
 # output frequency in wrfout this has to match with ocean.in
 export ROMS_OUTPUT_FREQUENCY=$CF
 export WRF_PRS=yes
-export WRF_ZLEV=yes
+export WRF_ZLEV=no
 # WRF time-series option added 2021/06/04
 export WRF_TS=no
 export WRF_AFWA=no
@@ -112,8 +114,8 @@ export SST_FREQUENCY=$CF
 echo "check both WRF_OUTPUT_FREQUENCY SST_FREQUENCY in namelist.input file ...."
 
 # WRF input files after real.exe ; located in $Couple_Misc_Data_Dir
-export WRF_Domain=1 # WRF # of domains
-export Coupling_Domain=1 # Domains where ROMS and WRF are coupled: 1 if d01, 2 if d02
+export WRF_Domain=2 # WRF # of domains
+export Coupling_Domain=2 # Domains where ROMS and WRF are coupled: 1 if d01, 2 if d02
 export wrfinput_file_d01=wrfinput_d01
 # grid-point nudging
 export wrffdda_file_d01=wrffdda_d01
@@ -130,16 +132,11 @@ if [ $RESTART = yes ]; then
 else
 	export already_copied_wrflowinp=no
 fi
-# application specific set
-######
-#natl1
-        export already_copied_wrflowinp=yes
-#####
 
 # ROMS OUTPUTS Types to use
 # for mjo and yso runs, avg is the average for the coupling interver and his is output every 1h regardless of CF 
 export ROMS_Avg=yes 
-export ROMS_His=no
+export ROMS_His=yes
 export ROMS_Qck=yes
 export Use_SST_In=Qck
 
@@ -201,28 +198,23 @@ export spany=5.0
 fi
 
 # River for ROMS
-export River=no
+export River=yes
 if [ $River = yes ]; then
-        echo "make sure to set river parameters in ocean.in"
-        export river_data=#/vortexfs1/share/seolab/hseo/SCOAR2/Data/domains/miso/miso6/ROMS_Input/river/miso6_rivers_Jul21.nc
+  echo "make sure to set river parameters in ocean.in"
+  export river_data=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/rivers/rivers_nep_190001-201812.nc
 fi
 # Tides for ROMS
 export Tide=yes
 if [ $Tide = yes ]; then
-        echo "Tide is yes; need tide file and ocean.in file"
-        export tide_data=$PROJECT/hseo4/SCOAR/Data/domains/natl/natl1/ROMS_Input/tides/tides_nat1_20151101.nc
+  echo "Tide is yes; need tide file and ocean.in file"
+  export tide_data=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/tides/tides_nep.nc
 fi
 
 # ROMS BC files SODA_1day or SODA_mon
-export ROMS_BCFile=mercator
+export ROMS_BCFile=glorys12v1
 export ROMS_BCFile_Freq=1day  
-        export ROMS_BCFile_Dir=\$Couple_Misc_Data_Dir/ROMS_Input/$ROMS_BCFile/$ROMS_BCFile_Freq
-        export ROMS_BCFile_Name=mercator.bry_1dy
-#export ROMS_BCFile=SODA342
-#export ROMS_BCFile_Freq=1day
- #       export ROMS_BCFile_Dir=\$Couple_Misc_Data_Dir/ROMS_Input/$ROMS_BCFile/$ROMS_BCFile_Freq
-#        export ROMS_BCFile_Name=soda3.bry_1dy
-
+export ROMS_BCFile_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/bdy
+export ROMS_BCFile_Name=glorys12v1_nep_bdy
 
 # WRF/ROMS Initial condition for coupled somulation
 # 1. start from reanaylsis data (for both WRF and ROMS) or spinup (for ROMS)
@@ -232,11 +224,11 @@ export restart_from_coupled_spinup=no
         #1. link wrfrst file and change namelist WRF_RESTART option accordingly in couple.sh
         #2. ICFile is set to the ROMS coupled spinup run
 if [ $restart_from_coupled_spinup = yes ]; then
-        # this is where wrfrst files are located
-export WRF_RST_coupled_spinup=
-export ROMS_ICFile=
+  # this is where wrfrst files are located
+  export WRF_RST_coupled_spinup=/vortexfs1/share/seolab/crenkl/models/SCOAR/Run/nep/nep1/r01/Data/WRF/WRF_RST/2014-12-01_00
+  export ROMS_ICFile=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/ini/rst_2014-12-01_00_Hour720_mhw.nc
 else
-export ROMS_ICFile=$PROJECT/hseo4/SCOAR/Data/domains/natl/natl1/ROMS_Input/mercator/1day/mercator.ini_1dy_20151101.nc
+  export ROMS_ICFile=/vortexfs1/share/seolab/crenkl/models/SCOAR/Data/domains/nep/nep1/ROMS_Input/ini/nep_R027_rst_scoar_ini_20141101.nc
 fi
 
 # WW3 Initial File : from WW3 Spinup
@@ -250,21 +242,21 @@ export WW3_spinup=no
 fi
 
 # Main Run Directory
-export Couple_Run_Dir=$PROJECT/hseo4/SCOAR/Run/$gridname2/$gridname/$RUN_ID
+export Couple_Run_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR/Run/$gridname2/$gridname/$RUN_ID
 
 # executables and inputs files
-export ROMS_Executable_Filename=oceanM
-        # as ROMS output is an averaged fileds. produce only one time-step
-        export ROMS_Input_Filename=ocean.in
+export ROMS_Executable_Filename=romsM
+# as ROMS output is an averaged fileds. produce only one time-step
+export ROMS_Input_Filename=ocean.in
 
-        # as WRF output is an snapshot, produce 1-hrly fields for given CF and then average
-        #export WRF_Namelist_input=namelist.input_$gridname\_$CF\hr
-	# BE SURE TO INCLUDE write_hist_at_0h_rst  
-        #export WRF_Namelist_input=namelist.input
-        export WRF_Namelist_input=namelist.input
+# as WRF output is an snapshot, produce 1-hrly fields for given CF and then average
+#export WRF_Namelist_input=namelist.input_$gridname\_$CF\hr
+# BE SURE TO INCLUDE write_hist_at_0h_rst  
+#export WRF_Namelist_input=namelist.input
+export WRF_Namelist_input=namelist.input
 
-	# if add/remove output option is defined, need to be stated in the namelist.input file
-	export iofields_filename=yes
+# if add/remove output option is defined, need to be stated in the namelist.input file
+export iofields_filename=yes
 
 export WW3_exe_Filename=ww3_*
 
@@ -277,7 +269,7 @@ export WRF_Launch_Filename=wrflaunch
 
 # number of vertical layer in ocean model
 # not needed if use ROMS Qck file to read SST and UVsfc
-export nd=50
+export nd=30
 
 # IF ROMS and WRF have the same grid/mask 
 # needinterp=no && tiling=no
@@ -306,7 +298,7 @@ fi
 export YYYYS MMS DDS HHS YYYYE MME DDE HHE
 
 #Home Directory
-export Couple_Home_Dir=/discover/nobackup/projects/whoimap/hseo4/SCOAR
+export Couple_Home_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR
 
 #Shell Directory
 export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell
@@ -330,29 +322,29 @@ export Couple_Lib_Dir=$Couple_Home_Dir/Lib
 
 export Couple_Model_Dir=$Couple_Home_Dir/Model
 
-	#WRF
-        export Couple_WRF_Dir=$Couple_Model_Dir/WRF/$gridname2/$gridname/WRF-4.2.2_march2022
-		echo "Make sure you have the correct WRF working directory."
-			export Model_WRF_Dir=$Couple_WRF_Dir/test/em_real_$RUN_ID
-			export Couple_WPS_grid_Dir=$Couple_WPS_Dir/domains/$gridname2/$gridname
-		export Couple_WRF_Info_Dir=$Couple_WRF_Dir/Info
-		export Couple_WRF_geog_Dir=$WRF_Info_Dir/geog #geogrid
-	# Not needed, all we need is just an executable
-	#ROMS
-	#export Couple_ROMS_Dir=$Couple_Home_Dir/Model/ROMS$vROMS
-	#	export Couple_ROMS_External_Dir=$Couple_ROMS_Dir/ROMS/External
-	#	export Couple_ROMS_Include_Dir=$Couple_ROMS_Dir/ROMS/Include
+#WRF
+export Couple_WRF_Dir=$Couple_Model_Dir/WRF/$gridname2/$gridname/WRF-4.2.2_march2022
+echo "Make sure you have the correct WRF working directory."
+        export Model_WRF_Dir=$Couple_WRF_Dir/test/em_real_$RUN_ID
+        export Couple_WPS_grid_Dir=$Couple_WPS_Dir/domains/$gridname2/$gridname
+export Couple_WRF_Info_Dir=$Couple_WRF_Dir/Info
+export Couple_WRF_geog_Dir=$WRF_Info_Dir/geog #geogrid
+# Not needed, all we need is just an executable
+#ROMS
+#export Couple_ROMS_Dir=$Couple_Home_Dir/Model/ROMS$vROMS
+#	export Couple_ROMS_External_Dir=$Couple_ROMS_Dir/ROMS/External
+#	export Couple_ROMS_Include_Dir=$Couple_ROMS_Dir/ROMS/Include
 
 # WRF_ROMS misc Data directory (containing ROMS/WRF initial/boundary files...)
 export Couple_Misc_Data_Dir=$Couple_Home_Dir/Data/domains/$gridname2/$gridname
-        export WRF_Input_Data=$Couple_Misc_Data_Dir/WRF_Input/201511_202202
-        export ROMS_Input_Data=$Couple_Misc_Data_Dir/ROMS_Input
-        mkdir -p $Couple_Misc_Data_Dir $WRF_Input_Data $ROMS_Input_Data
+export WRF_Input_Data=$Couple_Misc_Data_Dir/WRF_Input
+export ROMS_Input_Data=$Couple_Misc_Data_Dir/ROMS_Input
+mkdir -p $Couple_Misc_Data_Dir $WRF_Input_Data $ROMS_Input_Data
 
-	ROMS_BCFile_Dir=`eval echo $ROMS_BCFile_Dir`
-		echo "ROMS BC Directory: $ROMS_BCFile_Dir"
-	ROMS_ICFile=`eval echo $ROMS_ICFile`
-		echo "ROMS IC: $ROMS_ICFile"
+ROMS_BCFile_Dir=`eval echo $ROMS_BCFile_Dir`
+        echo "ROMS BC Directory: $ROMS_BCFile_Dir"
+ROMS_ICFile=`eval echo $ROMS_ICFile`
+        echo "ROMS IC: $ROMS_ICFile"
 
 #General OUTPUT Directories
 export Couple_Data_Dir=$Couple_Run_Dir/Data
@@ -389,10 +381,10 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
-export ROMS_Forc_Dir=$Couple_Data_ROMS_Dir/Forc
+export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Forc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
-   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Forc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
+   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
@@ -400,7 +392,7 @@ export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 #WRF OUTPUT Directores
 export WRF_Runlog_Dir=$Couple_Data_WRF_Dir/WRF_Log
 export WRF_Output_Dir=$Couple_Data_WRF_Dir/WRF_Out
-export WRF_Output2_Dir=$Couple_Data_WRF_Dir/WRF_Out2
+# export WRF_Output2_Dir=$Couple_Data_WRF_Dir/WRF_Out2  >> CR 2023-09-01: this is not used anymore.
 export WRF_RST_Dir=$Couple_Data_WRF_Dir/WRF_RST
 export WRF_process_Dir=$Couple_Data_WRF_Dir/process
        if [ $WRF_PRS = yes ]; then
@@ -418,7 +410,7 @@ export WRF_process_Dir=$Couple_Data_WRF_Dir/process
 
 export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
 
-   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_Output2_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV_Dir
+   for DIR in $WRF_Runlog_Dir $WRF_Output_Dir $WRF_NamelistInput_Dir $WRF_RST_Dir $WRF_TS_Dir $WRF_process_Dir $WRF_ZLEV_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
@@ -494,6 +486,11 @@ if [ $Tide = yes ]; then
         tide_data=`eval echo $tide_data`
         ln -fs $tide_data $Couple_Data_ROMS_Dir/ocean_tide.nc || exit 8
 fi
+
+grep 'Number of vertical levels' $Couple_Data_ROMS_Dir/ocean.in | awk '{ print $3 }' > nd$$
+read nd < nd$$ ; rm nd$$
+export nd=$nd
+echo "ROMS number of vertical levels, nd= ",$nd
 
 if [ $parameter_run_WW3 = yes ]; then
 # WW3 namelist edit
