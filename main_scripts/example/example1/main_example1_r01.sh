@@ -39,6 +39,7 @@ export parameter_RunROMS=yes
 # 3. parameter_WW32WRF=no
 
 export parameter_run_WW3=no
+export WRF_Rerun=yes
 	if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
 # two options are available for now (May 2021)
@@ -75,6 +76,16 @@ else # if no WW3 is used; turn off all WW3 relatd options
         export parameter_WW32WRF=no
         export ROMS_wave=no
         export parameter_WW32ROMS=no
+fi
+
+# two options added: for reruning WRF only purpose (WW3 outputs are already there).
+if [ $WRF_Rerun = yes ]; then
+# #1. added an option that even if  parameter_run_WW3=no, do WW32WRF.
+        export parameter_WW32WRF=yes
+# #2. Run WRF with WBF when WW3 is not on 
+#  if wrflowinp has all the necessary wave fields.. 
+# useful or rerunning WRF only from the coupled run for additional outputs.
+        export isftcflx=352
 fi
 
 export WRF_ROMS_SAME_GRID=yes
@@ -435,7 +446,7 @@ export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
     mkdir -p $DIR 2>/dev/null
    done
 
-if [ $parameter_run_WW3 = yes ]; then
+if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 #WW3 OUTPUT Directories
 export WW3_Out_Dir=$Couple_Data_WW3_Dir/Out
 export WW3_Outnc_Dir=$Couple_Data_WW3_Dir/Outnc
@@ -512,7 +523,7 @@ read nd < nd$$ ; rm nd$$
 export nd=$nd
 echo "ROMS number of vertical levels, nd= ",$nd
 
-if [ $parameter_run_WW3 = yes ]; then
+if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 # WW3 namelist edit
 cp $Couple_Shell_Dir_common/edit_ww3_prnc.sh $WW3_Exe_Dir/edit_ww3_prnc.sh || exit 8
 cp $Couple_Shell_Dir_common/edit_ww3_shel.sh $WW3_Exe_Dir/edit_ww3_shel.sh || exit 8
