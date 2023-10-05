@@ -33,7 +33,7 @@ export parameter_WRF2ROMS=yes
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
 
-# included an option to run WW3 but do not feed to WRF HS: 3/10/2022
+# included an option to run WW3 but do not feed to WRF
 # 1. parameter_run_WW3=yes
 # 2. isftcflx=0 : #WSDF
 # 3. parameter_WW32WRF=no
@@ -44,7 +44,20 @@ export parameter_run_WW3=no
 # two options are available for now (May 2021)
 # isftcflx=351 : Uses the wave-age only formulation of COARE3.5 in WRF surface layer scheme
 # isftcflx=352 : Uses the wave-age and wave height formulation of COARE3.5 in WRF surface layer scheme (default)
+# isftcflx=353 : 352 + theta 
+# isftcflx=354 : 352 but with mean period
+# isftcflx=355 : (not recommended) Porchetta
+# isftcflx=3500 : (not recommended for now) Obtain the friction velocity from WW3 (UST_WW) and compute the total air-side stress (adding the viscous stress)
+#                       Turbulent heat fluxes are computed from the ust_ww # option added Oct 24, 2022 
 	export isftcflx=0 # or 351, or 352, or 0
+
+	#if using wave mean period
+	if [ $isftcflx = 354 ];then 
+	#option to choose between available mean period from the model output
+	#default (wave_mean_period=1) formulation use t02 (zero crossing method) as currently the coefficients in COARE3.5, when using mean period, have been tuned using t02.
+	#other option (wave_mean_period=2) is to use t0m1 (energy weigthed period).
+	wave_mean_period=1
+	fi
 
 # if sending ocean surface current to WW3
 	export wave_current=yes
@@ -239,6 +252,13 @@ export WW3_spinup=no
 	export WW3_ICFile=
 	export WW3_ICFile_NC=
 	fi
+
+	#Check to make sure the initial and restart files provided exist to properly run WW3
+        if [ ! -s $WW3_ICFile -o ! -s $WW3_ICFile_NC ]; then
+        echo "doesn't exist: $WW3_ICFile or $WW3_ICFile_NC"
+        exit 8
+        fi
+	
 fi
 
 # Main Run Directory

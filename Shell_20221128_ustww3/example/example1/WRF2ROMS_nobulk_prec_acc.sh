@@ -117,12 +117,15 @@ echo "$prec_acc_dt" > fort.18
 
 ii=21
 if [ $NLOOP -gt 1 -a $ROMS_wave = yes -a $parameter_WW32ROMS = yes ]; then
-for VAR in U10 V10 UST GSW GLW SST LH HFX RAINCV RAINNCV utaw vtaw utwo vtwo COSALPHA SINALPHA
+for VAR in U10 V10 UST GSW GLW SST LH HFX PREC_ACC_C PREC_ACC_NC COSALPHA SINALPHA utaw vtaw utwo vtwo
  do
  ln -fs $Couple_Data_tempo_files_Dir/$VAR.workin.dat fort.$ii
  ii=`expr $ii + 1 `
  done
-   $Couple_Lib_exec_coupler_Dir/calculate_WRF_flux_nobulk_raincv_tauoc.x || exit 8
+   ##
+   ln -fs $Couple_Lib_grids_ROMS_Dir/$ROMS_Grid_Filename fort.38 || exit 8
+   ##
+   $Couple_Lib_exec_coupler_Dir/calculate_WRF_flux_nobulk_prec_acc_tauoc.x || exit 8
 
 else #NLOOP, ROMS_wave, parameter_WW32ROMS
 

@@ -522,25 +522,29 @@ cd $WW3_Exe_Dir
 rm -f fort.* wind.ww3* 2>/dev/null
 rm  $WW3_Exe_Dir/ww3_prnc.nml 2>/dev/null
 
-if [ 1 -eq 1 ]; then
 # edit wind nml
-        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYi/wrfout_d0$Coupling_Domain\_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11
-        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYin/wrfout_d0$Coupling_Domain\_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12
-
-	ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
-	ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
-	ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11
-	ncks -4 -O fort.11 fort.11
-        ncatted -a _FillValue,U10,c,f,9.999e+20 fort.11
-        ncatted -a _FillValue,V10,c,f,9.999e+20 fort.11
+ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYi/wrfout_d0$Coupling_Domain\_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11
+ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYin/wrfout_d0$Coupling_Domain\_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12
+## rotate wind vector from grid to earth relative
+ncap2 -A -s 'U10=U10*COSALPHA-V10*SINALPHA' fort.11
+ncap2 -A -s 'V10=V10*COSALPHA+U10*SINALPHA' fort.11
+#
+ncap2 -A -s 'U10=U10*COSALPHA-V10*SINALPHA' fort.12
+ncap2 -A -s 'V10=V10*COSALPHA+U10*SINALPHA' fort.12
+## ##
+ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
+ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
+ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11
+ncks -4 -O fort.11 fort.11
+ncatted -a _FillValue,U10,c,f,9.999e+20 fort.11
+ncatted -a _FillValue,V10,c,f,9.999e+20 fort.11
 # this needs work; for both Eastern and Western Hemisphere longitudes
 #        ncap2 -O -s 'lon=lon+360' fort.11 fort.11
-	$WW3_Exe_Dir/edit_ww3_prnc.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_prnc_wind.nml
-	ln -fs ww3_prnc_wind.nml ww3_prnc.nml
-	$WW3_Exe_Dir/ww3_prnc >& log_prnc_wind_$$
-	mv wind.ww3 wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
-	ln -fs wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour wind.ww3
-fi
+$WW3_Exe_Dir/edit_ww3_prnc.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_prnc_wind.nml
+ln -fs ww3_prnc_wind.nml ww3_prnc.nml
+$WW3_Exe_Dir/ww3_prnc >& log_prnc_wind_$$
+mv wind.ww3 wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
+ln -fs wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour wind.ww3
 
 # #2. ROMS u/v sfc current for WW3
 if [ $wave_current = yes ];then
@@ -632,14 +636,13 @@ fi
 
 # clean up
         rm $WW3_Rst_Dir/restart.ww3.??????????\_Hour$NHourm2 2>/dev/null
-        rm $WW3_Outnc_Dir/ww3.??????????\_Hour$NHourm2\.nc
+        rm $WW3_Outnc_Dir/ww3.??????????\_Hour$NHourm2\.nc 2>/dev/null
 #  WW3 netcdf file; 
 	if [ $NLOOP -eq 1 ]; then 
         mv ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc $WW3_Outnc_Dir/$YYYYi/ww3.$YYYYi$MMi$DDi$HHi\_Hour$NHourm\.nc
 	else
         rm ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc 2>/dev/null
 	fi
-        mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
 
 cd -
 time_end=$(date "+%s")

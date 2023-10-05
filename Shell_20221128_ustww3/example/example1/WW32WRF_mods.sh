@@ -74,15 +74,21 @@ while [ $ii -le $HOWMANY ]; do
 
 	elif [ $isftcflx -eq 353 ]; then
 	# modified COARE3.5 WBF2 to include peak absolute angle difference
-	# beween wind and wave (Sauvage et al. (2022)
+	# beween wind and wave (Sauvage et al. (2023)
         $Couple_Lib_exec_coupler_Dir/ww3_fp_wrflowinp.x || exit 8
         $Couple_Lib_exec_coupler_Dir/ww3_hs_wrflowinp.x || exit 8
         $Couple_Lib_exec_coupler_Dir/ww3_dp_wrflowinp.x || exit 8
 
 	elif [ $isftcflx -eq 354 ]; then
         # modified COARE3.5 WBF2 to replace 
-	# peak wave age with mean wave age (computed with t02)
-	# Sauvage et al. (2022)
+	# peak wave age with mean wave age (computed with t02 or t0m1)
+	# Sauvage et al. (2023)
+		if [ $wave_mean_period = 2 ];then # use t0m1 (energy weigthed period)
+			$Couple_Lib_exec_coupler_Dir/ww3_t0m1_wrflowinp.x || exit 8
+		else # $wave_mean_period = 1, default, use t02 (zero crossing method)
+			$Couple_Lib_exec_coupler_Dir/ww3_t02_wrflowinp.x || exit 8
+		fi
+
         $Couple_Lib_exec_coupler_Dir/ww3_t02_wrflowinp.x || exit 8
         $Couple_Lib_exec_coupler_Dir/ww3_hs_wrflowinp.x || exit 8
 
