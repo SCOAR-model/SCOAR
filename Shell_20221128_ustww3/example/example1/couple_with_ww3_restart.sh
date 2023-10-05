@@ -347,8 +347,13 @@ time_start1=$(date "+%s")
 	fi
 # wrfts
 	if [ $WRF_TS = yes ]; then
+	# Find out the number of stations (locations)
+        ls $Model_WRF_Dir/*.d01.TS  | wc -l > out$$
+        read num_station < out$$; rm out$$
+        echo $num_station
+        # for each location
 	ns=1
-        while [ $ns -le $WRF_TS_num_station ]; do
+        while [ $ns -le $num_station ]; do
 		# for each field
         	for FLD in UU VV WW TH QV PR PH
         	do
