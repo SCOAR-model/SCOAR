@@ -416,7 +416,7 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
-export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Forc
+export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
    for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
