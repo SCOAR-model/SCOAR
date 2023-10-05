@@ -29,6 +29,26 @@
 ! fort.54: swrad [W m-2]
 ! fort.55: swflux 
 
+! ##############3
+! Nov 22, 2022 Hyodae Seo
+! if ROMS_wave=yes and parameter_WW32ROMS=yes
+! sustr and svstr is tau_oc = tau_a - tau_w - tau_ds
+! tau_a is computed from UST from WRF which is the total friction
+! velocity from WW3
+! tau_w is from WW3, wave-supported stress (utaw, vtaw in vector)
+! tau_ds is from WW3, momentum flux from wave to ocean interior via wave
+! breaking (utwo, vtwo)
+
+! read additional inputs
+! 31. UTAW
+! 32. VTAW
+! 33. UTOW
+! 34. VTOW
+
+! then, the output sustr and svstr now represent tau_ocx and tau_ocy
+! ########
+
+
 ! shflux = GSW + GLW + LWu - LH - HFX
 
 ! swflux
@@ -45,7 +65,7 @@
 
 ! constants
       integer :: prec_acc_dt
-      real*8 :: rhoa, cff, theta, LWu
+      real*8 :: rhoa, rhoo, cff, theta, LWu
       real*8 :: fac, Lv, rhow
 
 ! read flux files at 1 time step
@@ -56,6 +76,8 @@
       real*8, dimension(:,:), allocatable :: lh, hfx
       real*8, dimension(:,:), allocatable :: prec_acc_nc, prec_acc_c
       real*8, dimension(:,:), allocatable :: cosa, sina, ROMSalpha
+      real*8, dimension(:,:), allocatable :: utaw, vtaw
+      real*8, dimension(:,:), allocatable :: utwo, vtwo
 
 ! output
       real*8, dimension(:,:), allocatable :: sustr, svstr
@@ -98,6 +120,9 @@
       allocate(lwrad(nx,ny))
       allocate(swflux(nx,ny))
       allocate(lh(nx,ny),hfx(nx,ny))
+! #### tau_w and tau_ds
+      allocate(utaw(nx,ny),vtaw(nx,ny))
+      allocate(utwo(nx,ny),vtwo(nx,ny))
 
 ! read prec_acc_dt
       open(18,file='fort.18',form='formatted')
@@ -116,6 +141,11 @@
       open(30,file='fort.30',form='formatted')
       open(31,file='fort.31',form='formatted')
       open(32,file='fort.32',form='formatted')
+      
+      open(33,file='fort.33',form='formatted') !utaw
+      open(34,file='fort.34',form='formatted') !vtaw
+      open(35,file='fort.35',form='formatted') !utwo
+      open(36,file='fort.36',form='formatted') !vtwo
 
       read(21,*) u10
       read(22,*) v10
@@ -129,9 +159,13 @@
       read(30,*) prec_acc_nc
       read(31,*) cosa
       read(32,*) sina 
+      read(33,*) utaw
+      read(34,*) vtaw
+      read(35,*) utwo
+      read(36,*) vtwo
 
 ! 5. get ROMS angle from grid file
-      status = nf_open('fort.34',nf_nowrite,ncid)
+      status = nf_open('fort.38',nf_nowrite,ncid)
       if (status .ne. nf_noerr) call handle_err(status,7)
       status = nf_inq_varid(ncid,'angle',varid)
       if (status .ne. nf_noerr) call handle_err(status,8)
@@ -144,9 +178,24 @@
 
       ! density of air [kg m-3]
       rhoa=1.225
+      ! density of ocean [kg m-3]
+      rhoo=1023
 
       ! Stefan-Boltzmann constant [W m-2 K-4]
       cff=5.67e-8 
+
+! WW3 outputs have nan valiues over land (1E30)
+       do 200 j=1,ny
+        do 200 i=1,nx
+         if (utaw(i,j) .gt. 1E10)
+     &    utaw(i,j) = 0.
+         if (vtaw(i,j) .gt. 1E10)
+     &    vtaw(i,j) = 0.
+         if (utwo(i,j) .gt. 1E10)
+     &    utwo(i,j) = 0.
+         if (vtwo(i,j) .gt. 1E10)
+     &    vtwo(i,j) = 0.
+  200    continue
 
 ! 1. wind stress: sustr, svstr
 ! ust= sqrt(tau/rhoa)
@@ -169,6 +218,19 @@
 ! see: ROMS/ROMS/Utility/uv_rotate.F  
           sustrtmp = sustrWRF*cosa(i,j) - svstrWRF*sina(i,j)
           svstrtmp = svstrWRF*cosa(i,j) + sustrWRF*sina(i,j)
+
+!!!Computing Ocean side stress using WW3 output before doing the roation relative to ROMS
+!grid
+! substract tau_w and tau_dis from total stress 
+! to get tau_oc
+! need to check the sign : 
+       !sustrtmp =  sustrtmp + rhoo*utaw(i,j) + rhoo*utwo(i,j)
+       !svstrtmp =  svstrtmp + rhoo*vtaw(i,j) + rhoo*vtwo(i,j)
+        sustrtmp =  sustrtmp - rhoo*utaw(i,j) + rhoo*utwo(i,j)
+        svstrtmp =  svstrtmp - rhoo*vtaw(i,j) + rhoo*vtwo(i,j)
+
+
+
 ! from Earth-relative to grid-relative coordinates using ROMS angle
 ! see: ROMS/ROMS/Nonlinear/set_data.F
           sustri(i,j) = sustrtmp*COS(ROMSalpha(i,j))
@@ -177,6 +239,8 @@
      &                 -sustrtmp*SIN(ROMSalpha(i,j))
         enddo
       enddo
+
+
 
 ! ROMS expects the wind stress forcing fields on u- and v-points
 ! regrid sustri to u-points - no filling of boundary values needed
