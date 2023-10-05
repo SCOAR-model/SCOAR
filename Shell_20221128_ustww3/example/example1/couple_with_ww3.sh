@@ -113,12 +113,12 @@ if [ $NLOOP -eq 1 ]; then
 	echo "Prepared the wrfinput wrfbdy wrflowinp..."
 	# link initial and bdy files (since these are not changed during the integration)
 	ln -fs $WRF_Input_Data/$wrfinput_file_d01 $Model_WRF_Dir/wrfinput_d01 || exit 8
-	if [ $WRF_FDDA = yes ] ; then
+	if [ $WRF_FDDA_d01 = yes ] ; then
 	ln -fs $WRF_Input_Data/$wrffdda_file_d01 $Model_WRF_Dir/wrffdda_d01 || exit 8
 	fi
 		if [ $WRF_Domain -eq 2 ]; then
 		ln -fs $WRF_Input_Data/$wrfinput_file_d02 $Model_WRF_Dir/wrfinput_d02 || exit 8
-			if [ $WRF_FDDA = yes ] ; then
+			if [ $WRF_FDDA_d02 = yes ] ; then
 		ln -fs $WRF_Input_Data/$wrffdda_file_d02 $Model_WRF_Dir/wrffdda_d02 || exit 8
 			fi
 		fi

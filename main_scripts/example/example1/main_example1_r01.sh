@@ -122,7 +122,9 @@ export WRF_ZLEV=no
 # WRF time-series option added 2021/06/04
 export WRF_TS=no
 export WRF_AFWA=no
-export WRF_FDDA=no
+# When using Spectral Nudging 
+export WRF_FDDA_d01=no
+export WRF_FDDA_d02=no
 
 # Compiler; intel or pgi
 export FC=intel
