@@ -33,6 +33,10 @@ export parameter_WRF2ROMS=yes
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
 
+# if using wind farm parameterization in WRF
+# extra input files are needed: windturbines.txt and wind-turbine-*.tbl
+export wind_turbine=no
+
 # included an option to run WW3 but do not feed to WRF
 # 1. parameter_run_WW3=yes
 # 2. isftcflx=0 : #WSDF
@@ -52,10 +56,10 @@ export WRF_Rerun=yes
 #                       Turbulent heat fluxes are computed from the ust_ww # option added Oct 24, 2022 
 	export isftcflx=0 # or 351, or 352, or 0
 
-	#if using wave mean period
+	# if using wave mean period
 	if [ $isftcflx = 354 ];then 
-	#option to choose between available mean period from the model output
-	#default (wave_mean_period=1) formulation use t02 (zero crossing method) as currently the coefficients in COARE3.5, when using mean period, have been tuned using t02.
+	# option to choose between available mean period from the model output
+	# default (wave_mean_period=1) formulation use t02 (zero crossing method) as currently the coefficients in COARE3.5, when using mean period, have been tuned using t02.
 	#other option (wave_mean_period=2) is to use t0m1 (energy weigthed period).
 	wave_mean_period=1
 	fi
@@ -501,6 +505,11 @@ fi
 
 # WRF
 cp $Couple_Shell_Dir_common/$WRF_Launch_Filename $Couple_Data_WRF_Dir || exit 8
+
+if [ $wind_turbine = yes ]; then
+        cp $Couple_Lib_exec_WRF_Dir/windturbines.txt $Model_WRF_Dir
+        cp $Couple_Lib_exec_WRF_Dir/wind-turbine-*.tbl $Model_WRF_Dir
+fi
 
 # ROMS
 rm -rf $Couple_Data_ROMS_Dir/*.in 
