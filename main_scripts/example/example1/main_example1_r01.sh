@@ -477,7 +477,7 @@ rm -f $Couple_Run_Dir/*.sh 2>/dev/null
  cp $0 $Couple_Run_Dir
 
 # Copy couple.sh
-    cp $Couple_Shell_Dir/couple_with_ww3_restart.sh $Couple_Run_Dir || exit 8
+    cp $Couple_Shell_Dir/couple_with_ww3.sh $Couple_Run_Dir || exit 8
 
 # Copy WRF2ROMS
     cp $Couple_Shell_Dir/WRF2ROMS_$BULK.sh $Couple_Run_Dir/WRF2ROMS.sh || exit 8
@@ -562,5 +562,5 @@ fi
 # COMPILE COUPLER CODES
 # STARTING RUN
 cd $Couple_Run_Dir || exit 8
-   $Couple_Run_Dir/couple_with_ww3_restart.sh || exit 8
+   $Couple_Run_Dir/couple_with_ww3.sh || exit 8
 echo "DONE"
