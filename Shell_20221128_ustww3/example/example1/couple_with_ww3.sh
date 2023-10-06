@@ -612,7 +612,7 @@ echo "end runWW3"
 
 #Out, netcdf: need to link for WW32WRF
 mkdir -p $WW3_Outnc_Dir/$YYYYin
-	mv ./ww3.$YYYYin$MMin$DDinT$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
+	mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
 	#ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
 
 #Rst: binary: Need to link
