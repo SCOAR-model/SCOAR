@@ -41,6 +41,20 @@ sed -i -e  "$l6 i         DATE%RESTART         = '$YYYYi$MMi$DDi $HHi\0000' '$ST
 
 l7=$(grep -n 'INPUT%FORCING%CURRENTS' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
 sed -i "$l7 d" $edit_file
+
+l8=$(grep -n 'DATE%POINT%START' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
+sed -i "$l8 d" $edit_file
+sed -i -e  "$l8 i         DATE%POINT%START     = '$YYYYi$MMi$DDi $HHi\0000'" $edit_file
+
+l9=$(grep -n 'DATE%POINT%STRIDE' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
+sed -i "$l9 d" $edit_file
+sed -i -e  "$l9 i         DATE%POINT%STRIDE    = '$STRIDE'" $edit_file
+
+l10=$(grep -n 'DATE%POINT%STOP' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
+sed -i "$l10 d" $edit_file
+sed -i -e  "$l10 i         DATE%POINT%STOP    = '$YYYYin$MMin$DDin $HHin\0000'" $edit_file
+
+
 if [ $wave_current = yes ];then #sending ocean current
         sed -i -e  "$l7 i              INPUT%FORCING%CURRENTS         = 'T'" $edit_file
 elif [ $wave_current = no ];then # no ocean current

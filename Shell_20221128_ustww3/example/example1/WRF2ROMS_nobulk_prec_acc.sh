@@ -112,8 +112,8 @@ ln -fs $Couple_Lib_grids_WRF_Dir/$Nameit_WRF-nxnyr.dat fort.11
 # NEW (Sep 2023): use accumulated precipitation
 # WRF precipiation accumulation interval ind seconds
 # (make sure this is defined for all domains in namelist.input and equal to $CF in minutes)
-prec_acc_dt=$((CF * 60 * 60))
-echo "$prec_acc_dt" > fort.18
+prec_acc_dt_sec=$(($prec_acc_dt*60))
+echo "$prec_acc_dt_sec" > fort.18
 
 ii=21
 if [ $NLOOP -gt 1 -a $ROMS_wave = yes -a $parameter_WW32ROMS = yes ]; then

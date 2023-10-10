@@ -1,5 +1,4 @@
 #!/bin/sh
-#set -ax
 INCLUDEDIR=$NETCDF/include
 LIBDIR=$NETCDF/lib
 Couple_Lib_exec_coupler_Dir=/vortexfs1/share/seolab/csauvage/SCOAR_GIT/SCOAR/Lib/exec/Coupler_intel
@@ -24,7 +23,7 @@ done
 
 echo ""
 # WRF2ROMS_nobulk and bulk wrfonly
-for fname in read_ncvar calculate_WRF_flux_nobulk_raincv calculate_WRF_flux_nobulk_prec_acc update_forc calculate_WRF_flux_bulk_longout_raincv calculate_WRF_flux_nobulk_prec_acc_tauoc
+for fname in read_ncvar calculate_WRF_flux_nobulk_prec_acc update_forc calculate_WRF_flux_bulk_longout_raincv calculate_WRF_flux_nobulk_prec_acc_tauoc #calculate_WRF_flux_nobulk_raincv
 do
 echo "$fname"
 ifort -c -I$INCLUDEDIR $fname.f
@@ -33,7 +32,7 @@ done
 
 echo ""
 # prepareROMS + update_ROMS_time.sh
-for fname in update_init4D update_init3D update_init_time update_bry_time3 update_forc_time3 update_init_time3 #update_forc_time2  update_ini_time2 update_bry_time2
+for fname in update_init4D update_init3D update_bry_time3 update_forc_time3 update_init_time3 #update_forc_time2  update_ini_time2 update_bry_time2 update_init_time
 do
 echo "$fname"
 ifort -c -I$INCLUDEDIR $fname.f
@@ -50,7 +49,7 @@ done
 
 echo ""
 # WW32WRF
-for fname in ww3_hs_wrflowinp ww3_t0m1_wrflowinp ww3_fp_wrflowinp ww3_dp_wrflowinp ww3_t02_wrflowinp ww3_ust_wrflowinp.f
+for fname in ww3_hs_wrflowinp ww3_t0m1_wrflowinp ww3_fp_wrflowinp ww3_dp_wrflowinp ww3_t02_wrflowinp ww3_ust_wrflowinp
 do
 echo "$fname"
 ifort -c -I$INCLUDEDIR $fname.f

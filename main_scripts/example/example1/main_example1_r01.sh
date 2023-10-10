@@ -43,6 +43,10 @@ export wind_turbine=no
 # 3. parameter_WW32WRF=no
 
 export parameter_run_WW3=no
+# output full spec for wave point listed in points.list
+# WW3 grid (ww3_grid) must have been compiled using `&OUTS E3D = 1.` in namelists.nml
+export wave_spec=no
+
 export WRF_Rerun=yes
 	if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
@@ -113,6 +117,10 @@ export ww3NCPU=144
 
 # coupling frequency, MPI, version of ROMS
 export CF=1
+# precipitaiton accumualtion interval in [min].
+# to be updated in namelist.input and used in WRF2ROMS_nobulk_prec_acc.sh
+        export prec_acc_dt=`expr $CF \* 60`
+
 # output frequency in wrfout this has to match with namelist.input
 export WRF_OUTPUT_FREQUENCY=$CF
 # output frequency in wrfout this has to match with ocean.in
@@ -154,7 +162,7 @@ export wrflowinp_file_d01=wrflowinp_d01
         if [ $WRF_Domain -eq 2 ]; then
         export wrfinput_file_d02=wrfinput_d02
         export wrflowinp_file_d02=wrflowinp_d02
-        export wrffdda_file_d02=wrffdda_file_d02 # HS added 2022 07 28
+        export wrffdda_file_d02=wrffdda_d02 # HS added 2022 07 28
         fi
 
 if [ $RESTART = yes ]; then
@@ -456,6 +464,7 @@ if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 #WW3 OUTPUT Directories
 export WW3_Out_Dir=$Couple_Data_WW3_Dir/Out
 export WW3_Outnc_Dir=$Couple_Data_WW3_Dir/Outnc
+export WW3_Spcnc_Dir=$Couple_Data_WW3_Dir/Spcnc
 export WW3_Rst_Dir=$Couple_Data_WW3_Dir/Rst
 export WW3_Frc_Dir=$Couple_Data_WW3_Dir/Frc
 export WW3_Log_Dir=$Couple_Data_WW3_Dir/Log
@@ -539,6 +548,7 @@ if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 cp $Couple_Shell_Dir_common/edit_ww3_prnc.sh $WW3_Exe_Dir/edit_ww3_prnc.sh || exit 8
 cp $Couple_Shell_Dir_common/edit_ww3_shel.sh $WW3_Exe_Dir/edit_ww3_shel.sh || exit 8
 cp $Couple_Shell_Dir_common/edit_ww3_ounf.sh $WW3_Exe_Dir/edit_ww3_ounf.sh || exit 8
+cp $Couple_Shell_Dir_common/edit_ww3_ounp.sh $WW3_Exe_Dir/edit_ww3_ounp.sh || exit 8
 
 # Copy WW32WRF 
 cp $Couple_Shell_Dir/WW32WRF.sh $Couple_Run_Dir/WW32WRF.sh || exit 8
@@ -557,6 +567,10 @@ cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_current.nml $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_shel.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_ounf.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/namelists.nml        $WW3_Exe_Dir || exit 8
+if [ $wave_spec = yes ]; then
+        cp     $Couple_Lib_exec_WW3_Dir/points.list          $WW3_Exe_Dir || exit 8
+        cp     $Couple_Lib_exec_WW3_Dir/ww3_ounp.nml         $WW3_Exe_Dir || exit 8
+fi
 fi
 
 #####--------------------- END OF COPYING FILES  -----------------------#####

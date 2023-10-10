@@ -342,7 +342,8 @@ time_start1=$(date "+%s")
 	# AFWA writes only beginning of fcst...
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
 		if [ $WRF_Domain -eq 2 ]; then
-		mv $WRF_AFWA_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
+		mkdir -p $WRF_AFWA_Dir/d02/$YYYYin
+		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
 	fi
 # wrfts
@@ -435,7 +436,7 @@ if [ $parameter_RunROMS = yes ]; then
 
 # link forc_Day to ocean_frc
 mkdir -p  $ROMS_Frc_Dir/$YYYYin  || exit 8
-        rm $Couple_Data_ROMS_Dir/ocean_frc.nc >/dev/null
+        #rm $Couple_Data_ROMS_Dir/ocean_frc.nc >/dev/null
         ln -fs $ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $Couple_Data_ROMS_Dir/ocean_frc.nc || exit 8
 
 cd $Couple_Data_ROMS_Dir || exit 8
@@ -601,6 +602,10 @@ echo "end runWW3"
 #2. Convert outputs to netcdf
 	$WW3_Exe_Dir/edit_ww3_ounf.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_ounf.nml $CF
 	$WW3_Exe_Dir/ww3_ounf >& log_ounf_$$
+        if [ $wave_spec = yes ];then
+        $WW3_Exe_Dir/edit_ww3_ounp.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_ounp.nml $CF || exit 8
+        $WW3_Exe_Dir/ww3_ounp >& log_ounp_$$ ##points output
+        fi
 
 # organize
 #Out, binary: No Need to link
@@ -613,12 +618,17 @@ echo "end runWW3"
 #Out, netcdf: need to link for WW32WRF
 mkdir -p $WW3_Outnc_Dir/$YYYYin
 	mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
-	#ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
+	ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
+        if [ $wave_spec = yes ];then
+        #wave spectrum file
+        mkdir -p $WW3_Spcnc_Dir/$YYYYin
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin\_spec.nc $WW3_Spcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_spec.nc || exit 8
+        fi
 
 #Rst: binary: Need to link
 mkdir -p $WW3_Rst_Dir/$YYYYin
 	mv ./restart001.ww3 $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour
-	#ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
+	ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
 #Frc: binary: No need to link
 mkdir -p $WW3_Frc_Dir/$YYYYin/wind
 mkdir -p $WW3_Frc_Dir/$YYYYin/current
@@ -634,6 +644,12 @@ mkdir -p $WW3_Log_Dir/ounf/$YYYYin
 	mv ./log_prnc_wind_$$ $WW3_Log_Dir/prnc_wind/$YYYYin/log_prnc_wind_$YYYYin$MMin$DDin$HHin\_Hour$NHour
         mv ./log_shel_$$ $WW3_Log_Dir/shel/$YYYYin/log_shel_$YYYYin$MMin$DDin$HHin\_Hour$NHour
         mv ./log_ounf_$$ $WW3_Log_Dir/ounf/$YYYYin/log_ounf_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+
+if [ $wave_spec = yes ];then
+mkdir -p $WW3_Log_Dir/ounp/$YYYYin
+        mv ./log_ounp_$$ $WW3_Log_Dir/ounp/$YYYYin/log_ounp_$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
+fi
+
 if [ $wave_current = yes ];then
 mkdir -p $WW3_Log_Dir/prnc_current/$YYYYin
 	mv ./log_prnc_current_$$ $WW3_Log_Dir/prnc_current/$YYYYin/log_prnc_current_$YYYYin$MMin$DDin$HHin\_Hour$NHour

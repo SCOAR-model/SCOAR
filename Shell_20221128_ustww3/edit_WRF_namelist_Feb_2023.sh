@@ -4,6 +4,11 @@ MMi=`echo $1 | cut -d':' -f2`
 DDi=`echo $1 | cut -d':' -f3`
 HHi=`echo $1 | cut -d':' -f4`
 
+YYYYin=`echo $5 | cut -d':' -f1`
+MMin=`echo $5 | cut -d':' -f2`
+DDin=`echo $5 | cut -d':' -f3`
+HHin=`echo $5 | cut -d':' -f4`
+
 WRF_RESTART=$2
 write_hist_at_0h_rst=$3
 io_form_restart=$4
@@ -84,6 +89,22 @@ else #COARE3.5 wind only dependant, isftcflx=0
         sed -i -e "$l8 i isftcflx                 =  $isftcflx," $namelist_input_file
 # this allows running WRF only using WBF when wrflowinp has already WW3 fields. 
 # useful for rerunning WRF oinly cacse (for additional variables) from the coupled model
-
 fi
+
+l10=$(grep -n 'end_month' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l10 d" $namelist_input_file
+sed -i -e  "$l10 i end_month              =  $MMin,$MMin," $namelist_input_file
+
+l11=$(grep -n 'end_day' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l11 d" $namelist_input_file
+sed -i -e  "$l11 i end_day                =  $DDin,$DDin," $namelist_input_file
+
+l12=$(grep -n 'end_hour' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l12 d" $namelist_input_file
+sed -i -e  "$l12 i end_hour               =  $HHin,$HHin," $namelist_input_file
+
+# prec_acc_dT
+l13=$(grep -n 'prec_acc_dt' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l13 d" $namelist_input_file
+sed -i -e  "$l13 i prec_acc_dt  =  $prec_acc_dt , $prec_acc_dt, $prec_acc_dt, " $namelist_input_file
 
