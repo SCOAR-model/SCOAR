@@ -149,14 +149,29 @@
 !print *, "land"
 
 ! treat land/mask
+! Also check for bad value of U and V 
+! i.e., possibly due to filling the boundaries with land value 1.e+37
       do j=1,ny
         do i=1,nx
-            if (land(i,j,1) .eq. 0) then
+            if (int(land(i,j,1)) .eq. 0) then
             uWRF(i,j,1) = 0.
             vWRF(i,j,1) = 0.
           endif
         enddo
       enddo
+
+      do j=1,ny
+        do i=1,nx
+            if (abs(uWRF(i,j,1)) .gt. 1000.) then
+            uWRF(i,j,1) = 0.
+            endif
+            if (abs(vWRF(i,j,1)) .gt. 1000.) then
+            vWRF(i,j,1) = 0.
+            endif
+        enddo
+      enddo
+
+
 
       start2(1)=1
       start2(2)=1
