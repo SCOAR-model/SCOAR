@@ -435,6 +435,19 @@ elif [ $WRF2ROMS_WRFONLY =  yes ]; then
         $Couple_Run_Dir/WRF2ROMS_WRFONLY.sh $NHour $MHour $JD $YYYYin:$MMin:$DDin:$HHin || exit 8
 fi
 
+# WW32ROMS
+if [ $parameter_WW32ROMS = yes ]; then
+echo  "****************** WW32ROMS **************"
+#read FOC (+HS, LM etc.) and write to ROMS forcing file
+echo "WW32ROMS: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin"
+
+time_start=$(date "+%s")
+	$Couple_Run_Dir/WW32ROMS.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
+time_end=$(date "+%s")
+echo "WW32ROMS = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
+echo  "****************** WW32ROMS **************"
+fi
+
 ## Run ROMS yes/no
 if [ $parameter_RunROMS = yes ]; then
 
@@ -463,16 +476,6 @@ echo "ocean sfc is motionless."
 fi
 fi
 
-# WW32ROMS
-if [ $parameter_WW32ROMS = yes ]; then
-#read FOC (+HS, LM etc.) and write to ROMS forcing file
-echo "WW32ROMS: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin"
-
-time_start=$(date "+%s")
-	$Couple_Run_Dir/WW32ROMS.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
-time_end=$(date "+%s")
-echo "WW32ROMS = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
-fi
 
 time_start=$(date "+%s")
 echo "Run ROMS (NDay=$NDay NHour=$NHour NLOOP=$NLOOP: $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin)"

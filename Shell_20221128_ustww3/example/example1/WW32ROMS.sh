@@ -43,19 +43,23 @@ else
 frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
 
 #1. FOC (WW3) --> Wave_dissip (ROMS)
-ncrcat -O -v foc $WW3_In tempo.nc
+ncrcat -3 -O -v foc $WW3_In tempo.nc
 ncrename -h -O -v foc,Wave_dissip tempo.nc
+ncrename -latitude,eta_rho -d longitude,xi_rho -d time,wave_time tempo.nc
+ncrename -v time,wave_time tempo.nc
 ncatted -a ,Wave_dissip,d,, -a ,global,d,, tempo.nc
 ncap2 -O -s 'Wave_dissip=double(Wave_dissip)' tempo.nc tempo.nc 
-ncks -A tempo.nc $frcfile
+ncks -4 -A tempo.nc $frcfile
 rm tempo.nc
 
 ##2. HS (WW3) --> Hwave (ROMS)
-ncrcat -O -v hs $WW3_In tempo.nc
+ncrcat -3 -O -v hs $WW3_In tempo.nc
 ncrename -h -O -v hs,Hwave tempo.nc
+ncrename -latitude,eta_rho -d longitude,xi_rho -d time,wave_time tempo.nc
+ncrename -v time,wave_time tempo.nc
 ncatted -a ,Hwave,d,, -a ,global,d,, tempo.nc
 ncap2 -O -s 'Hwave=double(Hwave)' tempo.nc tempo.nc
-ncks -A tempo.nc $frcfile
+ncks -4 -A tempo.nc $frcfile
 rm tempo.nc
 
 fi
