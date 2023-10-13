@@ -132,6 +132,10 @@ if [ $NLOOP -eq 1 ]; then
     	cp $WRF_Input_Data/$wrflowinp_file_d02 $Model_WRF_Dir/wrflowinp_d02 || exit 8
  	fi
      fi
+	if [ $wind_turbine = yes ]; then
+        	cp $Couple_Lib_exec_WRF_Dir/windturbines.txt $Model_WRF_Dir
+	        cp $Couple_Lib_exec_WRF_Dir/wind-turbine-*.tbl $Model_WRF_Dir
+	fi
 
 	#echo "Modify SST in lowinp at intial time NLOOP=1"
  	#$Couple_Run_Dir/edit_sst_wrfinput.sh $Model_WRF_Dir/$wrfinput_file_d01 || exit 8

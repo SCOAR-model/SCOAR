@@ -517,10 +517,6 @@ fi
 # WRF
 cp $Couple_Shell_Dir_common/$WRF_Launch_Filename $Couple_Data_WRF_Dir || exit 8
 
-if [ $wind_turbine = yes ]; then
-        cp $Couple_Lib_exec_WRF_Dir/windturbines.txt $Model_WRF_Dir
-        cp $Couple_Lib_exec_WRF_Dir/wind-turbine-*.tbl $Model_WRF_Dir
-fi
 
 # ROMS
 rm -rf $Couple_Data_ROMS_Dir/*.in 
