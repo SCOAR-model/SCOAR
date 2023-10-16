@@ -65,7 +65,7 @@ export WRF_Rerun=yes
 	# option to choose between available mean period from the model output
 	# default (wave_mean_period=1) formulation use t02 (zero crossing method) as currently the coefficients in COARE3.5, when using mean period, have been tuned using t02.
 	#other option (wave_mean_period=2) is to use t0m1 (energy weigthed period).
-	wave_mean_period=1
+	export wave_mean_period=1
 	fi
 
 # if sending ocean surface current to WW3
