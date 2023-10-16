@@ -33,18 +33,40 @@ export parameter_WRF2ROMS=yes
 	export WRF2ROMS_WRFONLY=no
 export parameter_RunROMS=yes
 
-# included an option to run WW3 but do not feed to WRF HS: 3/10/2022
+# if using wind farm parameterization in WRF
+# extra input files are needed: windturbines.txt and wind-turbine-*.tbl
+export wind_turbine=no
+
+# included an option to run WW3 but do not feed to WRF
 # 1. parameter_run_WW3=yes
 # 2. isftcflx=0 : #WSDF
 # 3. parameter_WW32WRF=no
 
 export parameter_run_WW3=no
+# output full spec for wave point listed in points.list
+# WW3 grid (ww3_grid) must have been compiled using `&OUTS E3D = 1.` in namelists.nml
+export wave_spec=no
+
+export WRF_Rerun=yes
 	if [ $parameter_run_WW3 = yes ]; then
 # if WW3 is on, isftcflx option have to defined in physics of namelist.input 
 # two options are available for now (May 2021)
 # isftcflx=351 : Uses the wave-age only formulation of COARE3.5 in WRF surface layer scheme
 # isftcflx=352 : Uses the wave-age and wave height formulation of COARE3.5 in WRF surface layer scheme (default)
+# isftcflx=353 : 352 + theta 
+# isftcflx=354 : 352 but with mean period
+# isftcflx=355 : (not recommended) Porchetta
+# isftcflx=3500 : (not recommended for now) Obtain the friction velocity from WW3 (UST_WW) and compute the total air-side stress (adding the viscous stress)
+#                       Turbulent heat fluxes are computed from the ust_ww # option added Oct 24, 2022 
 	export isftcflx=0 # or 351, or 352, or 0
+
+	# if using wave mean period
+	if [ $isftcflx = 354 ];then 
+	# option to choose between available mean period from the model output
+	# default (wave_mean_period=1) formulation use t02 (zero crossing method) as currently the coefficients in COARE3.5, when using mean period, have been tuned using t02.
+	#other option (wave_mean_period=2) is to use t0m1 (energy weigthed period).
+	wave_mean_period=1
+	fi
 
 # if sending ocean surface current to WW3
 	export wave_current=yes
@@ -62,6 +84,16 @@ else # if no WW3 is used; turn off all WW3 relatd options
         export parameter_WW32WRF=no
         export ROMS_wave=no
         export parameter_WW32ROMS=no
+fi
+
+# two options added: for reruning WRF only purpose (WW3 outputs are already there).
+if [ $WRF_Rerun = yes ]; then
+# #1. added an option that even if  parameter_run_WW3=no, do WW32WRF.
+        export parameter_WW32WRF=yes
+# #2. Run WRF with WBF when WW3 is not on 
+#  if wrflowinp has all the necessary wave fields.. 
+# useful or rerunning WRF only from the coupled run for additional outputs.
+        export isftcflx=352
 fi
 
 export WRF_ROMS_SAME_GRID=yes
@@ -85,6 +117,10 @@ export ww3NCPU=144
 
 # coupling frequency, MPI, version of ROMS
 export CF=1
+# precipitaiton accumualtion interval in [min].
+# to be updated in namelist.input and used in WRF2ROMS_nobulk_prec_acc.sh
+        export prec_acc_dt=`expr $CF \* 60`
+
 # output frequency in wrfout this has to match with namelist.input
 export WRF_OUTPUT_FREQUENCY=$CF
 # output frequency in wrfout this has to match with ocean.in
@@ -94,7 +130,9 @@ export WRF_ZLEV=no
 # WRF time-series option added 2021/06/04
 export WRF_TS=no
 export WRF_AFWA=no
-export WRF_FDDA=no
+# When using Spectral Nudging 
+export WRF_FDDA_d01=no
+export WRF_FDDA_d02=no
 
 # Compiler; intel or pgi
 export FC=intel
@@ -124,7 +162,7 @@ export wrflowinp_file_d01=wrflowinp_d01
         if [ $WRF_Domain -eq 2 ]; then
         export wrfinput_file_d02=wrfinput_d02
         export wrflowinp_file_d02=wrflowinp_d02
-        export wrffdda_file_d02=wrffdda_file_d02 # HS added 2022 07 28
+        export wrffdda_file_d02=wrffdda_d02 # HS added 2022 07 28
         fi
 
 if [ $RESTART = yes ]; then
@@ -239,6 +277,13 @@ export WW3_spinup=no
 	export WW3_ICFile=
 	export WW3_ICFile_NC=
 	fi
+
+	#Check to make sure the initial and restart files provided exist to properly run WW3
+        if [ ! -s $WW3_ICFile -o ! -s $WW3_ICFile_NC ]; then
+        echo "doesn't exist: $WW3_ICFile or $WW3_ICFile_NC"
+        exit 8
+        fi
+	
 fi
 
 # Main Run Directory
@@ -381,7 +426,7 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
-export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Forc
+export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
    for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
@@ -415,10 +460,11 @@ export WRF_NamelistInput_Dir=$Couple_Data_WRF_Dir/WRF_NamelistInput
     mkdir -p $DIR 2>/dev/null
    done
 
-if [ $parameter_run_WW3 = yes ]; then
+if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 #WW3 OUTPUT Directories
 export WW3_Out_Dir=$Couple_Data_WW3_Dir/Out
 export WW3_Outnc_Dir=$Couple_Data_WW3_Dir/Outnc
+export WW3_Spcnc_Dir=$Couple_Data_WW3_Dir/Spcnc
 export WW3_Rst_Dir=$Couple_Data_WW3_Dir/Rst
 export WW3_Frc_Dir=$Couple_Data_WW3_Dir/Frc
 export WW3_Log_Dir=$Couple_Data_WW3_Dir/Log
@@ -442,7 +488,7 @@ rm -f $Couple_Run_Dir/*.sh 2>/dev/null
  cp $0 $Couple_Run_Dir
 
 # Copy couple.sh
-    cp $Couple_Shell_Dir/couple_with_ww3_restart.sh $Couple_Run_Dir || exit 8
+    cp $Couple_Shell_Dir/couple_with_ww3.sh $Couple_Run_Dir || exit 8
 
 # Copy WRF2ROMS
     cp $Couple_Shell_Dir/WRF2ROMS_$BULK.sh $Couple_Run_Dir/WRF2ROMS.sh || exit 8
@@ -471,6 +517,7 @@ fi
 # WRF
 cp $Couple_Shell_Dir_common/$WRF_Launch_Filename $Couple_Data_WRF_Dir || exit 8
 
+
 # ROMS
 rm -rf $Couple_Data_ROMS_Dir/*.in 
 ln -fs $Couple_Lib_grids_ROMS_Dir/$ROMS_Grid_Filename $Couple_Data_ROMS_Dir/ocean_grd.nc || exit 8
@@ -492,11 +539,12 @@ read nd < nd$$ ; rm nd$$
 export nd=$nd
 echo "ROMS number of vertical levels, nd= ",$nd
 
-if [ $parameter_run_WW3 = yes ]; then
+if [ $parameter_run_WW3 = yes -o $WRF_Rerun = yes ]; then
 # WW3 namelist edit
 cp $Couple_Shell_Dir_common/edit_ww3_prnc.sh $WW3_Exe_Dir/edit_ww3_prnc.sh || exit 8
 cp $Couple_Shell_Dir_common/edit_ww3_shel.sh $WW3_Exe_Dir/edit_ww3_shel.sh || exit 8
 cp $Couple_Shell_Dir_common/edit_ww3_ounf.sh $WW3_Exe_Dir/edit_ww3_ounf.sh || exit 8
+cp $Couple_Shell_Dir_common/edit_ww3_ounp.sh $WW3_Exe_Dir/edit_ww3_ounp.sh || exit 8
 
 # Copy WW32WRF 
 cp $Couple_Shell_Dir/WW32WRF.sh $Couple_Run_Dir/WW32WRF.sh || exit 8
@@ -515,6 +563,10 @@ cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_current.nml $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_shel.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_ounf.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/namelists.nml        $WW3_Exe_Dir || exit 8
+if [ $wave_spec = yes ]; then
+        cp     $Couple_Lib_exec_WW3_Dir/points.list          $WW3_Exe_Dir || exit 8
+        cp     $Couple_Lib_exec_WW3_Dir/ww3_ounp.nml         $WW3_Exe_Dir || exit 8
+fi
 fi
 
 #####--------------------- END OF COPYING FILES  -----------------------#####
@@ -522,5 +574,5 @@ fi
 # COMPILE COUPLER CODES
 # STARTING RUN
 cd $Couple_Run_Dir || exit 8
-   $Couple_Run_Dir/couple_with_ww3_restart.sh || exit 8
+   $Couple_Run_Dir/couple_with_ww3.sh || exit 8
 echo "DONE"
