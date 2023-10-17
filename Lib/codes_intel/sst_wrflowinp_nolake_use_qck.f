@@ -3,6 +3,7 @@
       integer status, ncid, nd
       real*8,dimension(:,:,:,:), allocatable :: sstROMS
       real*8,dimension(:,:,:), allocatable :: land, sstWRF
+      real*8,dimension(:,:,:), allocatable :: land_wrf, lake_wrf
       integer varid, varid2, nt2
       integer start(3) ,count(3), stride(3)
       integer start2(3) ,count2(3), stride2(3)
@@ -25,6 +26,8 @@
       allocate(sstROMS(nx,ny,1,1))
       allocate(sstWRF(nx,ny,1))
       allocate(land(nx,ny,1))
+      allocate(land_wrf(nx,ny,1))
+      allocate(lake_wrf(nx,ny,1))
       count(1)=nx
       count(2)=ny
       count(3)=1
@@ -74,6 +77,38 @@
 !print *, land
 !print *, "land"
 
+
+! read landmask WRF
+! #######################################################
+      status = nf_open('fort.166',nf_nowrite,ncid2)
+      if (status .ne. nf_noerr) call handle_err(status,7)
+
+      status = nf_inq_varid(ncid2,'LANDMASK',varid2)
+      if (status .ne. nf_noerr) call handle_err(status,8)
+      status=nf_get_vars_double(ncid2,varid2,
+     &               start,count,stride,land_wrf)
+      if (status .ne. nf_noerr) call handle_err(status,10)
+
+      status = nf_close(ncid2)
+      if (status .ne. nf_noerr) call handle_err(status,12)
+! ###########
+
+! read lakemask WRF
+! #######################################################
+      status = nf_open('fort.166',nf_nowrite,ncid2)
+      if (status .ne. nf_noerr) call handle_err(status,7)
+
+      status = nf_inq_varid(ncid2,'LAKEMASK',varid2)
+      if (status .ne. nf_noerr) call handle_err(status,8)
+      status=nf_get_vars_double(ncid2,varid2,
+     &               start,count,stride,lake_wrf)
+      if (status .ne. nf_noerr) call handle_err(status,10)
+
+      status = nf_close(ncid2)
+      if (status .ne. nf_noerr) call handle_err(status,12)
+! ###########
+
+
 ! read SST WRF
 ! #######################################################
 ! read sst value first 
@@ -93,8 +128,13 @@
 ! take the lake SST from WRF over land point
        do 200 j=1,ny
         do 200 i=1,nx
-         if (int(land(i,j,1)) .eq. 0)
-     &       sstROMS(i,j,1,1) = sstWRF(i,j,1)
+         if (int(land(i,j,1)) .eq. 0) then !in roms 0 is land
+           if (int(land_wrf(i,j,1)+lake_wrf(i,j,1)) .eq. 0) then !in wrf 0 is ocean
+            sstROMS(i,j,1,1) = sstWRF(i,j,1) !ROMS is land but WRF is ocean
+           else 
+            sstROMS(i,j,1,1) = 0 !both are land 
+           end if
+         end if
   200    continue
 !print *, sstROMS
 ! #######################################################

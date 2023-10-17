@@ -115,6 +115,7 @@ ln -fs $SST_Out fort.14 || exit 8
 if [ $NOLAKE = yes ]; then
         echo "use nolake grid for updating SST. i.e lake values are not updated by ROMS"
         ln -fs $Couple_Lib_grids_ROMS_Dir/roms-$gridname-nolake-maskr.dat fort.16
+        ln -fs $Model_WRF_Dir/wrfinput_d0$Coupling_Domain fort.166 #for reading WRF land and lake mask 
 fi
 ln -fs $SST_Out fort.51 || exit 8
 
@@ -160,6 +161,7 @@ if [ $NOLAKE = yes ]; then
     # over lake use the existing values in wrf_lowinp
 	echo "use nolake grid for updating SST. i.e lake values are not updated by ROMS"
 	ln -fs $Couple_Lib_grids_ROMS_Dir/roms-$gridname-nolake-maskr.dat fort.16
+        ln -fs $Model_WRF_Dir/wrfinput_d0$Coupling_Domain fort.166 #for reading WRF land and lake mask 
 fi
 
 if [ $SST_FREQUENCY -gt $CF ]; then
