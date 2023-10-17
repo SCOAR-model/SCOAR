@@ -91,20 +91,24 @@ else #COARE3.5 wind only dependant, isftcflx=0
 # useful for rerunning WRF oinly cacse (for additional variables) from the coupled model
 fi
 
-l10=$(grep -n 'end_month' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+l10=$(grep -n 'end_year' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
 sed -i "$l10 d" $namelist_input_file
-sed -i -e  "$l10 i end_month              =  $MMin,$MMin," $namelist_input_file
+sed -i -e  "$l10 i end_year              =  $YYYYin,$YYYYin," $namelist_input_file
 
-l11=$(grep -n 'end_day' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+l11=$(grep -n 'end_month' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
 sed -i "$l11 d" $namelist_input_file
-sed -i -e  "$l11 i end_day                =  $DDin,$DDin," $namelist_input_file
+sed -i -e  "$l11 i end_month              =  $MMin,$MMin," $namelist_input_file
 
-l12=$(grep -n 'end_hour' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+l12=$(grep -n 'end_day' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
 sed -i "$l12 d" $namelist_input_file
-sed -i -e  "$l12 i end_hour               =  $HHin,$HHin," $namelist_input_file
+sed -i -e  "$l12 i end_day                =  $DDin,$DDin," $namelist_input_file
+
+l13=$(grep -n 'end_hour' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l13 d" $namelist_input_file
+sed -i -e  "$l13 i end_hour               =  $HHin,$HHin," $namelist_input_file
 
 # prec_acc_dT
-l13=$(grep -n 'prec_acc_dt' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
-sed -i "$l13 d" $namelist_input_file
-sed -i -e  "$l13 i prec_acc_dt  =  $prec_acc_dt , $prec_acc_dt, $prec_acc_dt, " $namelist_input_file
+l14=$(grep -n 'prec_acc_dt' $namelist_input_file | grep -Eo '^[0-9]{1,3}')
+sed -i "$l14 d" $namelist_input_file
+sed -i -e  "$l14 i prec_acc_dt  =  $prec_acc_dt , $prec_acc_dt, $prec_acc_dt, " $namelist_input_file
 
