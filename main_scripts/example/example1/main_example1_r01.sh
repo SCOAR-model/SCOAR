@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ax
 export RUN_ID=r01
-export NCO=/vortexfs1/apps/nco-4.7.4/bin
+export NCO=/home/hseo/.conda-envs/myenv/bin
 
 # starting time : YYYYS MMS DDS HHS
 export YYYYS=2014
@@ -111,9 +111,10 @@ export NOLAKE=yes #in ROMS2WRF.sh lakes in ROMS grids have been already filled o
 
 #Number of CPUs used
 # THIS NEED TO BE MATCHED IN THE SGL script and ocean.in file
-export wrfNCPU=144
-export romsNCPU=144
-export ww3NCPU=144
+export ncpu=144
+	export wrfNCPU=$ncpu
+	export romsNCPU=$ncpu
+	export ww3NCPU=$ncpu
 
 # coupling frequency, MPI, version of ROMS
 export CF=1
@@ -567,6 +568,17 @@ if [ $wave_spec = yes ]; then
         cp     $Couple_Lib_exec_WW3_Dir/points.list          $WW3_Exe_Dir || exit 8
         cp     $Couple_Lib_exec_WW3_Dir/ww3_ounp.nml         $WW3_Exe_Dir || exit 8
 fi
+fi
+
+# copy post processing scripts
+if  [ ! -s $WRF_process_Dir/wrf_process.sh ]; then
+cp ../postprocess_scripts/wrf_process.sh $WRF_process_Dir/wrf_process.sh
+fi
+if  [ ! -s $ROMS_process_Dir/roms_process.sh ]; then
+cp ../postprocess_scripts/roms_process.sh  $ROMS_process_Dir/roms_process.sh
+fi
+if  [ ! -s $WW3_process_Dir/ww3_process.sh ]; then
+cp ../postprocess_scripts/ww3_process.sh  $WW3_process_Dir/ww3_process.sh
 fi
 
 #####--------------------- END OF COPYING FILES  -----------------------#####
