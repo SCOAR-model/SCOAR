@@ -1,7 +1,7 @@
 #!/bin/sh
 INCLUDEDIR=$NETCDF/include
 LIBDIR=$NETCDF/lib
-Couple_Lib_exec_coupler_Dir=/vortexfs1/share/seolab/csauvage/SCOAR_GIT/SCOAR/Lib/exec/Coupler_intel
+Couple_Lib_exec_coupler_Dir=../exec/Coupler_intel
 
 # ROMS2WRF
 for fname in sst_wrflowinp_nolake_smooth sst_wrflowinp_nolake_initial sst_wrflowinp sst_wrflowinp_use_qck sst_wrflowinp_nolake_use_qck uvoce_wrflowinp_nolake_use_qck uvoce_wrflowinp_nolake_initial #uoce_wrflowinp_nolake_use_qck voce_wrflowinp_nolake_use_qck uoce_wrflowinp_nolake_initial voce_wrflowinp_nolake_initial

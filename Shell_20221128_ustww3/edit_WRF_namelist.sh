@@ -1,1 +1,0 @@
-edit_WRF_namelist_Feb_2023.sh
