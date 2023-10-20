@@ -1,1 +1,0 @@
-WRF2ROMS_nobulk_prec_acc.sh
