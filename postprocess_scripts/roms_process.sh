@@ -35,7 +35,7 @@ MME=02
 # last time should be "one more day" after the last time-step
 last_time=2018-03-01
 
-for file0 in qck forc avg
+for file0 in qck frc avg
 do
 
 if [ $file0 = avg ]; then
@@ -52,8 +52,8 @@ vlist=("temp_sur" "salt_sur" "zeta" "vbar_northward" " v_sur_northward" "ubar_ea
 comm1=ncrcat
 comm2=ncra
 
-elif [ $file0 = forc ]; then
-file1=Forc
+elif [ $file0 = frc ]; then
+file1=Frc
 # nobulk
 vlist=("sustr" "svstr" "shflux" "swflux" "swrad")
 # bulk

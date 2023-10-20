@@ -23,13 +23,17 @@ NUMDAY=`expr $FHOUR \/ 24 `
 echo "Number of Days From Starting Date To Ending Date: $NUMDAY"
 
 elif [ $RESTART = yes ]; then
- 	RestartNDay=`expr $LastNHour \/ 24`
- 	RestartNHour=$LastNHour
- 	RestartNHour2=`expr $LastNHour - $CF`
-	# RESTARTING DATE
-  	$Couple_Lib_utils_Dir/incdte $YYYYS $MMS $DDS $HHS $RestartNHour2> incdte$$ || exit 8
-  	read YYYYSr MMSr DDSr HHSr < incdte$$ ; rm incdte$$
-  	echo $YYYYSr $MMSr $DDSr $HHSr
+	if [ $((LastNHour % 24)) != 0 ]; then
+      RestartNDay=$((LastNHour / 24 + 1))
+	else
+	  RestartNDay=$((LastNHour / 24))
+	fi
+RestartNHour=$LastNHour
+RestartNHour2=`expr $LastNHour - $CF`
+# RESTARTING DATE
+$Couple_Lib_utils_Dir/incdte $YYYYS $MMS $DDS $HHS $RestartNHour2> incdte$$ || exit 8
+read YYYYSr MMSr DDSr HHSr < incdte$$ ; rm incdte$$
+echo $YYYYSr $MMSr $DDSr $HHSr
 
  NDay=$RestartNDay
  NHour=$RestartNHour
@@ -56,19 +60,13 @@ echo "Total EndDay = $EndDAY"
 $Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
 
 # Starting Loop
-	NLOOP=1
-	if [ $RESTART = yes ]; then
-		NLOOP=`expr $LastNHour \/ $CF`
-	fi
-
-     while [ $NDay -le $EndDAY ] ; do
-NDayp=`expr $NDay + 1`
-NDaym=`expr $NDay - 1`
-if [ $NDaym -le 0 ]; then
-   NDaym=$NDay
+NLOOP=1
+if [ $RESTART = yes ]; then
+	NLOOP=`expr $LastNHour \/ $CF`
 fi
-NHourp=`expr $NHour + $CF`
-NHourm=`expr $NHour - $CF`
+
+while [ $NHour -le $EndHOUR ] ; do
+NHourm=$(($NHour - $CF))
 
 $Couple_Lib_utils_Dir/incdte $YYYYi $MMi $DDi $HHi $CF > dteout$$ || exit 8
 #n : 1 $CF later than
@@ -110,17 +108,17 @@ echo $NHour >& $Couple_Run_Dir/restart_info
 if [ $NLOOP -eq 1 ]; then
 	if [ ! -s $Model_WRF_Dir ]; then
 	echo " WRF working driectory is being copied"
-		cp -r  $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
+		cp -r $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
 	fi
 	echo "Prepared the wrfinput wrfbdy wrflowinp..."
 	# link initial and bdy files (since these are not changed during the integration)
 	ln -fs $WRF_Input_Data/$wrfinput_file_d01 $Model_WRF_Dir/wrfinput_d01 || exit 8
-	if [ $WRF_FDDA = yes ] ; then
+	if [ $WRF_FDDA_d01 = yes ] ; then
 	ln -fs $WRF_Input_Data/$wrffdda_file_d01 $Model_WRF_Dir/wrffdda_d01 || exit 8
 	fi
 		if [ $WRF_Domain -eq 2 ]; then
 		ln -fs $WRF_Input_Data/$wrfinput_file_d02 $Model_WRF_Dir/wrfinput_d02 || exit 8
-			if [ $WRF_FDDA = yes ] ; then
+			if [ $WRF_FDDA_d02 = yes ] ; then
 		ln -fs $WRF_Input_Data/$wrffdda_file_d02 $Model_WRF_Dir/wrffdda_d02 || exit 8
 			fi
 		fi
@@ -134,6 +132,10 @@ if [ $NLOOP -eq 1 ]; then
     	cp $WRF_Input_Data/$wrflowinp_file_d02 $Model_WRF_Dir/wrflowinp_d02 || exit 8
  	fi
      fi
+	if [ $wind_turbine = yes ]; then
+        	cp $Couple_Lib_exec_WRF_Dir/windturbines.txt $Model_WRF_Dir
+	        cp $Couple_Lib_exec_WRF_Dir/wind-turbine-*.tbl $Model_WRF_Dir
+	fi
 
 	#echo "Modify SST in lowinp at intial time NLOOP=1"
  	#$Couple_Run_Dir/edit_sst_wrfinput.sh $Model_WRF_Dir/$wrfinput_file_d01 || exit 8
@@ -340,21 +342,23 @@ time_start1=$(date "+%s")
 
 # wrfafwa
 	if [ $WRF_AFWA = yes ]; then 
-	mkdir -p $Model_WRF_Dir/d01/$YYYYin
+	mkdir -p $WRF_AFWA_Dir/d01/$YYYYin
 	# AFWA writes only beginning of fcst...
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
-	fi
 		if [ $WRF_Domain -eq 2 ]; then
-# delete these first three: they are done above.
-#		mv $Model_WRF_Dir/wrfout_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_Output_Dir/ || exit 8
-#		mv $Model_WRF_Dir/wrfrst_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00* $WRF_RST_Dir/$wrfrst_subdir_write/d02 || exit 8
-#		mv $Model_WRF_Dir/wrfprs_d02_$YYYYin-$MMin-$DDin\_$HHin\_00\_00 $WRF_PRS_Dir/d02 || exit 8
+		mkdir -p $WRF_AFWA_Dir/d02/$YYYYin
 		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
 		fi
+	fi
 # wrfts
 	if [ $WRF_TS = yes ]; then
+	# Find out the number of stations (locations)
+        ls $Model_WRF_Dir/*.d01.TS  | wc -l > out$$
+        read num_station < out$$; rm out$$
+        echo $num_station
+        # for each location
 	ns=1
-        while [ $ns -le $WRF_TS_num_station ]; do
+        while [ $ns -le $num_station ]; do
 		# for each field
         	for FLD in UU VV WW TH QV PR PH
         	do
@@ -431,12 +435,25 @@ elif [ $WRF2ROMS_WRFONLY =  yes ]; then
         $Couple_Run_Dir/WRF2ROMS_WRFONLY.sh $NHour $MHour $JD $YYYYin:$MMin:$DDin:$HHin || exit 8
 fi
 
+# WW32ROMS
+if [ $parameter_WW32ROMS = yes ]; then
+echo  "****************** WW32ROMS **************"
+#read FOC (+HS, LM etc.) and write to ROMS forcing file
+echo "WW32ROMS: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin"
+
+time_start=$(date "+%s")
+	$Couple_Run_Dir/WW32ROMS.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
+time_end=$(date "+%s")
+echo "WW32ROMS = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
+echo  "****************** WW32ROMS **************"
+fi
+
 ## Run ROMS yes/no
 if [ $parameter_RunROMS = yes ]; then
 
 # link forc_Day to ocean_frc
 mkdir -p  $ROMS_Frc_Dir/$YYYYin  || exit 8
-        rm $Couple_Data_ROMS_Dir/ocean_frc.nc >/dev/null
+        #rm $Couple_Data_ROMS_Dir/ocean_frc.nc >/dev/null
         ln -fs $ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $Couple_Data_ROMS_Dir/ocean_frc.nc || exit 8
 
 cd $Couple_Data_ROMS_Dir || exit 8
@@ -459,16 +476,6 @@ echo "ocean sfc is motionless."
 fi
 fi
 
-# WW32ROMS
-if [ $parameter_WW32ROMS = yes ]; then
-#read FOC (+HS, LM etc.) and write to ROMS forcing file
-echo "WW32ROMS: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin"
-
-time_start=$(date "+%s")
-	$Couple_Run_Dir/WW32ROMS.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
-time_end=$(date "+%s")
-echo "WW32ROMS = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
-fi
 
 time_start=$(date "+%s")
 echo "Run ROMS (NDay=$NDay NHour=$NHour NLOOP=$NLOOP: $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin:$DDin:$HHin)"
@@ -528,25 +535,29 @@ cd $WW3_Exe_Dir
 rm -f fort.* wind.ww3* 2>/dev/null
 rm  $WW3_Exe_Dir/ww3_prnc.nml 2>/dev/null
 
-if [ 1 -eq 1 ]; then
 # edit wind nml
-        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYi/wrfout_d0$Coupling_Domain\_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11
-        ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYin/wrfout_d0$Coupling_Domain\_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12
-
-	ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
-	ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
-	ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11
-	ncks -4 -O fort.11 fort.11
-        ncatted -a _FillValue,U10,c,f,9.999e+20 fort.11
-        ncatted -a _FillValue,V10,c,f,9.999e+20 fort.11
+ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYi/wrfout_d0$Coupling_Domain\_$YYYYi-$MMi-$DDi\_$HHi\_00_00 fort.11
+ncks -3 -O -v U10,V10,XLONG,XLAT,XTIME,COSALPHA,SINALPHA $WRF_Output_Dir/d0$Coupling_Domain/$YYYYin/wrfout_d0$Coupling_Domain\_$YYYYin-$MMin-$DDin\_$HHin\_00_00 fort.12
+## rotate wind vector from grid to earth relative
+ncap2 -A -s 'U10=U10*COSALPHA-V10*SINALPHA' fort.11
+ncap2 -A -s 'V10=V10*COSALPHA+U10*SINALPHA' fort.11
+#
+ncap2 -A -s 'U10=U10*COSALPHA-V10*SINALPHA' fort.12
+ncap2 -A -s 'V10=V10*COSALPHA+U10*SINALPHA' fort.12
+## ##
+ncrcat -O fort.11 fort.12 fort.11; 	rm fort.12
+ncrename -d west_east,lon -d south_north,lat -d Time,time fort.11
+ncrename -v XTIME,time -v XLONG,lon -v XLAT,lat fort.11
+ncks -4 -O fort.11 fort.11
+ncatted -a _FillValue,U10,c,f,9.999e+20 fort.11
+ncatted -a _FillValue,V10,c,f,9.999e+20 fort.11
 # this needs work; for both Eastern and Western Hemisphere longitudes
 #        ncap2 -O -s 'lon=lon+360' fort.11 fort.11
-	$WW3_Exe_Dir/edit_ww3_prnc.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_prnc_wind.nml
-	ln -fs ww3_prnc_wind.nml ww3_prnc.nml
-	$WW3_Exe_Dir/ww3_prnc >& log_prnc_wind_$$
-	mv wind.ww3 wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
-	ln -fs wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour wind.ww3
-fi
+$WW3_Exe_Dir/edit_ww3_prnc.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_prnc_wind.nml
+ln -fs ww3_prnc_wind.nml ww3_prnc.nml
+$WW3_Exe_Dir/ww3_prnc >& log_prnc_wind_$$
+mv wind.ww3 wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
+ln -fs wind.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour wind.ww3
 
 # #2. ROMS u/v sfc current for WW3
 if [ $wave_current = yes ];then
@@ -598,6 +609,10 @@ echo "end runWW3"
 #2. Convert outputs to netcdf
 	$WW3_Exe_Dir/edit_ww3_ounf.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_ounf.nml $CF
 	$WW3_Exe_Dir/ww3_ounf >& log_ounf_$$
+        if [ $wave_spec = yes ];then
+        $WW3_Exe_Dir/edit_ww3_ounp.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_ounp.nml $CF || exit 8
+        $WW3_Exe_Dir/ww3_ounp >& log_ounp_$$ ##points output
+        fi
 
 # organize
 #Out, binary: No Need to link
@@ -609,13 +624,18 @@ echo "end runWW3"
 
 #Out, netcdf: need to link for WW32WRF
 mkdir -p $WW3_Outnc_Dir/$YYYYin
-	mv ./ww3.$YYYYin$MMin$DDinT$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
-	#ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
+	mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
+	ln -fs $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc $WW3_Outnc_Dir/
+        if [ $wave_spec = yes ];then
+        #wave spectrum file
+        mkdir -p $WW3_Spcnc_Dir/$YYYYin
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin\_spec.nc $WW3_Spcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_spec.nc || exit 8
+        fi
 
 #Rst: binary: Need to link
 mkdir -p $WW3_Rst_Dir/$YYYYin
 	mv ./restart001.ww3 $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour
-	#ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
+	ln -fs $WW3_Rst_Dir/$YYYYin/restart.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour $WW3_Rst_Dir/
 #Frc: binary: No need to link
 mkdir -p $WW3_Frc_Dir/$YYYYin/wind
 mkdir -p $WW3_Frc_Dir/$YYYYin/current
@@ -631,6 +651,12 @@ mkdir -p $WW3_Log_Dir/ounf/$YYYYin
 	mv ./log_prnc_wind_$$ $WW3_Log_Dir/prnc_wind/$YYYYin/log_prnc_wind_$YYYYin$MMin$DDin$HHin\_Hour$NHour
         mv ./log_shel_$$ $WW3_Log_Dir/shel/$YYYYin/log_shel_$YYYYin$MMin$DDin$HHin\_Hour$NHour
         mv ./log_ounf_$$ $WW3_Log_Dir/ounf/$YYYYin/log_ounf_$YYYYin$MMin$DDin$HHin\_Hour$NHour
+
+if [ $wave_spec = yes ];then
+mkdir -p $WW3_Log_Dir/ounp/$YYYYin
+        mv ./log_ounp_$$ $WW3_Log_Dir/ounp/$YYYYin/log_ounp_$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
+fi
+
 if [ $wave_current = yes ];then
 mkdir -p $WW3_Log_Dir/prnc_current/$YYYYin
 	mv ./log_prnc_current_$$ $WW3_Log_Dir/prnc_current/$YYYYin/log_prnc_current_$YYYYin$MMin$DDin$HHin\_Hour$NHour
@@ -638,14 +664,13 @@ fi
 
 # clean up
         rm $WW3_Rst_Dir/restart.ww3.??????????\_Hour$NHourm2 2>/dev/null
-        rm $WW3_Outnc_Dir/ww3.??????????\_Hour$NHourm2\.nc
+        rm $WW3_Outnc_Dir/ww3.??????????\_Hour$NHourm2\.nc 2>/dev/null
 #  WW3 netcdf file; 
 	if [ $NLOOP -eq 1 ]; then 
         mv ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc $WW3_Outnc_Dir/$YYYYi/ww3.$YYYYi$MMi$DDi$HHi\_Hour$NHourm\.nc
 	else
         rm ./ww3.$YYYYi$MMi$DDi\T$HHi\Z.nc 2>/dev/null
 	fi
-        mv ./ww3.$YYYYin$MMin$DDin\T$HHin\Z.nc $WW3_Outnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\.nc
 
 cd -
 time_end=$(date "+%s")

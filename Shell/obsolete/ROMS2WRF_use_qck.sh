@@ -51,12 +51,11 @@ NLOOP=$5
 if [ $NLOOP -eq 1 ]; then
         SST_In=$ROMS_ICFile
 else # NLOOP>1
-	if [ $ROMS_Qck = yes ]; then
-      if [ $ROMS_Qck = yes ]; then
+     if [ $ROMS_Qck = yes ]; then
        SST_In=$ROMS_Qck_Dir/$YYYYi/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm.nc
         else
        SST_In=$ROMS_Avg_Dir/$YYYYi/avg_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm.nc
-        fi
+      fi
 fi # NLOOP=1
 
 	echo "File to read SST from (in ROMS)"
@@ -148,7 +147,6 @@ else # if SmoothSST is not defined,
 
 ln -fs $Couple_Lib_grids_ROMS_Dir/$Nameit_ROMS-nxnyr.dat fort.11
 ln -fs $SST_In fort.12 || exit 8
-# get number of levels (nd) of the ROMS file
 echo $nd > fort.13
 ln -fs $SST_Out fort.14 || exit 8
 
