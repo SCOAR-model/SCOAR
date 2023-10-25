@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=r02wrf# Job name
+#SBATCH --job-name=r01wrf# Job name
 ##SBATCH --mail-type=all
 ##SBATCH --mail-user=hseo@whoi.edu
 ##SBATCH --ntasks=24                  # Number of MPI ranks
@@ -15,32 +15,32 @@
 #SBATCH -p scavenger
 #SBATCH --qos=scavenger
 set -ax
-export run_name=wfp_r02; echo $run_name
+export run_name=wfp_r01; echo $run_name
 export DT=1
 
 for domain in d02 #d01
 do
 
-YYYYS=2018
-MMS=02
+YYYYS=2017
+MMS=12
 DDS=01
 HHS=00
 
-YYYYE=2018
-MME=02
-DDE=28
+YYYYE=2017
+MME=12
+DDE=31
 HHE=00
 
 wrf_sfc=yes
-wrf_prs=yes
-wrf_zlev=yes
+wrf_prs=no
+wrf_zlev=no
 
 do_subdaily=yes
 do_daily=yes
 do_monthly=yes
 
 # variable for wrfsfc
-var1=RAINC,RAINNC,RAINCV,RAINNCV,SST,OLR,U10,V10,SWDOWN,GLW,T2,Q2,PSFC,ALBEDO,UST,ZNT,CD,HFX,LH,PBLH,QFX,TH2,XICEM
+var1=RAINC,RAINNC,RAINCV,RAINNCV,SST,OLR,U10,V10,SWDOWN,GLW,T2,Q2,PSFC,ALBEDO,UST,ZNT,CD,HFX,LH,PBLH,QFX,TH2,XICEM,RMOL
 
 # variable for wrfzlev
 var3=U_ZL,V_ZL,T_ZL,RH_ZL,GHT_ZL,S_ZL,TD_ZL,Q_ZL,U10,V10,T2,Q2

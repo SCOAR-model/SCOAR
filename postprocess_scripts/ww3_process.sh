@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=r02ww3# Job name
+#SBATCH --job-name=r01ww3# Job name
 ##SBATCH --mail-type=all
 ##SBATCH --mail-user=hseo@whoi.edu
 ##SBATCH --ntasks=24                  # Number of MPI ranks
@@ -16,7 +16,7 @@
 #SBATCH --qos=scavenger
 
 set -ax
-export run_name=wfp_r02
+export run_name=wfp_r01
 echo $run_name
 export DT=1
 
@@ -24,7 +24,7 @@ for domain in d02
 do
 
 YYYY=2018
-MM=02
+MM=01
 DD=01
 HH=00
 
@@ -78,10 +78,10 @@ MON=`expr $MON + 0`
 if [ $MON -lt 10 ]; then
 MON=0$MON
 fi
-ncrcat -O $dirw/ww3_$domain\_$run_name\_1d_$YYYYS-$MON-??_00.nc $dirw/ww3_$run_name\_1d_$YYYYS$MON\.nc || exit 8
+ncrcat -O $dirw/ww3_$domain\_$run_name\_1d_$YYYYS-$MON-??_00.nc $dirw/ww3_$domain\_$run_name\_1d_$YYYYS$MON\.nc || exit 8
 
 # monthly averaging
-ncra -O $dirw/ww3_$domain\_$run_name\_1d_$YYYYS$MON\.nc $dirw/ww3_$run_name\_1m_$YYYYS$MON\.nc || exit 8
+ncra -O $dirw/ww3_$domain\_$run_name\_1d_$YYYYS$MON\.nc $dirw/ww3_$domain\_$run_name\_1m_$YYYYS$MON\.nc || exit 8
 
 # cleanup
 rm $dirw/ww3_$domain\_$run_name\_1d_$YYYYS-$MON-??_00.nc
