@@ -7,11 +7,7 @@ echo "RUN_ID = $RUN_ID"
 echo "CF= $CF"
 echo "UaUo = $UaUo"
 echo "CPL_PHYS= $CPL_PHYS"
-
-echo "BULK_FLUX = $BULK_FLUX"
 echo "LONGWAVE_OUT= $LONGWAVE_OUT"
-echo "BULK= $BULK"
-
 echo "SmoothSST = $SmoothSST"
 echo "SmoothUV= $SmoothUV"
 

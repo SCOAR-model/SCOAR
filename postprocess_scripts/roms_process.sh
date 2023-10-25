@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=r02roms# Job name
+#SBATCH --job-name=r01roms# Job name
 ##SBATCH --mail-type=all
 ##SBATCH --mail-user=hseo@whoi.edu
 ##SBATCH --ntasks=24                  # Number of MPI ranks
@@ -18,7 +18,7 @@
 
 set -ax
 CF=1
-run_name=wfp_r02
+run_name=wfp_r01
 
 YYYY=2018
 MM=02

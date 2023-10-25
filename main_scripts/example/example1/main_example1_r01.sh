@@ -201,14 +201,15 @@ export CPL_PHYS=WRF_PHYS
 		exit 8 
 	fi
 	if [ $CPL_PHYS = WRF_PHYS ]; then
-	export BULK_FLUX=no
+#	export BULK_FLUX=no
 	export LONGWAVE_OUT=no
-	export BULK=nobulk
+#export BULK=wrfbulk
 	fi
 	if [ $CPL_PHYS = ROMS_PHYS ]; then
-	export BULK_FLUX=yes
+#	export BULK_FLUX=yes
+# to revisit when working on ROMS physics
 	export LONGWAVE_OUT=yes
-	export BULK=bulk
+#	export BULK=romsbulk
 	fi
 # UaUo
 export UaUo=yes
@@ -349,6 +350,7 @@ export Couple_Home_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR
 #Shell Directory
 export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell
 export Couple_Shell_Dir=$Couple_Shell_Dir_common/$gridname2/$gridname
+# change to ,, #export Couple_Shell_Dir=$Couple_Home_Dir/Shell
 
 #Couple Lib Directories
 export Couple_Lib_Dir=$Couple_Home_Dir/Lib
@@ -370,8 +372,7 @@ export Couple_Model_Dir=$Couple_Home_Dir/Model
 
 #WRF
 export Couple_WRF_Dir=$Couple_Model_Dir/WRF/$gridname2/$gridname/WRF-4.2.2_march2022
-echo "Make sure you have the correct WRF working directory."
-        export Model_WRF_Dir=$Couple_WRF_Dir/test/em_real_$RUN_ID
+        export Model_WRF_Dir=$Couple_Data_WRF_Dir/em_real_$RUN_ID
         export Couple_WPS_grid_Dir=$Couple_WPS_Dir/domains/$gridname2/$gridname
 export Couple_WRF_Info_Dir=$Couple_WRF_Dir/Info
 export Couple_WRF_geog_Dir=$WRF_Info_Dir/geog #geogrid
@@ -489,10 +490,10 @@ rm -f $Couple_Run_Dir/*.sh 2>/dev/null
  cp $0 $Couple_Run_Dir
 
 # Copy couple.sh
-    cp $Couple_Shell_Dir/couple_with_ww3.sh $Couple_Run_Dir || exit 8
+    cp $Couple_Shell_Dir/couple.sh $Couple_Run_Dir || exit 8
 
 # Copy WRF2ROMS
-    cp $Couple_Shell_Dir/WRF2ROMS_$BULK.sh $Couple_Run_Dir/WRF2ROMS.sh || exit 8
+    cp $Couple_Shell_Dir/WRF2ROMS_$CPL_PHYS\.sh $Couple_Run_Dir/WRF2ROMS.sh || exit 8
 if [ $CPL_PHYS = ROMS_PHYS -a $WRF2ROMS_WRFONLY = yes ]; then
     cp $Couple_Shell_Dir/WRF2ROMS_bulk_WRFONLY.sh $Couple_Run_Dir/WRF2ROMS_WRFONLY.sh || exit 8
 fi
