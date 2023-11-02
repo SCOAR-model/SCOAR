@@ -267,8 +267,16 @@ if [ $restart_from_coupled_spinup = yes ]; then
   # this is where wrfrst files are located
   export WRF_RST_coupled_spinup=
   export ROMS_ICFile=
+  # CR 2023-09-21: NEW option:
+  # set `ROMS_PERFECT_RESTART=yes` if ROMS_ICFile is a restart file from a
+  # coupled simulation with cpp flag `PERFECT_RESTART` in ROMS.
+  export ROMS_PERFECT_RESTART=yes
 else
   export ROMS_ICFile=
+  # CR 2023-09-21: NEW option:
+  # set `ROMS_PERFECT_RESTART=yes` if ROMS_ICFile is a restart file from a
+  # ROMS simulation with cpp flag `PERFECT_RESTART`.
+  export ROMS_PERFECT_RESTART=yes
 fi
 
 # WW3 Initial File : from WW3 Spinup
