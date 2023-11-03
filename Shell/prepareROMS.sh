@@ -128,7 +128,7 @@ rm -f fort.* 2>/dev/null
 if [ $NLOOP -eq 1 ]; then
 
 # 2018/04/25
-if [ $restart_from_coupled_spinup = yes ]; then
+if [ $restart_from_coupled_spinup = yes -o $ROMS_PERFECT_RESTART = yes ]; then
         # remove existing rst file
         rm $Couple_Data_ROMS_Dir/ocean_rst.nc 2>/dev/null
         ln -fs $ROMS_ICFile $Couple_Data_ROMS_Dir/ocean_ini.nc
