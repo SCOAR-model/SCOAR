@@ -195,7 +195,7 @@ export ROMS_Grid_Filename=$Nameit_ROMS\-grid_nolake.nc
 # 2. Use ROMS Bulk formula CPL_PHYS=ROMS
 # WRF_PHYS should be set as default
 # If parameter_run_WW3 = yes, Set CPL_PHYS=WRF_PHYS
-export CPL_PHYS=WRF_PHYS
+export CPL_PHYS=wrfbulk
 	if [ $CPL_PHYS = ROMS_PHYS -a $parameter_run_WW3 = yes ]; then
 		echo "If parameter_run_WW3 = yes , Set CPL_PHYS=WRF_PHYS"
 		exit 8 
@@ -267,8 +267,16 @@ if [ $restart_from_coupled_spinup = yes ]; then
   # this is where wrfrst files are located
   export WRF_RST_coupled_spinup=
   export ROMS_ICFile=
+  # CR 2023-09-21: NEW option:
+  # set `ROMS_PERFECT_RESTART=yes` if ROMS_ICFile is a restart file from a
+  # coupled simulation with cpp flag `PERFECT_RESTART` in ROMS.
+  export ROMS_PERFECT_RESTART=yes
 else
   export ROMS_ICFile=
+  # CR 2023-09-21: NEW option:
+  # set `ROMS_PERFECT_RESTART=yes` if ROMS_ICFile is a restart file from a
+  # ROMS simulation with cpp flag `PERFECT_RESTART`.
+  export ROMS_PERFECT_RESTART=yes
 fi
 
 # WW3 Initial File : from WW3 Spinup
@@ -349,7 +357,7 @@ export Couple_Home_Dir=/vortexfs1/share/seolab/crenkl/models/SCOAR
 
 #Shell Directory
 export Couple_Shell_Dir_common=$Couple_Home_Dir/Shell
-export Couple_Shell_Dir=$Couple_Shell_Dir_common/$gridname2/$gridname
+export Couple_Shell_Dir=$Couple_Home_Dir/Shell
 # change to ,, #export Couple_Shell_Dir=$Couple_Home_Dir/Shell
 
 #Couple Lib Directories
@@ -369,6 +377,13 @@ export Couple_Lib_Dir=$Couple_Home_Dir/Lib
   export Couple_Lib_utils_Dir=$Couple_Lib_Dir/utils
 
 export Couple_Model_Dir=$Couple_Home_Dir/Model
+
+#General OUTPUT Directories
+export Couple_Data_Dir=$Couple_Run_Dir/Data
+ export Couple_Data_WRF_Dir=$Couple_Data_Dir/WRF 
+ export Couple_Data_ROMS_Dir=$Couple_Data_Dir/ROMS
+ export Couple_Data_WW3_Dir=$Couple_Data_Dir/WW3
+ export Couple_Data_tempo_files_Dir=$Couple_Data_Dir/tempo_files
 
 #WRF
 export Couple_WRF_Dir=$Couple_Model_Dir/WRF/$gridname2/$gridname/WRF-4.2.2_march2022
@@ -392,13 +407,6 @@ ROMS_BCFile_Dir=`eval echo $ROMS_BCFile_Dir`
         echo "ROMS BC Directory: $ROMS_BCFile_Dir"
 ROMS_ICFile=`eval echo $ROMS_ICFile`
         echo "ROMS IC: $ROMS_ICFile"
-
-#General OUTPUT Directories
-export Couple_Data_Dir=$Couple_Run_Dir/Data
- export Couple_Data_WRF_Dir=$Couple_Data_Dir/WRF 
- export Couple_Data_ROMS_Dir=$Couple_Data_Dir/ROMS
- export Couple_Data_WW3_Dir=$Couple_Data_Dir/WW3
- export Couple_Data_tempo_files_Dir=$Couple_Data_Dir/tempo_files
 
 # ROMS2WRF LOG files
  export Couple_Log_Dir=$Couple_Data_Dir/LOG
@@ -500,7 +508,7 @@ fi
 
 # Copy prepareROMS.sh
  if [ $ROMS_Rst = yes ]; then
- cp $Couple_Shell_Dir_common/prepareROMS_Rst.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
+ cp $Couple_Shell_Dir_common/prepareROMS.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
  cp $Couple_Shell_Dir_common/edit_ROMS_ocean_in.sh $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
  else  # this should be removed in the future.. and call prepareROMS_Rst.sh prepareROMS.sh
  cp $Couple_Shell_Dir_common/prepareROMS.sh $Couple_Run_Dir/prepareROMS.sh || exit 8
@@ -573,13 +581,13 @@ fi
 
 # copy post processing scripts
 if  [ ! -s $WRF_process_Dir/wrf_process.sh ]; then
-cp ../postprocess_scripts/wrf_process.sh $WRF_process_Dir/wrf_process.sh
+cp $Couple_Home_Dir/postprocess_scripts/wrf_process.sh $WRF_process_Dir/wrf_process.sh
 fi
 if  [ ! -s $ROMS_process_Dir/roms_process.sh ]; then
-cp ../postprocess_scripts/roms_process.sh  $ROMS_process_Dir/roms_process.sh
+cp $Couple_Home_Dir/postprocess_scripts/roms_process.sh  $ROMS_process_Dir/roms_process.sh
 fi
 if  [ ! -s $WW3_process_Dir/ww3_process.sh ]; then
-cp ../postprocess_scripts/ww3_process.sh  $WW3_process_Dir/ww3_process.sh
+cp $Couple_Home_Dir/postprocess_scripts/ww3_process.sh  $WW3_process_Dir/ww3_process.sh
 fi
 
 #####--------------------- END OF COPYING FILES  -----------------------#####
@@ -587,5 +595,5 @@ fi
 # COMPILE COUPLER CODES
 # STARTING RUN
 cd $Couple_Run_Dir || exit 8
-   $Couple_Run_Dir/couple_with_ww3.sh || exit 8
+   $Couple_Run_Dir/couple.sh || exit 8
 echo "DONE"

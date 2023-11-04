@@ -190,13 +190,23 @@ if [ $NOLAKE = yes ]; then
     ln -fs $Couple_Lib_grids_WRF_Dir/geo_em.d0$Coupling_Domain.nc fort.32 || exit 8
 	# fort.34: ROMS grid file for angle
     ln -fs $Couple_Lib_grids_ROMS_Dir/$ROMS_Grid_Filename fort.34 || exit 8
-    if [ $NLOOP -eq 1 ]; then
+    if [ $NLOOP -eq 1 -a $ROMS_PERFECT_RESTART = no ]; then
         # for initial SST update, since it is usually ROMS IC, don't use use_qck.
 		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_initial.x || exit 8
 		if [ $UaUo = yes ]; then
 		    echo UaUo is yes: uoce/voce in wrflowinp will be updated
 			# need to convert u/v from u/v-grid of the ROMS ICfile to rho grid ...
             $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_initial.x || exit 8
+        else
+            echo "no UaUo"
+        fi
+    elif [ $NLOOP -eq 1 -a $ROMS_PERFECT_RESTART = yes ]; then
+        # for initial SST update, since it is usually ROMS IC, don't use use_qck.
+		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_roms_perf_rst.x || exit 8
+		if [ $UaUo = yes ]; then
+		    echo UaUo is yes: uoce/voce in wrflowinp will be updated
+			# need to convert u/v from u/v-grid of the ROMS ICfile to rho grid ...
+            $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_roms_perf_rst.x || exit 8
         else
             echo "no UaUo"
         fi
