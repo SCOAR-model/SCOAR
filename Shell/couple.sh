@@ -108,7 +108,7 @@ echo $NHour >& $Couple_Run_Dir/restart_info
 if [ $NLOOP -eq 1 ]; then
 	if [ ! -s $Model_WRF_Dir ]; then
 	echo " WRF working driectory is being copied"
-		cp -r $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
+		cp -Lr $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
 	fi
 	echo "Prepared the wrfinput wrfbdy wrflowinp..."
 	# link initial and bdy files (since these are not changed during the integration)
