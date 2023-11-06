@@ -108,7 +108,7 @@ echo $NHour >& $Couple_Run_Dir/restart_info
 if [ $NLOOP -eq 1 ]; then
 	if [ ! -s $Model_WRF_Dir ]; then
 	echo " WRF working driectory is being copied"
-		cp -r $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
+		cp -Lr $Couple_WRF_Dir/test/em_real $Model_WRF_Dir
 	fi
 	echo "Prepared the wrfinput wrfbdy wrflowinp..."
 	# link initial and bdy files (since these are not changed during the integration)
@@ -347,7 +347,7 @@ time_start1=$(date "+%s")
 	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
 		if [ $WRF_Domain -eq 2 ]; then
 		mkdir -p $WRF_AFWA_Dir/d02/$YYYYin
-		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02 || exit 8
+		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02/$YYYYin || exit 8
 		fi
 	fi
 # wrfts
