@@ -1,1 +1,0 @@
-edit_ww3_prnc_may_2021.sh

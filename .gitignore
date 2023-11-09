@@ -1,0 +1,9 @@
+# domain-specific directories
+**/ar/
+**/nep/
+
+# SCOAR coupler executables
+*.x
+
+# .log files
+*.log

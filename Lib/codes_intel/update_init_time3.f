@@ -1,7 +1,7 @@
       include 'netcdf.inc'
 
       integer status, ncid, varid
-      real init_time, num_hour, cf
+      real*8 init_time, num_hour, cf
       character*10 time_name
 
 ! 2. open time_variable name
@@ -30,7 +30,7 @@
       status = nf_inq_varid(ncid,time_name,varid)
        if (status .ne. nf_noerr) call handle_err(status,2)
 ! 3. write 
-      status = nf_put_var_real(ncid,varid,init_time)
+      status = nf_put_var_double(ncid,varid,init_time)
       if (status .ne. nf_noerr) call handle_err(status,3)
 ! 4 close file
       status = nf_close(ncid)

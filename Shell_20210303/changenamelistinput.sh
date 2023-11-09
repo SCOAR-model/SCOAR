@@ -1,1 +1,0 @@
-changenamelistinput_new_apr2021.sh
