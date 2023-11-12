@@ -568,7 +568,7 @@ if [ $wave_current = yes ];then
 	# for inital case, jusy duplicate NHour for NHourm
        		ncks -3 -O -v u_sur_eastward,v_sur_northward,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc fort.11
 	else
-       		ncks -3 -O -v u_sur_eastward,v_sur_northward,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYin/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc fort.11
+       		ncks -3 -O -v u_sur_eastward,v_sur_northward,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYi/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc fort.11
 	fi
         ncks -3 -O -v u_sur_eastward,v_sur_northward,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc fort.12
         ncrcat -O fort.11 fort.12 fort.11;      rm fort.12
