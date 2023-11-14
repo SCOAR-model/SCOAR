@@ -44,7 +44,7 @@ nwp_diagnostics = 1,
 io_form_auxhist2 = 2,
 auxhist2_interval                  = 180, 60,
 frames_per_auxhist2                = 1,1,
-auxhist2_outname                   = "afwa_d<domain>_<date>"
+auxhist2_outname                   = "wrfafwa_d<domain>_<date>"
 
 io_form_auxhist22                   = 2,
 auxhist22_interval                  = 180, 60,
