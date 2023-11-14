@@ -344,10 +344,10 @@ time_start1=$(date "+%s")
 	if [ $WRF_AFWA = yes ]; then 
 	mkdir -p $WRF_AFWA_Dir/d01/$YYYYin
 	# AFWA writes only beginning of fcst...
-	mv $Model_WRF_Dir/afwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
+	mv $Model_WRF_Dir/wrfafwa_d01_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d01/$YYYYin || exit 8
 		if [ $WRF_Domain -eq 2 ]; then
 		mkdir -p $WRF_AFWA_Dir/d02/$YYYYin
-		mv $Model_WRF_Dir/afwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02/$YYYYin || exit 8
+		mv $Model_WRF_Dir/wrfafwa_d02_$YYYYi-$MMi-$DDi\_$HHi\_00\_00 $WRF_AFWA_Dir/d02/$YYYYin || exit 8
 		fi
 	fi
 # wrfts
@@ -508,12 +508,20 @@ if [ $ROMS_Qck = yes ]; then
 	mkdir -p $ROMS_Qck_Dir/$YYYYin/
         mv $Couple_Data_ROMS_Dir/ocean_qck.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
 
-	# added: July 2, 2017
-	# if use Qck; obtain only the last time step 
-	# as is for HIS, it writes the first and last time-step of each segment of integrations
-	echo "qck_Hour.nc: use only the last time-step"
-	$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
-	###
+
+	# save initial conditons in qck for very first time step
+	if [ $NLOOP -eq 1 ]; then
+		$NCO/ncks -F -O -d ocean_time,1 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc
+		$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+
+	else 
+		# added: July 2, 2017
+		# if use Qck; obtain only the last time step 
+		# as is for HIS, it writes the first and last time-step of each segment of integrations
+		echo "qck_Hour.nc: use only the last time-step"
+		$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+		###
+	fi
 fi
 
 time_end=$(date "+%s")
