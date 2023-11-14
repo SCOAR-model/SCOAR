@@ -508,12 +508,20 @@ if [ $ROMS_Qck = yes ]; then
 	mkdir -p $ROMS_Qck_Dir/$YYYYin/
         mv $Couple_Data_ROMS_Dir/ocean_qck.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
 
-	# added: July 2, 2017
-	# if use Qck; obtain only the last time step 
-	# as is for HIS, it writes the first and last time-step of each segment of integrations
-	echo "qck_Hour.nc: use only the last time-step"
-	$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
-	###
+
+	# save initial conditons in qck for very first time step
+	if [ $NLOOP -eq 1 ]; then
+		$NCO/ncks -F -O -d ocean_time,1 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc
+		$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+
+	else 
+		# added: July 2, 2017
+		# if use Qck; obtain only the last time step 
+		# as is for HIS, it writes the first and last time-step of each segment of integrations
+		echo "qck_Hour.nc: use only the last time-step"
+		$NCO/ncks -F -O -d ocean_time,2 $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
+		###
+	fi
 fi
 
 time_end=$(date "+%s")
