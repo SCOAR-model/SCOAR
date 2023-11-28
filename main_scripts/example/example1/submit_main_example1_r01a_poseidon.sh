@@ -25,4 +25,5 @@ mme=11
 dde=12
 hhe=00
 
-$scoar_dir/main_nep1_r01.sh $yyyye:$mme:$dde:$hhe $RESTART $LastNHour >& r01_log_$$_$yyyye$mme$dde$hhe
+export logfile=/vortexfs1/share/seolab/hseo/SCOAR_git/SCOAR/main_scripts/example/example1/r01_log_$$_$yyyye$mme$dde$hhe
+$scoar_dir/main_nep1_r01.sh $yyyye:$mme:$dde:$hhe $RESTART $LastNHour >&  $logfile
