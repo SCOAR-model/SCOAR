@@ -596,7 +596,7 @@ fi
 if  [ ! -s $ROMS_process_Dir/roms_process.sh ]; then
 cp $Couple_Home_Dir/postprocess_scripts/roms_process.sh  $ROMS_process_Dir/roms_process.sh
 fi
-if  [ ! -s $WW3_process_Dir/ww3_process.sh ]; then
+if  [ $parameter_run_WW3 = yes -a ! -s $WW3_process_Dir/ww3_process.sh ]; then
 cp $Couple_Home_Dir/postprocess_scripts/ww3_process.sh  $WW3_process_Dir/ww3_process.sh
 fi
 

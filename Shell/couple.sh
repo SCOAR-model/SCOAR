@@ -160,6 +160,7 @@ echo "ROMS2WRF: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi"
         else
         echo "no ERROR"
         exit 8
+	    fi
 
 time_start=$(date "+%s")
 $Couple_Run_Dir/ROMS2WRF.sh $NHour $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $CF $NLOOP $NHourm || exit 8
@@ -187,6 +188,7 @@ time_start=$(date "+%s")
         else
         echo "no ERROR"
         exit 8
+	    fi
 
 time_end=$(date "+%s")
 echo "WW32WRF = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
