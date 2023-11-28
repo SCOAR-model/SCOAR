@@ -571,7 +571,7 @@ fi
 
 # WW3 executables
 ln -fs $Couple_Lib_exec_WW3_Dir/exec/$WW3_exe_Filename $WW3_Exe_Dir || exit 8
-n -fs $Couple_Lib_grids_WW3_Dir/mod_def.ww3 $WW3_Exe_Dir || exit 8
+ln -fs $Couple_Lib_grids_WW3_Dir/mod_def.ww3 $WW3_Exe_Dir || exit 8
 ln -fs $Couple_Lib_grids_WW3_Dir/mapsta.ww3 $WW3_Exe_Dir || exit 8
 ln -fs $Couple_Lib_grids_WW3_Dir/mask.ww3 $WW3_Exe_Dir || exit 8
 
@@ -598,7 +598,7 @@ fi
 if  [ ! -s $ROMS_process_Dir/roms_process.sh ]; then
 cp $Couple_Home_Dir/postprocess_scripts/roms_process.sh  $ROMS_process_Dir/roms_process.sh
 fi
-if  [ ! -s $WW3_process_Dir/ww3_process.sh ]; then
+if  [ $parameter_run_WW3 = yes -a ! -s $WW3_process_Dir/ww3_process.sh ]; then
 cp $Couple_Home_Dir/postprocess_scripts/ww3_process.sh  $WW3_process_Dir/ww3_process.sh
 fi
 

@@ -26,4 +26,5 @@ mme=12
 dde=03
 hhe=00
 
-$scoar_dir/main_tutorial1_r01.sh $yyyye:$mme:$dde:$hhe $RESTART $LastNHour >& tuto_r01_log_$$_$yyyye$mme$dde$hhe
+export logfile=$scoar_dir/tuto_r01_log_$$_$yyyye$mme$dde$hhe
+$scoar_dir/main_tutorial1_r01.sh $yyyye:$mme:$dde:$hhe $RESTART $LastNHour >& logfile
