@@ -293,6 +293,12 @@ export WW3_spinup=yes
         echo "doesn't exist: $WW3_ICFile or $WW3_ICFile_NC"
         exit 8
         fi
+
+	export WW3_BCFile=/vortexfs1/share/seolab/csauvage/SCOAR_GIT/SCOAR/Data/domains/$gridname2/$gridname/WW3_Input/nest.ww3
+        if [ ! -s $WW3_BCFile ]; then
+        echo "doesn't exist: $WW3_BCFile"
+        exit 8
+        fi
 	
 fi
 
@@ -565,7 +571,13 @@ fi
 
 # WW3 executables
 ln -fs $Couple_Lib_exec_WW3_Dir/exec/$WW3_exe_Filename $WW3_Exe_Dir || exit 8
-ln -fs $Couple_Lib_grids_WW3_Dir/*ww3 $WW3_Exe_Dir || exit 8
+n -fs $Couple_Lib_grids_WW3_Dir/mod_def.ww3 $WW3_Exe_Dir || exit 8
+ln -fs $Couple_Lib_grids_WW3_Dir/mapsta.ww3 $WW3_Exe_Dir || exit 8
+ln -fs $Couple_Lib_grids_WW3_Dir/mask.ww3 $WW3_Exe_Dir || exit 8
+
+# WW3 BCFile
+ln -fs $WW3_BCFile $WW3_Exe_Dir/nest.ww3 || exit 8
+
 
 # WW3 namelist only what isused...
 cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_wind.nml    $WW3_Exe_Dir || exit 8
