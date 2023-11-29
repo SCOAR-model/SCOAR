@@ -112,6 +112,6 @@
           print *, n,' ',status
           print *, 'reading fp from ww3.nc failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err

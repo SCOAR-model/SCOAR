@@ -202,11 +202,11 @@ if [ $NOLAKE = yes ]; then
         fi
     elif [ $NLOOP -eq 1 -a $ROMS_PERFECT_RESTART = yes ]; then
         # for initial SST update, since it is usually ROMS IC, don't use use_qck.
-		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_roms_perf_rst.x || exit 8
+		$Couple_Lib_exec_coupler_Dir/sst_wrflowinp_nolake_perf_rst.x || exit 8
 		if [ $UaUo = yes ]; then
 		    echo UaUo is yes: uoce/voce in wrflowinp will be updated
 			# need to convert u/v from u/v-grid of the ROMS ICfile to rho grid ...
-            $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_roms_perf_rst.x || exit 8
+            $Couple_Lib_exec_coupler_Dir/uvoce_wrflowinp_nolake_perf_rst.x || exit 8
         else
             echo "no UaUo"
         fi

@@ -344,6 +344,6 @@
          print *, n,' ',status
          print *, 'reading angle from ROMS grid file failed!!!'
          print *, 'stop'
-          call exit
+         stop status
       endif
       end subroutine handle_err
