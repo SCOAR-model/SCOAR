@@ -253,7 +253,7 @@
          print *, 'failed! nc file not read correctly ',Num
          print *, '*****************************'
          print *, 'stop'
-          stop
+         stop status
       endif
       end subroutine
 

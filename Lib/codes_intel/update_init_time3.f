@@ -46,6 +46,6 @@
          print *, 'failed! update time on forc.nc ',Num
          print *, '*****************************'
          print *, 'stop'
-          call exit
+         stop status
       endif
       end subroutine handle_err

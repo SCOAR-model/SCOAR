@@ -219,6 +219,6 @@
           print *, n,' ',status
           print *, 'reading uoce from qck.nc failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err

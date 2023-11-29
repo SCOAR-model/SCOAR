@@ -95,28 +95,28 @@
 ! #######################################################
 ! read sst value first 
       status = nf_open('fort.14',nf_nowrite,ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,7)
+      if (status .ne. nf_noerr) call handle_err(status,5)
 
       status = nf_inq_varid(ncid2,'SST',varid2)
-      if (status .ne. nf_noerr) call handle_err(status,8)
+      if (status .ne. nf_noerr) call handle_err(status,6)
       status=nf_get_vars_double(ncid2,varid2,
      &               start2,count2,stride2,sstWRF)
-      if (status .ne. nf_noerr) call handle_err(status,10)
+      if (status .ne. nf_noerr) call handle_err(status,7)
 
       status = nf_close(ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,12)
+      if (status .ne. nf_noerr) call handle_err(status,8)
 ! ###########
 
 ! read landmask WRF
 ! #######################################################
       status = nf_open('fort.166',nf_nowrite,ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,7)
+      if (status .ne. nf_noerr) call handle_err(status,9)
 
       status = nf_inq_varid(ncid2,'LANDMASK',varid2)
-      if (status .ne. nf_noerr) call handle_err(status,8)
+      if (status .ne. nf_noerr) call handle_err(status,10)
       status=nf_get_vars_double(ncid2,varid2,
      &               start3,count2,stride2,land_wrf)
-      if (status .ne. nf_noerr) call handle_err(status,10)
+      if (status .ne. nf_noerr) call handle_err(status,11)
 
       status = nf_close(ncid2)
       if (status .ne. nf_noerr) call handle_err(status,12)
@@ -125,16 +125,16 @@
 ! read lakemask WRF
 ! #######################################################
       status = nf_open('fort.166',nf_nowrite,ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,7)
+      if (status .ne. nf_noerr) call handle_err(status,13)
 
       status = nf_inq_varid(ncid2,'LAKEMASK',varid2)
-      if (status .ne. nf_noerr) call handle_err(status,8)
+      if (status .ne. nf_noerr) call handle_err(status,14)
       status=nf_get_vars_double(ncid2,varid2,
      &               start3,count2,stride2,lake_wrf)
-      if (status .ne. nf_noerr) call handle_err(status,10)
+      if (status .ne. nf_noerr) call handle_err(status,15)
 
       status = nf_close(ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,12)
+      if (status .ne. nf_noerr) call handle_err(status,16)
 ! ###########
 
 ! treat land/mask
@@ -153,20 +153,20 @@
 ! write to wrflowinp
 ! 1. open forc file
       status = nf_open('fort.14',nf_write,ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,7)
+      if (status .ne. nf_noerr) call handle_err(status,17)
 
 ! 2. get varid from forc file
       status = nf_inq_varid(ncid2,'SST',varid2)
-      if (status .ne. nf_noerr) call handle_err(status,8)
+      if (status .ne. nf_noerr) call handle_err(status,18)
 
 ! 3.  write SST
       status=nf_put_vars_double(ncid2,varid2,
      &               start2,count2,stride2,sstROMS)
-      if (status .ne. nf_noerr) call handle_err(status,10)
+      if (status .ne. nf_noerr) call handle_err(status,19)
 
 ! 4. close 
       status = nf_close(ncid2)
-      if (status .ne. nf_noerr) call handle_err(status,12)
+      if (status .ne. nf_noerr) call handle_err(status,20)
 ! ###########
      
       call exit
@@ -178,6 +178,6 @@
           print *, n,' ',status
           print *, 'reading sst from rst.nc failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err

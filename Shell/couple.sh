@@ -154,14 +154,6 @@ time_start0=$(date "+%s")
 if [ $parameter_ROMS2WRF = yes ]; then
 echo "ROMS2WRF: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi"
 
-        grep "failed" $logfile
-        if [ $? -eq 0 ]; then
-        echo "ERROR: reading or writing failed: ROMS2WRF.sh"
-        else
-        echo "no ERROR"
-        exit 8
-	    fi
-
 time_start=$(date "+%s")
 $Couple_Run_Dir/ROMS2WRF.sh $NHour $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $CF $NLOOP $NHourm || exit 8
 time_end=$(date "+%s")
@@ -181,14 +173,6 @@ echo "WW32WRF: NHour=$NHour, NLOOP=$NLOOP, $YYYYi:$MMi:$DDi:$HHi ~ $YYYYin:$MMin
 
 time_start=$(date "+%s")
 	$Couple_Run_Dir/WW32WRF.sh $NHour $NHourm $CF $NLOOP $YYYYin:$MMin:$DDin:$HHin  || exit 8
-
-        grep "failed" $logfile
-        if [ $? -eq 0 ]; then
-        echo "ERROR: reading or writing failed: WW32WRF.sh"
-        else
-        echo "no ERROR"
-        exit 8
-	    fi
 
 time_end=$(date "+%s")
 echo "WW32WRF = $((time_end-time_start))s" >> $Couple_Run_Dir/code_time
