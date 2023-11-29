@@ -269,6 +269,6 @@
           print *, n,' ',status
           print *, 'reading uoce/voce from rst.nc failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err

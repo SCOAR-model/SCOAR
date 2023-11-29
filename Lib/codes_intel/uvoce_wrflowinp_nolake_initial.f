@@ -266,6 +266,6 @@
           print *, n,' ',status
           print *, 'reading uoce/voce from IC file failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err

@@ -89,6 +89,6 @@
           print *, n,' ',status
           print *, 'reading variable from wrfout.nc failed!!!'
           print *, 'stop'
-           call exit
+          stop status
        endif
        end subroutine handle_err
