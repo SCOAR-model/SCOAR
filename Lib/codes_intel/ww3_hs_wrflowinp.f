@@ -104,6 +104,6 @@
           print *, n,' ',status
           print *, 'reading hs from ww3.nc failed!!!'
           print *, 'stop'
-          stop status
+          stop 999
        endif
        end subroutine handle_err

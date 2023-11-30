@@ -191,6 +191,6 @@
           print *, n,' ',status
           print *, 'reading uv @ sfc from forc.nc failed!!!'
           print *, 'stop'
-          stop status
+          stop 999
        endif
        end subroutine handle_err
