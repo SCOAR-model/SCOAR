@@ -77,7 +77,7 @@
           print *, '*****************************'
           print *, 'failed! update init: ',Num
           print *, '*****************************'
-          stop status
+          stop 999
        endif
        end subroutine handle_err
 

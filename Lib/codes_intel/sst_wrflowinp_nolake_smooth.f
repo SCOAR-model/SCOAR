@@ -122,6 +122,6 @@
           print *, n,' ',status
           print *, 'reading sst from avg.nc failed!!!'
           print *, 'stop'
-          stop status
+          stop 999
        endif
        end subroutine handle_err

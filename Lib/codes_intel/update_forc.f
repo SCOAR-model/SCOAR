@@ -67,6 +67,6 @@
          print *, 'failed! update forc.nc ',Num
          print *, '*****************************'
          print *, 'stop'
-         stop status
+         stop 999
       endif
       end subroutine handle_err
