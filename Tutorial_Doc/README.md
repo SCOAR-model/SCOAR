@@ -7,7 +7,14 @@
 <p>This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are avaialble to run 2 days starting December 1st, 2018.</p>
 
 <h3>Input Data </h3>
+The inputs data for each model are located under <em>Data/domains/tutorial/tutorial1/ </em>
 <h4>WRF inputs</h4>
+Under <em>WRF_Input</em> are the initial, boundary and lower input conditions necessary to run WRF.
+<ul>
+  <li> wrfinput_d01</li>
+  <li> wrfbdy_d01</li>
+  <li> wrflowinp_d01</li>
+</ul>
 <h4>ROMS inputs</h4>
 <h4>WW3 inputs</h4>
 <h4>Grids and Templates</h4>
