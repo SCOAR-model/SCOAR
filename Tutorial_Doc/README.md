@@ -3,7 +3,7 @@
 
 ![figure](map_scoar_tutorial_norus.png)
 
-<h3>Case summary </h3>
+
 <p>This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are avaialble to run 2 days starting December 1st, 2018.</p>
 
 <h3> 1. Input Data </h3>
