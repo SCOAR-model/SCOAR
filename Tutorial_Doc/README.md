@@ -8,15 +8,29 @@
 
 <h3>Input Data </h3>
 The inputs data for each model are located under <em>Data/domains/tutorial/tutorial1/ </em>
+
 <h4>WRF inputs</h4>
-Under <em>WRF_Input</em> are the initial, boundary and lower input conditions necessary to run WRF.
+Under <em>WRF_Input</em> are the initial, boundary and lower input conditions necessary to run WRF. These data have been pre-processed using 3-hourly ECMWF ERA5 reanalysis data. The files included here are:<br>
+<br>
 <ul>
   <li> wrfinput_d01</li>
   <li> wrfbdy_d01</li>
   <li> wrflowinp_d01</li>
 </ul>
+
 <h4>ROMS inputs</h4>
+Under <em>ROMS_Input</em> are the initial and boundary conditions necessary to run ROMS. These data have been pre-processed using daily Mercator-International GLORYS reanalysis dataset. A forcing file for tides input is also provided. No rivers are included in this tutorial but if any, it would be placed in this directory as well. The files included here are:<br>
+ <br>
+<ul>
+  <li> mercator.ini_1dy_20181201.nc </li>
+  <li> mercator/1day/2018/mercator.bry_1dy_2018120*.nc </li>
+  <li> tides.nc </li>
+</ul>
+
 <h4>WW3 inputs</h4>
+Under <em>WW3_Input</em> are the initial and boundary conditions necessary to run WW3. These data have been pre-processed using daily Mercator-International GLORYS reanalysis dataset. A forcing file for tides input is also provided. No rivers are included in this tutorial but if any, it would be placed in this directory as well. The files included here are:<br>
+ <br>
+
 <h4>Grids and Templates</h4>
 
 <h3>Executables</h3>
