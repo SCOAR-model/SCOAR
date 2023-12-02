@@ -6,7 +6,7 @@
 <h3>Case summary </h3>
 <p>This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are avaialble to run 2 days starting December 1st, 2018.</p>
 
-<h3>Input Data </h3>
+<h3> 1. Input Data </h3>
 The inputs data for each model are located under <em>Data/domains/tutorial/tutorial1/ </em>
 
 <h4>WRF inputs</h4>
@@ -28,12 +28,19 @@ Under <em>ROMS_Input</em> are the initial and boundary conditions necessary to r
 </ul>
 
 <h4>WW3 inputs</h4>
-Under <em>WW3_Input</em> are the initial and boundary conditions necessary to run WW3. These data have been pre-processed using daily Mercator-International GLORYS reanalysis dataset. A forcing file for tides input is also provided. No rivers are included in this tutorial but if any, it would be placed in this directory as well. The files included here are:<br>
+Under <em>WW3_Input</em> are the initial and boundary conditions necessary to run WW3 as well as initial wave conditions that will be used be ROMS and WRF. The boundary conditions have been pre-processed using 3-hourly wave spectral points from IFREMER global hindcast runs. The initial conditions have been produced via a spin-up of the wave model. The files included here are:<br>
  <br>
+<ul>
+  <li> restart_file_ww3.zip </li>
+  <li> ww3_norus_spinup_2018.201812.nc </li>
+  <li> nest.ww3 </li>
+</ul>
+
+<em> restart_file_ww3.zip </em> needs to be unzipped, it should contain: restart030_20181201.ww3. This restart file have been produced using the WHOI HPC Poseidon, it may not work when used on another HPC. In that case, coupling with WW3 may not be available for the purpose of the tutorial and can be eventually turned off when setting the main SCOAR options in section 3.
 
 <h4>Grids and Templates</h4>
 
-<h3>Executables</h3>
+<h3> 2. Executables </h3>
 <h4> Fortran codes compilation </h4>
 
 <h4>Models</h4>
@@ -41,7 +48,7 @@ Under <em>WW3_Input</em> are the initial and boundary conditions necessary to ru
 <h5>ROMS</h5>
 <h5>WW3</h5>
 
-<h3>Run SCOAR</h3>
+<h3> 3. Run SCOAR </h3>
 
 main namelist and job submission
 
