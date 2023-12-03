@@ -1,7 +1,7 @@
 
   <h2 align="center"> SCOAR TUTORIAL: NORTH ATLANTIC 10 KM </h2>
 
-![figure](map_scoar_tutorial_norus.png)
+![figure](map_scoar_tutorial_norus.gif)
 
 
 This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are avaialble to run 2 days starting December 1st, 2018.<br>
@@ -120,6 +120,7 @@ The main SCOAR namelist and job submission script are located here: <em> main_sc
   <li> main_tutorial1_r01.sh </li>
   <li> submit_main_tutorial1_r01a_poseidon.sh </li>
 </ul>
+The submission script is based on SLURM syntax and can be adapted depending on user's need.<br> 
 If any error occurred during the run, a logfile is produced here and can be investigated to find the source of the potential error.<br> 
 
 Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em>
