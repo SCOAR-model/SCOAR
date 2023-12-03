@@ -121,6 +121,6 @@ The main SCOAR namelist and job submission script are located here: <em> main_sc
   <li> submit_main_tutorial1_r01a_poseidon.sh </li>
 </ul>
 The submission script is based on SLURM syntax and can be adapted depending on user's need.<br> 
-If any error occurred during the run, a logfile is produced here and can be investigated to find the source of the potential error.<br> 
-
+If any error occurred during the run, a logfile is produced here and can be investigated to find the source of the error.<br> 
+<br>
 Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em>
