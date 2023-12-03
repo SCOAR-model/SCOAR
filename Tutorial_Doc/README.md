@@ -91,8 +91,8 @@ And optional files are:
 Under <em> Lib/exec/ROMS/tutorial/tutorial1 </em> the necessary files are:
 <ul>
   <li> romsM (main ROMS executable, need to be produced by the user and placed here.) </li>
-  <li> ocean.in (main ROMS namelist,) </li>
-  <li> romslaunch (bash script running ROMS,) </li>
+  <li> ocean.in (main ROMS namelist.) </li>
+  <li> romslaunch (bash script running ROMS.) </li>
   <li> varinfo.dat_v38 (ROMS variable information.) </li>
 </ul>
 
