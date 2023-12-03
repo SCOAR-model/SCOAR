@@ -120,6 +120,6 @@ The main SCOAR namelist and job submission script are located here: <em> main_sc
   <li> main_tutorial1_r01.sh </li>
   <li> submit_main_tutorial1_r01a_poseidon.sh </li>
 </ul>
-If any error occured during the run, a logfile is produced here and can be investigated to find the source of the potential error.<br> 
+If any error occurred during the run, a logfile is produced here and can be investigated to find the source of the potential error.<br> 
 
 Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em>
