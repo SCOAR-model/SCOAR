@@ -115,6 +115,11 @@ And optional files are:
 
 <h3> 3. Run SCOAR </h3>
 
-main namelist and job submission
+The main SCOAR namelist and job submission script are located here: <em> main_scripts/tutorial/tutorial1 </em>
+<ul>
+  <li> main_tutorial1_r01.sh </li>
+  <li> submit_main_tutorial1_r01a_poseidon.sh </li>
+</ul>
+If any error occured during the run, a logfile is produced here and can be investigated to find the source of the potential error.<br> 
 
-output in Run/ directory and post-process
+Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em>
