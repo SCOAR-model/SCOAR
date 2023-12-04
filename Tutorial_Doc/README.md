@@ -4,7 +4,7 @@
 ![figure](map_scoar_tutorial_norus.gif)
 
 
-This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are avaialble to run 2 days starting December 1st, 2018.<br>
+This tutorial aims to showcase how to run the SCOAR Regional Coupled system using a simple case over the North Atlantic. The chosen domain is illustrated in the figure above. Data are available to run 2 days starting December 1st, 2018.<br>
 Currently, this tutorial works using:
 <ul>
   <li> WRF version 4.2.2 </li>
@@ -42,7 +42,7 @@ Under <em>WW3_Input</em> are the initial and boundary conditions necessary to ru
   <li> nest.ww3 </li>
 </ul>
 
-<em> restart_file_ww3.zip </em> needs to be unzipped, it should contain: restart030_20181201.ww3. This restart file have been produced using the WHOI HPC Poseidon, it may not work when used on another HPC. In that case, coupling with WW3 may not be available for the purpose of the tutorial and can be eventually turned off when setting the main SCOAR options in section 3.
+<em> restart_file_ww3.zip </em> needs to be unzipped, it should contain: restart030_20181201.ww3. This restart file have been produced using the WHOI HPC Poseidon, it may not work when used on another HPC. In that case, coupling with WW3 may not be available for the purpose of the tutorial and can eventually be turned off when setting the main SCOAR options in section 3.
 
 <h4> 1.4. Grids and Template </h4>
 Grids and Template can be found respectively under <em> Lib/grids/tutorial/tutorial1 </em> and <em> Lib/template/tutorial/tutorial1 </em>. These files gather informations on the grids used by each model as well as divers masks and templates used in the SCOAR's couple routine. These files have been generated using the SCOAR preprocess procedure.  
