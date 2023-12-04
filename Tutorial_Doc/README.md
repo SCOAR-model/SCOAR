@@ -98,29 +98,68 @@ Under <em> Lib/exec/ROMS/tutorial/tutorial1 </em> the necessary files are:
 
 <h5>2.2.3. WW3</h5>
 Under <em> Lib/exec/WW3/tutorial/tutorial1 </em> the necessary files are namelists and executables:
-<ul>
-  <li> ww3_shel.nml (main WW3 namelist.) </li>
-  <li> ww3_prnc_wind.nml (namelist for wind forcing file.) </li>
-  <li> ww3_prnc_current.nml (namelist for ocean current forcing file.) </li>
-  <li> ww3_ounf.nml (namelist for netcdf 2d outputs.)</li>
-  <li> namelists.nml  (namelist for additional options.) </li>
-  <li> exec/ww3_* (main WW3 executables, need to be produced by the user and placed here.) </li>
-</ul>
+
+- ww3_shel.nml (main WW3 namelist.) 
+- ww3_prnc_wind.nml (namelist for wind forcing file.) 
+- ww3_prnc_current.nml (namelist for ocean current forcing file.)
+- ww3_ounf.nml (namelist for netcdf 2d outputs.)
+- namelists.nml  (namelist for additional options.)
+- exec/ww3_* (main WW3 executables, need to be produced by the user and placed here.)
 
 And optional files are:
-<ul>
-  <li> points.list (list of locations for spectral point outputs.) </li>
-  <li> ww3_ounp.nml (namelist for netcdf spectral point outputs.) </li>
-</ul>
+
+- points.list (list of locations for spectral point outputs.) 
+- ww3_ounp.nml (namelist for netcdf spectral point outputs.) 
+
 
 <h3> 3. Run SCOAR </h3>
 
 The main SCOAR namelist and job submission script are located here: <em> main_scripts/tutorial/tutorial1 </em>
-<ul>
-  <li> main_tutorial1_r01.sh </li>
-  <li> submit_main_tutorial1_r01a_poseidon.sh </li>
-</ul>
-The submission script is based on SLURM syntax and can be adapted depending on user's need.<br> 
+
+- main_tutorial1_r01.sh
+- submit_main_tutorial1_r01a_poseidon.sh 
+
+
+The main namelist sets all the coupling options and necessary paths to run SCOAR. <br>
+For this tutorial, only few parameters need to be modified before starting the run.<br>
+
+- export NCO=path_to_NCO_bin 
+
+- export parameter_run_WW3=yes (can be set to 'no' if no wave coupling is wanted) 
+
+- export tide_data=path_to_tides_input_file
+
+- export ROMS_ICFile=path_to_roms_initial_conditions_input_file 
+
+- export WW3_ICFile=path_to_ww3_restart_input_file 
+
+- export WW3_ICFile_NC=path_to_ww3_initial_conditions_input_file 
+
+- export WW3_BCFile=path_to_ww3_boundary_conditions_input_file 
+
+- export Couple_Run_Dir=path_to_SCOAR_Tun_directory (i.e. /vortexfs1/share/seolab/csauvage/SCOAR/Run/$gridname2/$gridname/$RUN_ID)
+
+- export Couple_Home_Dir=path_to_SCOAR_directory (i.e. /vortexfs1/share/seolab/csauvage/SCOAR)
+
+- export Couple_WRF_Dir=path_to_WRF_directory (i.e. $Couple_Model_Dir/WRF/$gridname2/$gridname/WRF-4.2.2_march2022)
+
+Other coupling options (i.e. different wave coupling parameterizations, ocean coupling, wind farm parameterization...) can eventually be tested here as well. Some options, like choosing or not to couple WW3 to ROMS might require ROMS to be compiled accordingly.
+
+When the namelist is ready, it is time to run the model via the submission script. <br>
+The submission script is based on SLURM syntax and can be adapted depending on user's needs and HPC.<br> 
+Two paths need to be updated:
+- scoar_dir=path_to_main_SCOAR_dir_namelist (i.e. /vortexfs1/share/seolab/csauvage/SCOAR/main_scripts/tutorial/tutorial1)
+
+- Couple_Run_Dir=path_to_current_runID_directory (i.e. /vortexfs1/share/seolab/csauvage/SCOAR//Run/tutorial/tutorial1/tuto_r01)
+
+- export RESTART=no (eventually turn to 'yes' if it is a restart)
+
+This is also where the end date of the run is set, for this tutorial only 2 days worth of data are available. <br>
+<ins>Note:</ins> currently, the end date minimum for a SCOAR run has to be at least one day after initial conditions. <br>
+<ins>Note:</ins> If a different number of processors is used, the partitioning of processors in X and Y directions needs to be updated for ROMS in the ocean.in namelist. <br>
+<br>
+When ready, submit the job. <br>
+<br>
 If any error occurred during the run, a logfile is produced here and can be investigated to find the source of the error.<br> 
 <br>
-Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em>
+Once finished, the outputs for each model can be found under their respective folders here: <em> Run/tutorial/tutorial1/Data/* </em> and can be post-processed.
