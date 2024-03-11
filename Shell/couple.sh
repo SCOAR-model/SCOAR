@@ -489,6 +489,12 @@ echo "****************  Run ROMS ****************"
 fi
 echo "****************  Run ROMS ****************"
 
+# dia
+if [ $ROMS_Dia = yes ]; then
+	mkdir -p $ROMS_Dia_Dir/$YYYYin
+	mv $Couple_Data_ROMS_Dir/ocean_dia.nc $ROMS_Dia_Dir/$YYYYin/dia_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
+fi
+
 # avg
 if [ $ROMS_Avg = yes ]; then
 	mkdir -p $ROMS_Avg_Dir/$YYYYin
