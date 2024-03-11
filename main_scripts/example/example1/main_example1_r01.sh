@@ -175,6 +175,7 @@ fi
 # ROMS OUTPUTS Types to use
 # for mjo and yso runs, avg is the average for the coupling interver and his is output every 1h regardless of CF 
 export ROMS_Avg=yes 
+export ROMS_Dia=yes 
 export ROMS_His=yes
 export ROMS_Qck=yes
 export Use_SST_In=Qck
