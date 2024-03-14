@@ -495,6 +495,13 @@ if [ $ROMS_Dia = yes ]; then
 	mv $Couple_Data_ROMS_Dir/ocean_dia.nc $ROMS_Dia_Dir/$YYYYin/dia_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
 fi
 
+# deTide
+if [ $ROMS_DeT = yes ]; then
+	mkdir -p $ROMS_DeT_Dir/$YYYYin
+	mv $Couple_Data_ROMS_Dir/ocean_har.nc $ROMS_DeT_Dir/$YYYYin/har_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
+fi
+
+
 # avg
 if [ $ROMS_Avg = yes ]; then
 	mkdir -p $ROMS_Avg_Dir/$YYYYin
