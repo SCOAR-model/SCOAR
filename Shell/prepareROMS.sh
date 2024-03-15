@@ -209,6 +209,13 @@ if [ $ROMS_Rst = yes ]; then
 
 	ln -fs $ROMS_Rst_Dir/$YYYYi/rst_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc  $Couple_Data_ROMS_Dir/ocean_ini.nc 
 	 $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
+	
+	if [ $ROMS_DeT = yes ]; then
+		rm $Couple_Data_ROMS_Dir/ocean_har.nc 2>/dev/null
+
+		ln -fs $ROMS_DeT_Dir/$YYYYi/har_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc  $Couple_Data_ROMS_Dir/ocean_har.nc 
+		
+	fi
 
 else # if restarting from Avg or His file
 exit 8

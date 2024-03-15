@@ -176,6 +176,7 @@ fi
 # for mjo and yso runs, avg is the average for the coupling interver and his is output every 1h regardless of CF 
 export ROMS_Avg=yes 
 export ROMS_Dia=yes 
+export ROMS_DeT=yes 
 export ROMS_His=yes
 export ROMS_Qck=yes
 export Use_SST_In=Qck
@@ -441,11 +442,12 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	mkdir -p $ROMS_Smooth_Diff_Dir
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
+export ROMS_DeT_Dir=$Couple_Data_ROMS_Dir/DeT
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
 export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
-   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
+   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir $ROMS_DeT_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
