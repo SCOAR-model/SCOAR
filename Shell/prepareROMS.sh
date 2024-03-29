@@ -210,13 +210,6 @@ if [ $ROMS_Rst = yes ]; then
 	ln -fs $ROMS_Rst_Dir/$YYYYi/rst_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc  $Couple_Data_ROMS_Dir/ocean_ini.nc 
 	 $Couple_Run_Dir/edit_ROMS_ocean_in.sh || exit 8
 	
-	if [ $ROMS_DeT = yes ]; then
-		rm $Couple_Data_ROMS_Dir/ocean_har.nc 2>/dev/null
-
-		ln -fs $ROMS_DeT_Dir/$YYYYi/har_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc  $Couple_Data_ROMS_Dir/ocean_har.nc 
-		
-	fi
-
 else # if restarting from Avg or His file
 exit 8
 fi # if [ $ROMS_Rst = yes ]; then
@@ -264,6 +257,17 @@ ln -fsv $Couple_Data_ROMS_Dir/ocean_ini.nc fort.21 || exit 8
 $Couple_Lib_exec_coupler_Dir/update_init_time3.x || exit 8
 rm fort.?? 2>/dev/null
 
+if [ $NLOOP -gt 1 -a $ROMS_DeT = yes ]; then
+	#1.1 harmonic file
+	echo $num_hour> fort.13
+	#echo $NHour > fort.14
+	echo $CF > fort.15
+	echo ocean_time  > fort.12
+	ln -fsv $Couple_Data_ROMS_Dir/ocean_har.nc fort.21 || exit 8
+	$Couple_Lib_exec_coupler_Dir/update_init_time3.x || exit 8
+	rm fort.?? 2>/dev/null
+fi
+
 # 2. bryfile: daily
 echo $num_hour> fort.13
 #echo $NHour > fort.14
@@ -283,7 +287,7 @@ echo $CF > fort.15
 frcfile=$ROMS_Frc_Dir/$YYYYin/frc_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc
 ln -fs $frcfile fort.21
 
-        if [ $CPL_PHYS = WRF_PHYS ]; then
+        if [ $CPL_PHYS = wrfbulk ]; then
 for time_name in shf_time swf_time sms_time srf_time
   do
     echo $time_name > fort.12
@@ -291,7 +295,7 @@ $Couple_Lib_exec_coupler_Dir/update_forc_time3.x || exit 8
 done
 	fi
 
-        if [ $CPL_PHYS = ROMS_PHYS ]; then
+        if [ $CPL_PHYS = romsbulk ]; then
 for time_name in srf_time wind_time pair_time qair_time tair_time rain_time lrf_time
   do
     echo $time_name > fort.12
