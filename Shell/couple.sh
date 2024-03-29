@@ -656,6 +656,17 @@ mkdir -p $WW3_Outnc_Dir/$YYYYin
         mkdir -p $WW3_Spcnc_Dir/$YYYYin
         mv $WW3_Exe_Dir/ww3.$YYYYin$MMin\_spec.nc $WW3_Spcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_spec.nc || exit 8
         fi
+	if [ $wave_spec_array = yes ];then
+        #wave spectrum array file
+        mkdir -p $WW3_3dSpcnc_Dir/$YYYYin
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_ef.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_ef.nc || exit 8
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_th1m.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_th1m.nc || exit 8
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_sth1m.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_sth1m.nc || exit 8
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_th2m.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_th2m.nc || exit 8
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_sth2m.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_sth2m.nc || exit 8
+        mv $WW3_Exe_Dir/ww3.$YYYYin$MMin$DDin\T$HHin\Z\_wn.nc $WW3_3dSpcnc_Dir/$YYYYin/ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour\_wn.nc || exit 8
+        fi
+
 
 #Rst: binary: Need to link
 mkdir -p $WW3_Rst_Dir/$YYYYin

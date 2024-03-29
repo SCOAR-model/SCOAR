@@ -46,6 +46,10 @@ export parameter_run_WW3=no
 # output full spec for wave point listed in points.list
 # WW3 grid (ww3_grid) must have been compiled using `&OUTS E3D = 1.` in namelists.nml
 export wave_spec=no
+# Output of full domain ’first 5’ moments E, th1m, sth1m, th2m, sth2m allows to estimate the full
+# directional spectrum using, e.g. MEM (Lygre&Krogstad 1986) and also output wavenumbers (wn)
+# WW3 grid (ww3_grid) must have been compiled using `&OUTS E3D = 1., TH1MF = 1., STH1MF =1., TH2MF = 1., STH2MF =1.` in namelists.nml
+export wave_spec_array=no
 
 export WRF_Rerun=yes
 	if [ $parameter_run_WW3 = yes ]; then
