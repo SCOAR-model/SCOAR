@@ -501,7 +501,7 @@ fi
 if [ $ROMS_DeT = yes ]; then
 #	mkdir -p $ROMS_DeT_Dir/$YYYYin
 	cp $Couple_Data_ROMS_Dir/ocean_har.nc $ROMS_Avg_Dir/$YYYYin/ocean_har.nc || exit 8
-#fi
+fi
 
 
 # avg
