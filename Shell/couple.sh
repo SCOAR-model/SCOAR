@@ -467,7 +467,7 @@ echo "preparing ROMS Runs.. $gridname"
         $Couple_Run_Dir/prepareROMS.sh $ROMS_BCFile $JD $NHour $YYYYin:$MMin:$DDin:$HHin $NLOOP || exit 8
 echo "*********   prepare-ROMS **************"
 
-if [ $CPL_PHYS = ROMS_PHYS  ]; then
+if [ $CPL_PHYS = romsbulk  ]; then
 # calculate ua-uo and input to forcing in ROMS bulk formula
 if [ $UaUo = yes ]; then
 echo "Ua - Uo: 10 m wind speed relateve to current"
@@ -496,13 +496,16 @@ if [ $ROMS_Dia = yes ]; then
 fi
 
 # deTide
+#harmonics, we may not need to actually save this file every coupling frequency..?
+#right now just keeping the last version in the Avg directory 
 if [ $ROMS_DeT = yes ]; then
-	mkdir -p $ROMS_DeT_Dir/$YYYYin
-	mv $Couple_Data_ROMS_Dir/ocean_har.nc $ROMS_DeT_Dir/$YYYYin/har_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8
-fi
+#	mkdir -p $ROMS_DeT_Dir/$YYYYin
+	cp $Couple_Data_ROMS_Dir/ocean_har.nc $ROMS_Avg_Dir/$YYYYin/ocean_har.nc || exit 8
+#fi
 
 
 # avg
+# if detide (ROMS_DeT=yes) is activated then detited fields are saved in the average file
 if [ $ROMS_Avg = yes ]; then
 	mkdir -p $ROMS_Avg_Dir/$YYYYin
 	mv $Couple_Data_ROMS_Dir/ocean_avg.nc $ROMS_Avg_Dir/$YYYYin/avg_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc || exit 8

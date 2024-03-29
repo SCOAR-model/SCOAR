@@ -175,8 +175,10 @@ fi
 # ROMS OUTPUTS Types to use
 # for mjo and yso runs, avg is the average for the coupling interver and his is output every 1h regardless of CF 
 export ROMS_Avg=yes 
-export ROMS_Dia=yes 
-export ROMS_DeT=yes 
+# extra CPP needed: DIAGNOSTICS_UV and DIAGNOSTICS_TS
+export ROMS_Dia=no 
+# extra CPP needed: AVERAGES_DETIDE
+export ROMS_DeT=no 
 export ROMS_His=yes
 export ROMS_Qck=yes
 export Use_SST_In=Qck
@@ -193,21 +195,21 @@ export Nameit_ROMS=roms-$gridname
 export ROMS_Grid_Filename=$Nameit_ROMS\-grid_nolake.nc
 
 # Two options for calculating the flux
-# 1. Use WRF Physics CPL_PHY=WRF
-# 2. Use ROMS Bulk formula CPL_PHYS=ROMS
+# 1. Use WRF Physics CPL_PHY=wrfbulk
+# 2. Use ROMS Bulk formula CPL_PHYS=romsbulk
 # WRF_PHYS should be set as default
-# If parameter_run_WW3 = yes, Set CPL_PHYS=WRF_PHYS
+# If parameter_run_WW3 = yes, Set CPL_PHYS=wrfbulk
 export CPL_PHYS=wrfbulk
-	if [ $CPL_PHYS = ROMS_PHYS -a $parameter_run_WW3 = yes ]; then
-		echo "If parameter_run_WW3 = yes , Set CPL_PHYS=WRF_PHYS"
+	if [ $CPL_PHYS = romsbulk -a $parameter_run_WW3 = yes ]; then
+		echo "If parameter_run_WW3 = yes , Set CPL_PHYS = wrfbulk"
 		exit 8 
 	fi
-	if [ $CPL_PHYS = WRF_PHYS ]; then
+	if [ $CPL_PHYS = wrfbulk ]; then
 #	export BULK_FLUX=no
 	export LONGWAVE_OUT=no
 #export BULK=wrfbulk
 	fi
-	if [ $CPL_PHYS = ROMS_PHYS ]; then
+	if [ $CPL_PHYS = romsbulk ]; then
 #	export BULK_FLUX=yes
 # to revisit when working on ROMS physics
 	export LONGWAVE_OUT=yes
@@ -216,10 +218,10 @@ export CPL_PHYS=wrfbulk
 # UaUo
 export UaUo=yes
 # NEED TO THINK
-        if [ $CPL_PHYS = WRF_PHYS ]; then
+        if [ $CPL_PHYS = wrfbulk ]; then
  	# UaUo is calculated as UOCE/VOCE entered in wrflowinp
  	export ROMS2WRF=ROMS2WRF_use_qck_uoce.sh
-         elif [ $CPL_PHYS = ROMS_PHYS  ]; then
+         elif [ $CPL_PHYS = romsbulk  ]; then
  	# UaUo is calculated using uauo.sh
  	export ROMS2WRF=ROMS2WRF_use_qck.sh
  	fi
@@ -344,9 +346,9 @@ export tiling=no
 
 #####--------------------- END OF USER DEFINITION -----------------------#####
 echo "CF is $CF"
-if [ $CPL_PHYS = WRF_PHYS ]; then
+if [ $CPL_PHYS = wrfbulk ]; then
    echo "Use WRF's boudary layer physics!"
-elif [ $CPL_PHYS = ROMS_PHYS ]; then
+elif [ $CPL_PHYS = romsbulk ]; then
    echo "Use ROMS' Bulk formula"
 fi
 if [ $UaUo = yes ]; then
@@ -442,12 +444,11 @@ export ROMS_process_Dir=$Couple_Data_ROMS_Dir/process
 	mkdir -p $ROMS_Smooth_Diff_Dir
 	fi
 export ROMS_Dia_Dir=$Couple_Data_ROMS_Dir/Dia
-export ROMS_DeT_Dir=$Couple_Data_ROMS_Dir/DeT
 export ROMS_Misc_Dir=$Couple_Data_ROMS_Dir/Misc
 export ROMS_Frc_Dir=$Couple_Data_ROMS_Dir/Frc
 export ROMS_Runlog_Dir=$Couple_Data_ROMS_Dir/ROMS_Log
 
-   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir $ROMS_DeT_Dir
+   for DIR in $ROMS_His_Dir $ROMS_Avg_Dir $ROMS_Rst_Dir $ROMS_Qck_Dir $ROMS_process_Dir $ROMS_Runlog_Dir $ROMS_Frc_Dir $ROMS_Misc_Dir $ROMS_Dia_Dir
     do
     mkdir -p $DIR 2>/dev/null
    done
@@ -510,7 +511,7 @@ rm -f $Couple_Run_Dir/*.sh 2>/dev/null
 
 # Copy WRF2ROMS
     cp $Couple_Shell_Dir/WRF2ROMS_$CPL_PHYS\.sh $Couple_Run_Dir/WRF2ROMS.sh || exit 8
-if [ $CPL_PHYS = ROMS_PHYS -a $WRF2ROMS_WRFONLY = yes ]; then
+if [ $CPL_PHYS = wrfbulk -a $WRF2ROMS_WRFONLY = yes ]; then
     cp $Couple_Shell_Dir/WRF2ROMS_bulk_WRFONLY.sh $Couple_Run_Dir/WRF2ROMS_WRFONLY.sh || exit 8
 fi
 
