@@ -57,7 +57,7 @@ EndDAY=`expr $EndHOUR \/ 24`
 echo "Total EndDay = $EndDAY"
 
 # write the options used
-$Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
+#$Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
 
 # Starting Loop
 NLOOP=1
@@ -501,7 +501,7 @@ fi
 if [ $ROMS_DeT = yes ]; then
 #	mkdir -p $ROMS_DeT_Dir/$YYYYin
 	cp $Couple_Data_ROMS_Dir/ocean_har.nc $ROMS_Avg_Dir/$YYYYin/ocean_har.nc || exit 8
-#fi
+fi
 
 
 # avg
@@ -608,6 +608,31 @@ if [ $wave_current = yes ];then
 	mv current.ww3 current.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
 	ln -fs current.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour current.ww3
 fi #wave_current = yes
+
+# #2.1 ROMS ssh for WW3
+if [ $wave_ssh = yes ];then
+	rm -f fort.* level.ww3* 2>/dev/null
+	rm  $WW3_Exe_Dir/ww3_prnc.nml 2>/dev/null
+	# edit ssh nml
+	if [ $NLOOP -eq 1 ]; then
+	# for inital case, jusy duplicate NHour for NHourm
+       		ncks -3 -O -v zeta,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc fort.11
+	else
+       		ncks -3 -O -v zeta,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYi/qck_$YYYYi-$MMi-$DDi\_$HHi\_Hour$NHourm\.nc fort.11
+	fi
+        ncks -3 -O -v zeta,lon_rho,lat_rho $ROMS_Qck_Dir/$YYYYin/qck_$YYYYin-$MMin-$DDin\_$HHin\_Hour$NHour\.nc fort.12
+        ncrcat -O fort.11 fort.12 fort.11;      rm fort.12
+        ncrename -d xi_rho,lon -d eta_rho,lat fort.11
+        ncrename -d ocean_time,time fort.11
+        ncrename -v lon_rho,lon -v lat_rho,lat fort.11
+        ncrename -v ocean_time,time  fort.11
+        ncks -4 -O fort.11 fort.11
+	$WW3_Exe_Dir/edit_ww3_prnc.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_prnc_ssh.nml
+	ln -fs ww3_prnc_ssh.nml ww3_prnc.nml
+	$WW3_Exe_Dir/ww3_prnc >& log_prnc_ssh_$$
+	mv level.ww3 level.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour || exit 8
+	ln -fs level.ww3.$YYYYin$MMin$DDin$HHin\_Hour$NHour level.ww3
+fi
 
 # #3. update WW3 main namelist; restart/ start/end date 
 	$WW3_Exe_Dir/edit_ww3_shel.sh $YYYYi:$MMi:$DDi:$HHi $YYYYin:$MMin:$DDin:$HHin $WW3_Exe_Dir/ww3_shel.nml $CF

@@ -41,6 +41,12 @@ sed -i -e  "$l6 i         DATE%RESTART         = '$YYYYi$MMi$DDi $HHi\0000' '$ST
 
 l7=$(grep -n 'INPUT%FORCING%CURRENTS' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
 sed -i "$l7 d" $edit_file
+#
+if [ $wave_current = yes ];then #sending ocean current
+        sed -i -e  "$l7 i              INPUT%FORCING%CURRENTS         = 'T'" $edit_file
+elif [ $wave_current = no ];then # no ocean current
+        sed -i -e  "$l7 i              INPUT%FORCING%CURRENTS         = 'F'" $edit_file
+fi
 
 if [ $wave_spec = yes ]; then
 	l8=$(grep -n 'DATE%POINT%START' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
@@ -56,10 +62,13 @@ if [ $wave_spec = yes ]; then
 	sed -i -e  "$l10 i         DATE%POINT%STOP    = '$YYYYin$MMin$DDin $HHin\0000'" $edit_file
 fi
 
-if [ $wave_current = yes ];then #sending ocean current
-        sed -i -e  "$l7 i              INPUT%FORCING%CURRENTS         = 'T'" $edit_file
-elif [ $wave_current = no ];then # no ocean current
-        sed -i -e  "$l7 i              INPUT%FORCING%CURRENTS         = 'F'" $edit_file
+l11=$(grep -n 'INPUT%FORCING%WATER_LEVELS' $edit_file | grep -v ':!' | grep -Eo '^[0-9]{1,3}')
+sed -i "$l11 d" $edit_file
+#
+if [ $wave_ssh = yes ];then #sending ocean ssh
+        sed -i -e  "$l11 i              INPUT%FORCING%WATER_LEVELS         = 'T'" $edit_file
+elif [ $wave_ssh = no ];then # no ocean ssh
+        sed -i -e  "$l11 i              INPUT%FORCING%WATER_LEVELS         = 'F'" $edit_file
 fi
 
 
