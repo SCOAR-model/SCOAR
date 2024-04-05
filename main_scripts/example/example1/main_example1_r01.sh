@@ -74,6 +74,8 @@ export WRF_Rerun=yes
 
 # if sending ocean surface current to WW3
 	export wave_current=yes
+# if sending ocean sea surface height to WW3
+        export wave_ssh=yes
 
 # yes WW32WRF if WW3 is defined
 	export parameter_WW32WRF=no
@@ -85,6 +87,7 @@ export WRF_Rerun=yes
 else # if no WW3 is used; turn off all WW3 relatd options
         export isftcflx=0
         export wave_current=no
+        export wave_ssh=no
         export parameter_WW32WRF=no
         export ROMS_wave=no
         export parameter_WW32ROMS=no
@@ -588,6 +591,7 @@ ln -fs $WW3_BCFile $WW3_Exe_Dir/nest.ww3 || exit 8
 # WW3 namelist only what isused...
 cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_wind.nml    $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_current.nml $WW3_Exe_Dir || exit 8
+cp     $Couple_Lib_exec_WW3_Dir/ww3_prnc_ssh.nml     $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_shel.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/ww3_ounf.nml         $WW3_Exe_Dir || exit 8
 cp     $Couple_Lib_exec_WW3_Dir/namelists.nml        $WW3_Exe_Dir || exit 8
