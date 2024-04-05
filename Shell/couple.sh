@@ -57,7 +57,7 @@ EndDAY=`expr $EndHOUR \/ 24`
 echo "Total EndDay = $EndDAY"
 
 # write the options used
-#$Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
+$Couple_Shell_Dir_common/write_options.sh >  $Couple_Run_Dir/options_check_NHour$NHour
 
 # Starting Loop
 NLOOP=1
